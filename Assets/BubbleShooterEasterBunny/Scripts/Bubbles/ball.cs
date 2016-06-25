@@ -161,7 +161,7 @@ public class ball : MonoBehaviour
                     mainscript.Instance.newBall = gameObject;
                     mainscript.Instance.newBall2 = gameObject;
                     // 在这里给发射的ball赋予一个force，产生初速度（注意这里初速度和点的距离有关）
-                    GetComponent<Rigidbody2D> ().AddForce ((target - dropTarget)*100F, ForceMode2D.Force);
+                    GetComponent<Rigidbody2D> ().AddForce ((target - dropTarget)*50F, ForceMode2D.Force);
 
                     //Debug.DrawLine( DrawLine.waypoints[0], target );
                     //Debug.Break();
@@ -472,11 +472,11 @@ public class ball : MonoBehaviour
         while (findMesh) {
             Vector3 centerPoint = transform.position;
             // 注意在这里，系统根据球的位置试图找到所有的collider2D，实际是在寻找与之对应的mesh
-            Collider2D[] fixedBalls1 = Physics2D.OverlapCircleAll (centerPoint, 0.1f, 1 << 10);  //meshes
+            // 只寻找layer 10的，就是全部的mesh
+            Collider2D[] fixedBalls1 = Physics2D.OverlapCircleAll (centerPoint, 0.1f, 1 << 10);
 
             foreach (Collider2D obj1 in fixedBalls1) {
                 if (obj1.gameObject.GetComponent<Grid> () == null)
-                    // 为什么要DestroySingle??
                     DestroySingle (gameObject, 0.00001f);
                 else if (obj1.gameObject.GetComponent<Grid> ().Busy == null) {
                     findMesh = false;
@@ -508,7 +508,7 @@ public class ball : MonoBehaviour
                 }
             }
 				
-            // 当前ball找到一个最近的ball，并将该ball的grid component的Busy设置成自己（干什么用？）
+            // 当前ball找到一个最近的ball，并将该ball的grid component的Busy设置成自己
             if (busyMesh != null) {
                 busyMesh.GetComponent<Grid> ().Busy = gameObject;
                 gameObject.GetComponent<bouncer> ().offset = busyMesh.GetComponent<Grid> ().offset;
@@ -548,6 +548,7 @@ public class ball : MonoBehaviour
     public void PlayHitAnim (Vector3 newBallPos, Hashtable animTable)
     {
 
+        // 播放撞击的动画
         int layerMask = 1 << LayerMask.NameToLayer ("Ball");
         Collider2D[] fixedBalls = Physics2D.OverlapCircleAll (transform.position, 0.5f, layerMask);
         float force = 0.15f;

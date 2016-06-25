@@ -514,7 +514,7 @@ public class creatorBall : MonoBehaviour
     public void createMesh()
     {
 
-        // mesh没有用六边形，而只用了正方形，这样判断起来效率更高
+        // mesh没有用六边形，而只用了长方形，这样判断起来效率更高
         GameObject Meshes = GameObject.Find( "-Meshes" );
         float offset = 0;
 

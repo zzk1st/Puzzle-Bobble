@@ -771,11 +771,14 @@ public class mainscript : MonoBehaviour {
 
 	}
 
+    // 交换两个即将fire的ball
 	public void ChangeBoost(){
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.swish[0] );
+        // 这是个静态变量
 		Grid.waitForAnim = true;
 		GameObject ball1 = boxSecond.GetComponent<Grid>().Busy;
 		boxCatapult.GetComponent<Grid>().Busy.GetComponent<ball>().newBall = false;
+        // iTween是一个第三方lib，主要用来用script做animation
 		iTween.MoveTo(boxSecond.GetComponent<Grid>().Busy,iTween.Hash("position", boxCatapult.transform.position, "time",0.3 , "easetype",iTween.EaseType.linear,"onComplete","newBall"));
 		iTween.MoveTo(boxCatapult.GetComponent<Grid>().Busy,iTween.Hash("position", boxSecond.transform.position, "time",0.3 , "easetype",iTween.EaseType.linear));
 		boxSecond.GetComponent<Grid>().Busy = boxCatapult.GetComponent<Grid>().Busy;
