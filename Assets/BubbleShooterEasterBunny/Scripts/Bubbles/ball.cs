@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 public class ball : MonoBehaviour
 {
+    public float LaunchForce;
     public Sprite[] sprites;
     public Sprite[] boosts;
     public bool isTarget;
@@ -160,8 +161,8 @@ public class ball : MonoBehaviour
                     InitScript.Instance.BoostActivated = false;
                     mainscript.Instance.newBall = gameObject;
                     mainscript.Instance.newBall2 = gameObject;
-                    // 在这里给发射的ball赋予一个force，产生初速度（注意这里初速度和点的距离有关）
-                    GetComponent<Rigidbody2D> ().AddForce ((target - dropTarget)*50F, ForceMode2D.Force);
+                    // 在这里给发射的ball赋予一个force，产生初速度
+                    GetComponent<Rigidbody2D> ().AddForce ((target - dropTarget).normalized * LaunchForce, ForceMode2D.Force);
 
                     //Debug.DrawLine( DrawLine.waypoints[0], target );
                     //Debug.Break();
