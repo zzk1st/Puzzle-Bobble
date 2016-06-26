@@ -67,12 +67,8 @@ public class ball : MonoBehaviour
     Vector3 meshPos;        // 表示当被发射的ball发生碰撞后，应该去的位置，而这个位置是mesh决定的
     bool dropedDown;
     bool rayTarget;
-    RaycastHit2D[] bugHits;
-    RaycastHit2D[] bugHits2;
-    RaycastHit2D[] bugHits3;
     public bool falling;
     Animation rabbit;
-    private int HitBug;
     private bool fireBall;
     private static int fireworks;
     private bool touchedTop;
@@ -80,14 +76,6 @@ public class ball : MonoBehaviour
     private int fireBallLimit = 10;
     private bool launched;
     private bool animStarted;
-
-    public int HitBug1 {
-        get { return HitBug; }
-        set {
-            if (value < 3)
-                HitBug = value;
-        }
-    }
 
     // Use this for initialization
     void Start ()
@@ -169,26 +157,7 @@ public class ball : MonoBehaviour
                 }
             }
         }
-        // 完全不明白以下代码是干嘛用的
-        /*
-        if (transform.position != target && setTarget && !stopedBall && !isPaused && Camera.main.GetComponent<mainscript> ().dropDownTime < Time.time) {
-            float totalVelocity = Vector3.Magnitude (GetComponent<Rigidbody2D> ().velocity);
-            if (totalVelocity > 20) {
-                float tooHard = totalVelocity / (20);
-                GetComponent<Rigidbody2D> ().velocity /= tooHard;
 
-            } else if (totalVelocity < 15) {
-                float tooSlowRate = totalVelocity / (15);
-                if (tooSlowRate != 0)
-                    GetComponent<Rigidbody2D> ().velocity /= tooSlowRate;
-
-
-            }
-
-            if (GetComponent<Rigidbody2D> ().velocity.y < 1.5f && GetComponent<Rigidbody2D> ().velocity.y > 0)
-                GetComponent<Rigidbody2D> ().velocity = new Vector2 (GetComponent<Rigidbody2D> ().velocity.x, 1.7f);
-        }
-*/
         // 也不知道这行干什么用的，但注释掉似乎完全不影响，似乎和fireball有关
         if (setTarget)
             triggerEnter ();
@@ -347,6 +316,11 @@ public class ball : MonoBehaviour
             // 在这里调用coroutine将其销毁
             destroy (b, 0.00001f);
             mainscript.Instance.CheckFreeChicken ();
+
+            // 给整个关卡一个向上的force
+            GameObject Meshes = GameObject.Find( "-Meshes" );
+            Rigidbody2D rb = Meshes.GetComponent<Rigidbody2D>();
+            rb.AddForce(Vector2.up * mainscript.Instance.StageBounceForce);
         }
         if (b.Count < 3) {
             Camera.main.GetComponent<mainscript> ().bounceCounter++;
@@ -656,7 +630,7 @@ public class ball : MonoBehaviour
     void OnTriggerEnter2D (Collider2D other)
     {
         // stop
-        if (other.gameObject.name.Contains ("ball") && setTarget && name.IndexOf ("bug") < 0) {
+        if (other.gameObject.name.Contains ("ball") && setTarget) {
             //当一个ball作为发射ball的时候，ball script是enabled的
             //一旦它碰到了其它ball（stopBall设成true），那么这个ball script就会被disable
             //所以判断一个ball script是不是enabled，就能知道这是不是个固定的ball
@@ -685,11 +659,6 @@ public class ball : MonoBehaviour
                 //           FindLight(gameObject);
             }
             //          }
-        } else if (other.gameObject.name.IndexOf ("ball") == 0 && setTarget && name.IndexOf ("bug") == 0) {
-            if (other.gameObject.tag == gameObject.tag) {
-                Destroy (other.gameObject);
-                //                Score.Instance.addScore(3);
-            }
         } else if (other.gameObject.name == "TopBorder" && setTarget) {
             if (LevelData.mode == ModeGame.Vertical || LevelData.mode == ModeGame.Animals) {
                 if (!findMesh) {
@@ -866,8 +835,6 @@ public class ball : MonoBehaviour
 
             //			Destroy(obj);
         }
-        //if (name.IndexOf("bug") < 0)
-        //    Score.Instance.addScore(scoreCounter);
         mainscript.Instance.PopupScore (scoreCounter, transform.position);
         //   StartCoroutine( mainscript.Instance.destroyAloneBall() );
 
@@ -925,9 +892,6 @@ public class ball : MonoBehaviour
         obj.GetComponent<ball> ().growUp ();
         //	Invoke("playPop",1/(float)Random.Range(2,10));
         Camera.main.GetComponent<mainscript> ().explode (obj.gameObject);
-        //     if (name.IndexOf("bug") < 0)
-        //       Score.Instance.addScore(3);
-
     }
 
     public void growUp ()

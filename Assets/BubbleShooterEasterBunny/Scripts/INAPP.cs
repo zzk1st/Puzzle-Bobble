@@ -47,9 +47,6 @@ public class INAPP : MonoBehaviour {
 	#region Billing
     private void Awake()
     {
-		// 将系统设置成60fps
-		Application.targetFrameRate = 60;
-
         Instance = this;
 
         // Listen to all events for illustration purposes

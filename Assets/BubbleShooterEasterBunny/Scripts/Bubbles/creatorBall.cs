@@ -9,14 +9,11 @@ public class creatorBall : MonoBehaviour
     public static creatorBall Instance;
     public GameObject ball_hd;
     public GameObject ball_ld;
-    public GameObject bug_hd;
-    public GameObject bug_ld;
     public GameObject thePrefab;        // box
+    public float InitialMoveUpSpeed;
     GameObject ball;
-    GameObject bug;
     string[] ballsForCatapult = new string[11];
     string[] ballsForMatrix = new string[11];
-    string[] bugs = new string[11];
     public static int columns = 11;
     public static int rows = 70;
     public static List<Vector2> grid = new List<Vector2>();
@@ -36,7 +33,6 @@ public class creatorBall : MonoBehaviour
     {
         Instance = this;
         ball = ball_hd;
-        bug = bug_hd;
         thePrefab.transform.localScale = new Vector3( 0.67f, 0.58f, 1 );
         Meshes = GameObject.Find( "-Ball" );
         // LevelData.LoadDataFromXML( mainscript.Instance.currentLevel );
@@ -58,7 +54,6 @@ public class creatorBall : MonoBehaviour
         LoadMap( LevelData.map );
         Camera.main.GetComponent<mainscript>().connectNearBallsGlobal();
         StartCoroutine( getBallsForMesh() );
-        ShowBugs();
     }
 
     public void LoadLevel()
@@ -207,6 +202,7 @@ public class creatorBall : MonoBehaviour
             GamePlay.Instance.GameStatus = GameState.BlockedGame;
         bool up = false;
         List<float> table = new List<float>();
+        // lineY(WorldSpace)，表示整个球的底部应该移到的位置
         float lineY = -1.3f;//GameObject.Find( "GameOverBorder" ).transform.position.y;
         Transform bubbles = GameObject.Find( "-Ball" ).transform;
         int i = 0;
@@ -239,31 +235,36 @@ public class creatorBall : MonoBehaviour
         {
             if( up ) AddMesh();
 
+            // 球的底部和lineY要求的位置差多少（WorldSpace)
             float targetY = 0;
             table.Sort();
             if( !inGameCheck ) targetY = lineY - table[0] + 2.5f;
             else targetY = lineY - table[0] + 1.5f;
             GameObject Meshes = GameObject.Find( "-Meshes" );
+            Rigidbody2D rb = Meshes.GetComponent<Rigidbody2D>();
             Vector3 targetPos = Meshes.transform.position + Vector3.up * targetY;
             float startTime = Time.time;
             Vector3 startPos = Meshes.transform.position;
             float speed = 0.5f;
             float distCovered = 0;
-            while( distCovered < 1 )
+            while (Math.Abs(Meshes.transform.position.y - targetPos.y) > 0.1f)
             {
-           //                     print( table.Count );
-                speed += Time.deltaTime / 1.5f;
-                distCovered = ( Time.time - startTime ) / speed;
-                Meshes.transform.position = Vector3.Lerp( startPos, targetPos, distCovered );
-                yield return new WaitForEndOfFrame();
-                if( startPos.y > targetPos.y )
+                float realSpeed = InitialMoveUpSpeed * Time.deltaTime;
+                if (targetPos.y > Meshes.transform.position.y)
                 {
-                    if( mainscript.Instance.TopBorder.transform.position.y <= 5 && inGameCheck ) break;
+                    rb.MovePosition(new Vector2(rb.position.x, rb.position.y + realSpeed));
+                    //Meshes.transform.Translate(0f, realSpeed, 0f);
                 }
+                else
+                {
+                    rb.MovePosition(new Vector2(rb.position.x, rb.position.y - realSpeed));
+                    //Meshes.transform.Translate(0f, -realSpeed, 0f);
+                }
+                yield return new WaitForEndOfFrame();
             }
         }
 
-        //        Debug.Log("lift finished");
+        //Debug.Log("lift finished");
         if( GamePlay.Instance.GameStatus == GameState.BlockedGame )
             GamePlay.Instance.GameStatus = GameState.PreTutorial;
         else if( GamePlay.Instance.GameStatus != GameState.GameOver && GamePlay.Instance.GameStatus != GameState.Win )
@@ -280,44 +281,6 @@ public class creatorBall : MonoBehaviour
     private bool BubbleBelowLine()
     {
         throw new System.NotImplementedException();
-    }
-
-    void ShowBugs()
-    {
-        int effset = 1;
-        for( int i = 0; i < 2; i++ )
-        {
-            effset *= -1;
-            CreateBug( new Vector3( 10 * effset, -3, 0 ) );
-
-        }
-
-    }
-
-    public void CreateBug( Vector3 pos, int value = 1 )
-    {
-        Transform spiders = GameObject.Find( "Spiders" ).transform;
-        List<Bug> listFreePlaces = new List<Bug>();
-        foreach( Transform item in spiders )
-        {
-            if( item.childCount > 0 ) listFreePlaces.Add( item.GetChild( 0 ).GetComponent<Bug>() );
-        }
-
-        if( listFreePlaces.Count < 6 )
-            Instantiate( bug, pos, Quaternion.identity );
-        else
-        {
-            listFreePlaces.Clear();
-            foreach( Transform item in spiders )
-            {
-                if( item.childCount > 0 )
-                {
-                    if( item.GetChild( 0 ).GetComponent<Bug>().color == 0 ) listFreePlaces.Add( item.GetChild( 0 ).GetComponent<Bug>() );
-                }
-            }
-            if( listFreePlaces.Count > 0 )
-                listFreePlaces[UnityEngine.Random.Range( 0, listFreePlaces.Count )].ChangeColor( 1 );
-        }
     }
 
     // Update is called once per frame
@@ -513,20 +476,25 @@ public class creatorBall : MonoBehaviour
 
     public void createMesh()
     {
+        // -Mesh节点本身被定义成一个rigidbody，是为了模拟被球弹起来的效果，不能让该rigidbody和其他collider产生碰撞
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("IgnoreCollision"), LayerMask.NameToLayer("Default"));
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("IgnoreCollision"), LayerMask.NameToLayer("Border"));
 
         // mesh没有用六边形，而只用了长方形，这样判断起来效率更高
         GameObject Meshes = GameObject.Find( "-Meshes" );
         float offset = 0;
-
+        //Debug.Log(String.Format("MeshPosition={0}", Meshes.transform.position));
         for( int j = 0; j < rows + 1; j++ )
         {
             for( int i = 0; i < columns; i++ )
             {
                 if( j % 2 == 0 ) offset = 0; else offset = offsetStep;
                 GameObject b = Instantiate( thePrefab, transform.position, transform.rotation ) as GameObject;
+                // 每个球最初的位置由creator的世界坐标系决定
                 Vector3 v = new Vector3( transform.position.x + i * b.transform.localScale.x + offset, transform.position.y - j * b.transform.localScale.y, transform.position.z );
                 b.transform.parent = Meshes.transform;
                 b.transform.localPosition = v;
+                //Debug.Log(String.Format("row={0}, col={1}, LocalPosition={2}, WorldPosition={3}", j, i, b.transform.localPosition, b.transform.position));
                 GameObject[] fixedBalls = GameObject.FindGameObjectsWithTag( "Mesh" );
                 b.name = b.name + fixedBalls.Length.ToString();
                 b.GetComponent<Grid>().offset = offset;

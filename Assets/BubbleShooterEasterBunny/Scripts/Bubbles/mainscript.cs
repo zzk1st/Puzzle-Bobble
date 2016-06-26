@@ -109,10 +109,11 @@ public class mainscript : MonoBehaviour {
 
     public int countOfPreparedToDestroy;
 
-    public int bugSounds;
     public int potSounds;
 
     public static Dictionary<int, BallColor> colorsDict = new Dictionary<int, BallColor>();
+
+    public float StageBounceForce;
 
     private int _ComboCount;
 
@@ -125,7 +126,6 @@ public class mainscript : MonoBehaviour {
             if( value > 0 )
             {
                 SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[Mathf.Clamp(value-1, 0 , 5)]);
-                creatorBall.Instance.CreateBug( lastBall, value );
                 if( value >= 6 )
                 {
                     SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[5]);
@@ -135,7 +135,6 @@ public class mainscript : MonoBehaviour {
             }
             else
             {
-                DestroyBugs();
                 FireEffect.SetActive( false );
                 doubleScore = 1;
             }
@@ -222,25 +221,6 @@ public class mainscript : MonoBehaviour {
                 arrows.SetActive( false );
         }
     }
-
-    private void DestroyBugs()
-    {
-        Transform spiders = GameObject.Find( "Spiders" ).transform;
-        List<Bug> listFreePlaces = new List<Bug>();
-        for( int i = 0; i < 2; i++ )
-        {
-            listFreePlaces.Clear();
-            foreach( Transform item in spiders )
-            {
-                if( item.childCount > 0 ) listFreePlaces.Add( item.GetChild(0).GetComponent<Bug>() );
-            }
-            if( listFreePlaces .Count > 0)
-                listFreePlaces[Random.Range( 0, listFreePlaces.Count )].MoveOut();
-            
-        }
-
-    }
-
 
     public void PopupScore(int value, Vector3 pos)
     {
@@ -579,11 +559,7 @@ public class mainscript : MonoBehaviour {
         //if( willDestroy > 0)
         //    yield return new WaitForSeconds( 0.5f );
 
-        if(LevelData.mode == ModeGame.Vertical)
-            creatorBall.Instance.MoveLevelDown();
-        else if( LevelData.mode == ModeGame.Animals )
-            creatorBall.Instance.MoveLevelDown();
-        else if( LevelData.mode == ModeGame.Rounded )
+        if( LevelData.mode == ModeGame.Rounded )
         {
             CheckBallsBorderCross();
         }

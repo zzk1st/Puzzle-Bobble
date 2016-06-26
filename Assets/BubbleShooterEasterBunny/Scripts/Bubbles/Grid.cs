@@ -181,8 +181,8 @@ public class Grid : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        BoxCollider2D coll = gameObject.GetComponent<BoxCollider2D>();
-        Gizmos.DrawWireCube(transform.position, coll.size);
+        //BoxCollider2D coll = gameObject.GetComponent<BoxCollider2D>();
+        //Gizmos.DrawWireCube(transform.position, coll.size);
     }
 
 
