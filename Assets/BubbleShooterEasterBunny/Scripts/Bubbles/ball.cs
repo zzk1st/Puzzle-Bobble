@@ -42,7 +42,7 @@ public class ball : MonoBehaviour
         get { return destroyed; }
         set {
             if (value) {
-                GetComponent<BoxCollider2D> ().enabled = false;
+                GetComponent<CircleCollider2D> ().enabled = false;
                 GetComponent<SpriteRenderer> ().enabled = false;
 
             }
@@ -110,8 +110,7 @@ public class ball : MonoBehaviour
 
     public void PushBallAFterWin ()
     {
-        GetComponent<BoxCollider2D> ().offset = Vector2.zero;
-        GetComponent<BoxCollider2D> ().size = new Vector2 (0.5f, 0.5f);
+        GetComponent<CircleCollider2D> ().offset = Vector2.zero;
 
         setTarget = true;
         startTime = Time.time;
@@ -123,7 +122,8 @@ public class ball : MonoBehaviour
     void Update ()
     {
         // 发射ball
-        if (Input.GetMouseButtonUp (0)) {
+        if (Input.GetMouseButtonUp (0))
+        {
             GameObject ball = gameObject;
             // ClickOnGUI检查是否单击在gui上
             // newBall表示这是不是一个准备发射的ball
@@ -149,6 +149,9 @@ public class ball : MonoBehaviour
                     InitScript.Instance.BoostActivated = false;
                     mainscript.Instance.newBall = gameObject;
                     mainscript.Instance.newBall2 = gameObject;
+                    // 取消circle collider的isTrigger, 以便触发ball和border的碰撞检测
+                    CircleCollider2D coll = GetComponent<CircleCollider2D>();
+                    coll.isTrigger = false;
                     // 在这里给发射的ball赋予一个force，产生初速度
                     GetComponent<Rigidbody2D> ().AddForce ((target - dropTarget).normalized * LaunchForce, ForceMode2D.Force);
 
@@ -205,6 +208,7 @@ public class ball : MonoBehaviour
         if (stopedBall) {
             // 如果stoppedBall了，就在这里强制将ball的位置更新成meshPos
             transform.position = meshPos;
+
             stopedBall = false;
             if (newBall) {
                 //在前边条件下，如果又是个new ball，那么就把它变成一个固定的ball
@@ -359,7 +363,6 @@ public class ball : MonoBehaviour
         gameObject.GetComponent<Rigidbody2D> ().velocity = gameObject.GetComponent<Rigidbody2D> ().velocity + new Vector2 (Random.Range (-2, 2), 0);
         gameObject.GetComponent<CircleCollider2D> ().enabled = true;
         gameObject.GetComponent<CircleCollider2D> ().isTrigger = false;
-        gameObject.GetComponent<CircleCollider2D> ().radius = 0.3f;
         GetComponent<ball> ().falling = true;
 
     }
@@ -510,7 +513,7 @@ public class ball : MonoBehaviour
         if (busyMesh != null) {
             Hashtable animTable = mainscript.Instance.animTable;
             animTable.Clear ();
-            // start hit animation, 碰撞效果都是假的，全是套路
+            // start hit animation
             PlayHitAnim (transform.position, animTable);
         }
         creatorBall.Instance.OffGridColliders ();
@@ -677,15 +680,19 @@ public class ball : MonoBehaviour
 
     void StopBall (bool pulltoMesh = true, Transform otherBall = null)
     {
+        // 将stopped new ball归在meshes下边，变成一个fixed ball
+        GameObject meshes = GameObject.Find( "-Meshes" );
+
         launched = true;
         mainscript.lastBall = gameObject.transform.position;
         creatorBall.Instance.EnableGridColliders ();
         target = Vector2.zero;
         setTarget = false;
-        GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
         findMesh = true;
-        GetComponent<BoxCollider2D> ().offset = Vector2.zero;
-        GetComponent<BoxCollider2D> ().size = new Vector2 (0.5f, 0.5f);
+        GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
+        CircleCollider2D cc = GetComponent<CircleCollider2D>();
+        cc.offset = Vector2.zero;
+        cc.isTrigger = true;
 
         if (GetComponent<SpriteRenderer> ().sprite == boosts [0]) {  //color ball boost
             DestroyAround ();
@@ -923,7 +930,6 @@ public class ball : MonoBehaviour
         Vector3 targetPrepare = transform.localScale * 1.2f;
 
         GetComponent<CircleCollider2D> ().enabled = false;
-        GetComponent<BoxCollider2D> ().enabled = false;
 
 
         // 让ball有个膨胀的效果

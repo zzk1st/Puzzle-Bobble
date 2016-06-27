@@ -283,12 +283,6 @@ public class creatorBall : MonoBehaviour
         throw new System.NotImplementedException();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     IEnumerator getBallsForMesh()
     {
         GameObject[] meshes = GameObject.FindGameObjectsWithTag( "Mesh" );
@@ -361,20 +355,23 @@ public class creatorBall : MonoBehaviour
         b.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
         // b.transform.Rotate( new Vector3( 0f, 180f, 0f ) );
         b.GetComponent<ColorBallScript>().SetColor( color );
-		// 每一个ball的parent是Meshes
-        b.transform.parent = Meshes.transform;
+		// 只有当不是newball的时候，parent才设置成meshes，newball的parent随后会在stopball里设置
+        if (!newball)
+        {
+            b.transform.parent = Meshes.transform;
+        }
+
         b.tag = "" + color;
 
         GameObject[] fixedBalls = GameObject.FindObjectsOfType( typeof( GameObject ) ) as GameObject[];
         b.name = b.name + fixedBalls.Length.ToString();
+        // Rigidbody2D在createBall里程序化的被加入
         if( newball )
         {
 
             b.gameObject.layer = 17;
             b.transform.parent = Camera.main.transform;
             Rigidbody2D rig = b.AddComponent<Rigidbody2D>();
-            // b.collider2D.isTrigger = false;
-      //      rig.fixedAngle = true;
             b.GetComponent<CircleCollider2D>().enabled = false;
             rig.gravityScale = 0;
             if( GamePlay.Instance.GameStatus == GameState.Playing )
@@ -385,14 +382,7 @@ public class creatorBall : MonoBehaviour
             b.GetComponent<ball>().enabled = false;
             if( LevelData.mode == ModeGame.Vertical && row == 0 )
                 b.GetComponent<ball>().isTarget = true;
-            b.GetComponent<BoxCollider2D>().offset = Vector2.zero;
-            b.GetComponent<BoxCollider2D>().size = new Vector2( 0.5f, 0.5f );
-            //Destroy( b.rigidbody2D );
-            //b.rigidbody2D.isKinematic = true;
-            //Destroy( b.GetComponent < BoxCollider2D>() );
-            //b.AddComponent<BoxCollider2D>();
-            //b.GetComponent<BoxCollider2D>().enabled = false;
-            //b.GetComponent<BoxCollider2D>().enabled = true;
+            b.GetComponent<CircleCollider2D>().offset = Vector2.zero;
         }
         return b.gameObject;
     }
@@ -409,8 +399,7 @@ public class creatorBall : MonoBehaviour
         b2.gameObject.layer = 9;
         b2.GetComponent<Animation>().Play( "cat_idle" );
         b2.GetComponent<SpriteRenderer>().sortingOrder = 20;
-        b2.GetComponent<BoxCollider2D>().offset = Vector2.zero;
-        b2.GetComponent<BoxCollider2D>().size = new Vector2( 0.5f, 0.5f );
+        b2.GetComponent<CircleCollider2D>().offset = Vector2.zero;
 
     }
 
@@ -476,10 +465,6 @@ public class creatorBall : MonoBehaviour
 
     public void createMesh()
     {
-        // -Mesh节点本身被定义成一个rigidbody，是为了模拟被球弹起来的效果，不能让该rigidbody和其他collider产生碰撞
-        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("IgnoreCollision"), LayerMask.NameToLayer("Default"));
-        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("IgnoreCollision"), LayerMask.NameToLayer("Border"));
-
         // mesh没有用六边形，而只用了长方形，这样判断起来效率更高
         GameObject Meshes = GameObject.Find( "-Meshes" );
         float offset = 0;
