@@ -77,6 +77,9 @@ public class ball : MonoBehaviour
     private bool launched;
     private bool animStarted;
 
+    private float ballAnimForce = 0.15f;    // 播放碰撞动画时，给每个球施加的力，力越大位移越大
+    private float ballAnimSpeed = 5f;       // 播放碰撞动画的速度，数越大播放越快
+
     // Use this for initialization
     void Start ()
     {
@@ -514,7 +517,9 @@ public class ball : MonoBehaviour
             Hashtable animTable = mainscript.Instance.animTable;
             animTable.Clear ();
             // start hit animation
-            PlayHitAnim (transform.position, animTable);
+            // TODO: 改进HitAnim，变成有慢动作的效果，并且增加newball本身的anim，删掉FixedUpdate()里强制设成meshPos
+            // 现在的newball直接回到meshPos，太丑了
+            PlayHitAnim (meshPos, animTable);
         }
         creatorBall.Instance.OffGridColliders ();
 
@@ -525,48 +530,51 @@ public class ball : MonoBehaviour
 
     public void PlayHitAnim (Vector3 newBallPos, Hashtable animTable)
     {
-
-        // 播放撞击的动画
+        // 对该球周围的所有球（该球自己除外），调用每个球的PlayHitAnimCorStart
         int layerMask = 1 << LayerMask.NameToLayer ("Ball");
         Collider2D[] fixedBalls = Physics2D.OverlapCircleAll (transform.position, 0.5f, layerMask);
-        float force = 0.15f;
+        // 该参数控制球受力大小
         foreach (Collider2D obj in fixedBalls) {
-            if (!animTable.ContainsKey (obj.gameObject) && obj.gameObject != gameObject && animTable.Count < 50)
-                obj.GetComponent<ball> ().PlayHitAnimCorStart (newBallPos, force, animTable);
+            if (!animTable.ContainsKey (obj.gameObject) && obj.gameObject != gameObject && animTable.Count < 20)
+                obj.GetComponent<ball> ().PlayHitAnimCorStart (newBallPos, animTable);
         }
-        if (fixedBalls.Length > 0 && !animTable.ContainsKey (gameObject))
-            PlayHitAnimCorStart (fixedBalls [0].gameObject.transform.position, 0, animTable);
     }
 
-    public void PlayHitAnimCorStart (Vector3 newBallPos, float force, Hashtable animTable)
+    public void PlayHitAnimCorStart (Vector3 newBallPos, Hashtable animTable)
     {
+        // 对该球先协程调用播放动画，然后递归调用PlayHitAnim(), 播放周围球动画，直到animTable满50
         if (!animStarted) {
-            StartCoroutine (PlayHitAnimCor (newBallPos, force, animTable));
+            StartCoroutine (PlayHitAnimCor (newBallPos, animTable));
             PlayHitAnim (newBallPos, animTable);
         }
     }
 
-    public IEnumerator PlayHitAnimCor (Vector3 newBallPos, float force, Hashtable animTable)
+    public IEnumerator PlayHitAnimCor (Vector3 newBallPos, Hashtable animTable)
     {
         animStarted = true;
         animTable.Add (gameObject, gameObject);
         if (tag == "chicken")
             yield break;
         yield return new WaitForFixedUpdate ();
+        // TODO: 对transform.position随机扰动, 形成一个更随机的效果
         float dist = Vector3.Distance (transform.position, newBallPos);
-        force = 1 / dist + force;
+        float force = 1 / dist + ballAnimForce;
         newBallPos = transform.position - newBallPos;
         if (transform.parent == null) {
             animStarted = false;
             yield break;
         }
-        newBallPos = Quaternion.AngleAxis (transform.parent.parent.rotation.eulerAngles.z, Vector3.back) * newBallPos;
+
+        // 给动画施加一个随机扰动的角度
+        float randAngle = (Random.value - 0.5f) * 80f;
+        newBallPos = Quaternion.AngleAxis (transform.parent.parent.rotation.eulerAngles.z + randAngle, Vector3.back) * newBallPos;
         newBallPos = newBallPos.normalized;
         newBallPos = transform.localPosition + (newBallPos * force / 10);
 
         float startTime = Time.time;
         Vector3 startPos = transform.localPosition;
-        float speed = force * 5;
+        // 该参数控制动画速度
+        float speed = force * ballAnimSpeed;
         float distCovered = 0;
         while (distCovered < 1 && !float.IsNaN (newBallPos.x)) {
             distCovered = (Time.time - startTime) * speed;
@@ -680,9 +688,6 @@ public class ball : MonoBehaviour
 
     void StopBall (bool pulltoMesh = true, Transform otherBall = null)
     {
-        // 将stopped new ball归在meshes下边，变成一个fixed ball
-        GameObject meshes = GameObject.Find( "-Meshes" );
-
         launched = true;
         mainscript.lastBall = gameObject.transform.position;
         creatorBall.Instance.EnableGridColliders ();
@@ -730,7 +735,6 @@ public class ball : MonoBehaviour
         ArrayList b = new ArrayList ();
         int layerMask = 1 << LayerMask.NameToLayer ("Ball");
         RaycastHit2D[] fixedBalls = Physics2D.LinecastAll (transform.position + Vector3.left * 10, transform.position + Vector3.right * 10, layerMask);
-        int i = 0;
         foreach (RaycastHit2D item in fixedBalls) {
             if (!findInArray (b, item.collider.gameObject)) {
                 b.Add (item.collider.gameObject);
