@@ -205,7 +205,6 @@ public class AnimationManager : MonoBehaviour
     {
 //        SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.click );
         GamePlay.Instance.GameStatus = GameState.Playing;
-    //    mainscript.Instance.dropDownTime = Time.time + 0.5f;
 //        CloseMenu();
     }
 

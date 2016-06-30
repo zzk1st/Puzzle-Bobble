@@ -131,7 +131,6 @@ public class DrawLine : MonoBehaviour
                 line.SetPosition(0, transform.position);
 
                 waypoints[0] = transform.position;
-                //int layerMask = ~(1 << LayerMask.NameToLayer("Mesh"));
 
 
                 RaycastHit2D[] hit = Physics2D.LinecastAll( waypoints[0], waypoints[0] + ( (Vector2)dir - waypoints[0] ).normalized * 10 );

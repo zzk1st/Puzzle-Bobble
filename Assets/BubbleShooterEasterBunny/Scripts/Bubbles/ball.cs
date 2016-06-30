@@ -54,17 +54,16 @@ public class ball : MonoBehaviour
     //	private OTSpriteBatch spriteBatch = null;
     GameObject Meshes;      // 所有mesh的parent
     public int countNEarBalls;
-    float bottomBorder;
     float topBorder;
     float leftBorder;
     float rightBorder;
-    float gameOverBorder;
     bool gameOver;
     bool isPaused;
     public AudioClip swish;
     public AudioClip pops;
     public AudioClip join;
     Vector3 meshPos;        // 表示当被发射的ball发生碰撞后，应该去的位置，而这个位置是mesh决定的
+    public Vector3 LocalMeshPos;        // meshPos对应的grid local position，用于计算关卡最小y值
     bool dropedDown;
     bool rayTarget;
     public bool falling;
@@ -84,7 +83,6 @@ public class ball : MonoBehaviour
     void Start ()
     {
         rabbit = GameObject.Find ("Rabbit").gameObject.GetComponent<Animation> ();
-        meshPos = new Vector3 (-1000, -1000, -10);
         //  sprite = GetComponent<OTSprite>();
         //sprite.passive = true;
         //	sprite.onCollision = OnCollision;
@@ -94,11 +92,9 @@ public class ball : MonoBehaviour
         // Add the custom tile action controller to this tile
         //      sprite.AddController(new MyActions(this));  
 
-        bottomBorder = Camera.main.GetComponent<mainscript> ().bottomBorder;
         topBorder = Camera.main.GetComponent<mainscript> ().topBorder;
         leftBorder = Camera.main.GetComponent<mainscript> ().leftBorder;
         rightBorder = Camera.main.GetComponent<mainscript> ().rightBorder;
-        gameOverBorder = Camera.main.GetComponent<mainscript> ().gameOverBorder;
         gameOver = Camera.main.GetComponent<mainscript> ().gameOver;
         isPaused = Camera.main.GetComponent<mainscript> ().isPaused;
         dropedDown = Camera.main.GetComponent<mainscript> ().dropingDown;
@@ -175,6 +171,16 @@ public class ball : MonoBehaviour
             DestroySingle (gameObject, 0.00001f);
             mainscript.Instance.checkBall = gameObject;
         }
+    }
+
+    public void ConnectToGrid(Grid grid)
+    {
+        grid.Busy = this.gameObject;
+        meshPos = grid.gameObject.transform.position;
+        LocalMeshPos = grid.gameObject.transform.localPosition;
+        GetComponent<bouncer> ().offset = grid.offset;
+
+        mainscript.Instance.UpdateLocalMinYFromSingleBall(this);
     }
 
     bool ClickOnGUI (Vector3 mousePos)
@@ -260,7 +266,8 @@ public class ball : MonoBehaviour
     public void changeNearestColor ()
     {
         GameObject gm = GameObject.Find ("Creator");
-        Collider2D[] fixedBalls = Physics2D.OverlapCircleAll (transform.position, 0.5f, 1 << 9);
+        int ballLayer = LayerMask.NameToLayer("Ball");
+        Collider2D[] fixedBalls = Physics2D.OverlapCircleAll (transform.position, 0.5f, 1 << ballLayer);
         foreach (Collider2D obj in fixedBalls) {
             gm.GetComponent<creatorBall> ().createBall (obj.transform.position);
             Destroy (obj.gameObject);
@@ -462,11 +469,7 @@ public class ball : MonoBehaviour
                 else if (obj1.gameObject.GetComponent<Grid> ().Busy == null) {
                     findMesh = false;
                     stopedBall = true;
-                    // 这里判断y只是因为一开始y给了一个很大的负值，表示还从来没赋过值
-                    if (meshPos.y <= obj1.gameObject.transform.position.y) {
-                        meshPos = obj1.gameObject.transform.position;
-                        busyMesh = obj1.gameObject;
-                    }
+                    ConnectToGrid(obj1.gameObject.GetComponent<Grid>());
                 }
             }
             if (findMesh) {
@@ -477,26 +480,11 @@ public class ball : MonoBehaviour
                     else if (obj.gameObject.GetComponent<Grid> ().Busy == null) {
                         findMesh = false;
                         stopedBall = true;
-
-
-                        if (meshPos.y <= obj.gameObject.transform.position.y) {
-                            meshPos = obj.gameObject.transform.position;
-                            busyMesh = obj.gameObject;
-                        }
-
-                        //yield return new WaitForSeconds(1f/10f);
+                        ConnectToGrid(obj.gameObject.GetComponent<Grid>());
                     }
                 }
             }
 				
-            // 当前ball找到一个最近的ball，并将该ball的grid component的Busy设置成自己
-            if (busyMesh != null) {
-                busyMesh.GetComponent<Grid> ().Busy = gameObject;
-                gameObject.GetComponent<bouncer> ().offset = busyMesh.GetComponent<Grid> ().offset;
-                if (LevelData.mode == ModeGame.Rounded)
-                    LockLevelRounded.Instance.Rotate (target, transform.position);
-
-            }
             transform.parent = Meshes.transform;
             // 删掉RigidBody2D，彻底让mesh接管运动
             Destroy (GetComponent<Rigidbody2D> ());
@@ -513,7 +501,8 @@ public class ball : MonoBehaviour
         mainscript.Instance.connectNearBallsGlobal ();
         //   FindLight( gameObject );
 
-        if (busyMesh != null) {
+        if (!findMesh)
+        {
             Hashtable animTable = mainscript.Instance.animTable;
             animTable.Clear ();
             // start hit animation
@@ -645,6 +634,7 @@ public class ball : MonoBehaviour
             //当一个ball作为发射ball的时候，ball script是enabled的
             //一旦它碰到了其它ball（stopBall设成true），那么这个ball script就会被disable
             //所以判断一个ball script是不是enabled，就能知道这是不是个固定的ball
+            // 注意script被disable之后，其变量仍然可用，函数依然可调用，只是callback不起作用了
             if (!other.gameObject.GetComponent<ball> ().enabled) {
                 if ((other.gameObject.tag == "black_hole") && GamePlay.Instance.GameStatus == GameState.Playing) {
                     SoundBase.Instance.GetComponent<AudioSource> ().PlayOneShot (SoundBase.Instance.black_hole);
@@ -761,40 +751,27 @@ public class ball : MonoBehaviour
 
     void triggerEnter ()
     {
-
-        // check if we collided with a bottom block and adjust our speed and rotation accordingly
-        if (transform.position.y <= bottomBorder && target.y < 0) {
-            growUp ();
-            StopBall (false);
-            //target = new Vector2( target.x, target.y * -1 );
-        } else {
-
-            //// check if we collided with a left block and adjust our speed and rotation accordingly
-            if (transform.position.x <= leftBorder && target.x < 0 && !touchedSide && fireBall) {
-                //  touchedSide = true;
-                Invoke ("CanceltouchedSide", 0.1f);
-                target = new Vector2 (target.x * -1, target.y);
-                GetComponent<Rigidbody2D> ().velocity = new Vector2 (GetComponent<Rigidbody2D> ().velocity.x * -1, GetComponent<Rigidbody2D> ().velocity.y);
-            }
-            // check if we collided with a right block and adjust our speed and rotation accordingly
-            if (transform.position.x >= rightBorder && target.x > 0 && !touchedSide && fireBall) {
-                //  touchedSide = true;
-                Invoke ("CanceltouchedSide", 0.1f);
-                target = new Vector2 (target.x * -1, target.y);
-                GetComponent<Rigidbody2D> ().velocity = new Vector2 (GetComponent<Rigidbody2D> ().velocity.x * -1, GetComponent<Rigidbody2D> ().velocity.y);
-            }
-//             check if we collided with a right block and adjust our speed and rotation accordingly
-            if (transform.position.y >= topBorder && target.y > 0 && LevelData.mode == ModeGame.Rounded && !touchedTop) {
-                touchedTop = true;
-                // target = new Vector2( target.x, -target.y );
-                GetComponent<Rigidbody2D> ().velocity = new Vector2 (GetComponent<Rigidbody2D> ().velocity.x, GetComponent<Rigidbody2D> ().velocity.y * -1);
-                //         print( target.y );
-            }
-
+        //// check if we collided with a left block and adjust our speed and rotation accordingly
+        if (transform.position.x <= leftBorder && target.x < 0 && !touchedSide && fireBall) {
+            //  touchedSide = true;
+            Invoke ("CanceltouchedSide", 0.1f);
+            target = new Vector2 (target.x * -1, target.y);
+            GetComponent<Rigidbody2D> ().velocity = new Vector2 (GetComponent<Rigidbody2D> ().velocity.x * -1, GetComponent<Rigidbody2D> ().velocity.y);
         }
-
-
-
+        // check if we collided with a right block and adjust our speed and rotation accordingly
+        if (transform.position.x >= rightBorder && target.x > 0 && !touchedSide && fireBall) {
+            //  touchedSide = true;
+            Invoke ("CanceltouchedSide", 0.1f);
+            target = new Vector2 (target.x * -1, target.y);
+            GetComponent<Rigidbody2D> ().velocity = new Vector2 (GetComponent<Rigidbody2D> ().velocity.x * -1, GetComponent<Rigidbody2D> ().velocity.y);
+        }
+//             check if we collided with a right block and adjust our speed and rotation accordingly
+        if (transform.position.y >= topBorder && target.y > 0 && LevelData.mode == ModeGame.Rounded && !touchedTop) {
+            touchedTop = true;
+            // target = new Vector2( target.x, -target.y );
+            GetComponent<Rigidbody2D> ().velocity = new Vector2 (GetComponent<Rigidbody2D> ().velocity.x, GetComponent<Rigidbody2D> ().velocity.y * -1);
+            //         print( target.y );
+        }
     }
 
     void CanceltouchedSide ()
@@ -848,6 +825,7 @@ public class ball : MonoBehaviour
         }
         mainscript.Instance.PopupScore (scoreCounter, transform.position);
         //   StartCoroutine( mainscript.Instance.destroyAloneBall() );
+        mainscript.Instance.UpdateLocalMinYFromAllFixedBalls();
 
     }
 

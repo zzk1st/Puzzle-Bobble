@@ -13,13 +13,11 @@ public class bouncer : MonoBehaviour
     //	private OTSpriteBatch spriteBatch = null;  
     GameObject Meshes;
     public int countNEarBalls;
-    float gameOverBorder;
 
     // Use this for initialization
     void Start()
     {
         isPaused = Camera.main.GetComponent<mainscript>().isPaused;
-        gameOverBorder = Camera.main.GetComponent<mainscript>().gameOverBorder;
         targetPrepare = transform.position;
     }
 

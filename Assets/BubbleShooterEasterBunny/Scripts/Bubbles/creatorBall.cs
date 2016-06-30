@@ -11,6 +11,7 @@ public class creatorBall : MonoBehaviour
     public GameObject ball_ld;
     public GameObject thePrefab;        // box
     public float InitialMoveUpSpeed;
+    public float BallColliderRadius;
     GameObject ball;
     string[] ballsForCatapult = new string[11];
     string[] ballsForMatrix = new string[11];
@@ -53,7 +54,7 @@ public class creatorBall : MonoBehaviour
         createMesh();
         LoadMap( LevelData.map );
         Camera.main.GetComponent<mainscript>().connectNearBallsGlobal();
-        StartCoroutine( getBallsForMesh() );
+        StartCoroutine( connectAllBallsToMeshes() );
     }
 
     public void LoadLevel()
@@ -283,18 +284,23 @@ public class creatorBall : MonoBehaviour
         throw new System.NotImplementedException();
     }
 
-    IEnumerator getBallsForMesh()
+    // 该函数用来遍历每个grid，寻找其对应位置的fixed ball，然后将两者connect起来
+    public IEnumerator connectAllBallsToMeshes()
     {
         GameObject[] meshes = GameObject.FindGameObjectsWithTag( "Mesh" );
-        foreach( GameObject obj1 in meshes )
+        int ballLayer = LayerMask.NameToLayer("Ball");
+        foreach( GameObject mesh in meshes )
         {
-            Collider2D[] fixedBalls = Physics2D.OverlapCircleAll( obj1.transform.position, 0.2f, 1 << 9 );  //balls
-            foreach( Collider2D obj in fixedBalls )
+            Vector2 meshPos = mesh.transform.position;
+            Collider2D[] fixedBalls = Physics2D.OverlapCircleAll( meshPos, 0.2f, 1 << ballLayer);
+            foreach( Collider2D fixedBall in fixedBalls )
             {
-                obj1.GetComponent<Grid>().Busy = obj.gameObject;
-                //	obj.GetComponent<bouncer>().offset = obj1.GetComponent<Grid>().offset;
+                fixedBall.gameObject.GetComponent<ball>().ConnectToGrid(mesh.GetComponent<Grid>());
             }
         }
+
+        mainscript.Instance.UpdateLocalMinYFromAllFixedBalls();
+        // 这是干什么用的？
         yield return new WaitForSeconds( 0.5f );
     }
 
@@ -316,7 +322,6 @@ public class creatorBall : MonoBehaviour
     public void createRow( int j )
     {
         float offset = 0;
-        GameObject gm = GameObject.Find( "Creator" );
         for( int i = 0; i < columns; i++ )
         {
             if( j % 2 == 0 ) offset = 0; else offset = offsetStep;
@@ -353,13 +358,8 @@ public class creatorBall : MonoBehaviour
 
         b = Instantiate( ball, transform.position, transform.rotation ) as GameObject;
         b.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
-        // b.transform.Rotate( new Vector3( 0f, 180f, 0f ) );
+        b.GetComponent<CircleCollider2D>().radius = BallColliderRadius;
         b.GetComponent<ColorBallScript>().SetColor( color );
-		// 只有当不是newball的时候，parent才设置成meshes，newball的parent随后会在stopball里设置
-        if (!newball)
-        {
-            b.transform.parent = Meshes.transform;
-        }
 
         b.tag = "" + color;
 
@@ -379,11 +379,12 @@ public class creatorBall : MonoBehaviour
         }
         else
         {
+            // 只有当不是newball的时候，parent才设置成meshes，newball的parent随后会在stopball里设置
+            b.transform.parent = Meshes.transform;
             b.GetComponent<ball>().enabled = false;
-            if( LevelData.mode == ModeGame.Vertical && row == 0 )
-                b.GetComponent<ball>().isTarget = true;
             b.GetComponent<CircleCollider2D>().offset = Vector2.zero;
         }
+
         return b.gameObject;
     }
 
@@ -400,6 +401,7 @@ public class creatorBall : MonoBehaviour
         b2.GetComponent<Animation>().Play( "cat_idle" );
         b2.GetComponent<SpriteRenderer>().sortingOrder = 20;
         b2.GetComponent<CircleCollider2D>().offset = Vector2.zero;
+        b2.GetComponent<CircleCollider2D>().radius = BallColliderRadius;
 
     }
 

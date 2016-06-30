@@ -43,6 +43,7 @@ public class mainscript : MonoBehaviour {
 	float waitTime = 0f;
 	int revertButterFly = 1;
     private static int score;
+    private float curFixedBallLocalMinY; // 当前所有fixed balls的最小y值，用来测试关卡是否过线
 
     public static int Score
     {
@@ -61,19 +62,14 @@ public class mainscript : MonoBehaviour {
 	const int STAGE_9 = 8500;
 	public int arraycounter = 0;
 	public ArrayList controlArray = new ArrayList();
-	bool destringAloneBall;
 	public bool dropingDown;
-	public float dropDownTime = 0f;
 	public bool isPaused;
 	public bool noSound;
 	public bool gameOver;
 	public bool arcadeMode;
-	public float bottomBorder;
 	public float topBorder;
 	public float leftBorder;
 	public float rightBorder;
-	public float gameOverBorder;
-	public float ArcadedropDownTime;
 	public bool hd;
 	public GameObject Fade;
 	public int highScore;
@@ -97,7 +93,6 @@ public class mainscript : MonoBehaviour {
 
     public creatorBall creatorBall;
 
-    public GameObject GameOverBorderObject;
     public GameObject TopBorder;
     public Transform Balls;
     public Hashtable animTable = new Hashtable();
@@ -169,6 +164,8 @@ public class mainscript : MonoBehaviour {
     private LIMIT limitType;
     private int limit;
     private int colorLimit;
+    private GameObject bottomBorder;
+    private GameObject meshes;
 
     //	public int[][] meshMatrix = new int[15][17];
     // Use this for initialization
@@ -187,10 +184,9 @@ public class mainscript : MonoBehaviour {
 			//arcadeMode = true;
 		}
 
-
         creatorBall = GameObject.Find("Creator").GetComponent<creatorBall>();
-
-       // StartCoroutine( ShowArrows() );
+        bottomBorder = GameObject.Find("BottomBorder");
+        meshes = GameObject.Find("-Meshes");
 
 		StartCoroutine( CheckColors());
 
@@ -265,8 +261,38 @@ public class mainscript : MonoBehaviour {
         //		GameObject.Find("GUIHighscore").GetComponent<GUIText>().text = "High Score: " + highScore+"";
     }
 	
+    void ConnectAndDestroyBalls()
+    {
+        // 游戏中最重要的算法部分：检测ball是否连上，销毁，以及判断是否有其它drop的balls
+        // checkBall在ball.cs中被赋值，当ball停住的时候，就说明需要判断连接了，这个值也就被设定了
+        if( checkBall != null &&( GamePlay.Instance.GameStatus == GameState.Playing || GamePlay.Instance.GameStatus == GameState.WaitForChicken ))
+        {
+            // 找到同色的ball并将其销毁
+            checkBall.GetComponent<ball>().checkNearestColor();
+            Destroy(checkBall.GetComponent<Rigidbody>());
+            LevelData.LimitAmount--;
+            checkBall = null;
+            //connectNearBallsGlobal();
+            int missCount = 1;
+            if(stage >= 3) missCount = 2;
+            if(stage >= 9) missCount = 1;
+            //Invoke("destroyAloneBall", 0.5f);
+            StartCoroutine( destroyAloneBall() );
+
+            if(!arcadeMode){
+                if (bounceCounter >= missCount)
+                {
+                    bounceCounter = 0;
+                    //Invoke("dropUp", 0.1f);
+                }
+            }
+        }
+    }
+
 	// Update is called once per frame
 	void Update () {
+        CheckLosing();
+
 		if(noSound)
 			GetComponent<AudioSource>().volume = 0;
 		if(!noSound)
@@ -294,68 +320,7 @@ public class mainscript : MonoBehaviour {
          //   return;
         }
 
-
-
-		// 游戏中最重要的算法部分：检测ball是否连上，销毁，以及判断是否有其它drop的balls
-		// checkBall在ball.cs中被赋值，当ball停住的时候，就说明需要判断连接了，这个值也就被设定了
-        if( checkBall != null &&( GamePlay.Instance.GameStatus == GameState.Playing || GamePlay.Instance.GameStatus == GameState.WaitForChicken ))
-        {
-			// 找到同色的ball并将其销毁
-			checkBall.GetComponent<ball>().checkNearestColor();
-			Destroy(checkBall.GetComponent<Rigidbody>());
-            LevelData.LimitAmount--;
-			checkBall = null;
-			//connectNearBallsGlobal();
-			int missCount = 1;
-			if(stage >= 3) missCount = 2;
-			if(stage >= 9) missCount = 1;
-			//Invoke("destroyAloneBall", 0.5f);
-            StartCoroutine( destroyAloneBall() );
-
-			if(!arcadeMode){
-		        if (bounceCounter >= missCount)
-		        {
-		            bounceCounter = 0;
-					dropDownTime = Time.time + 0.5f;
-					//Invoke("dropUp", 0.1f);
-		        }
-		        else
-		        {
-		            if (!destringAloneBall && !dropingDown)
-		            {
-		                //connectNearBallsGlobal();
-		                destringAloneBall = true;
-						//StartCoroutine(destroyAloneBall());
-					//	dropingDown = true;
-		
-		            }
-		        }
-			}
-//			if(stage > 0){
-//				revertButterFly *=-1;
-//				Invoke("startButterfly",Random.Range(1,3));
-//			}
-
-	//		createBall();
-		}
-
-        if( arcadeMode && Time.time > ArcadedropDownTime && GamePlay.Instance.GameStatus == GameState.Playing )
-        {
-		            bounceCounter = 0;
-					ArcadedropDownTime = Time.time + 10f;
-					dropDownTime = Time.time + 0.2f;
-					dropDown();
-		}
-
-
-		
-	 	if (Time.time > dropDownTime && dropDownTime != 0f)
-	    {
-		//	dropingDown = false;
-			CheckLosing();
-			dropDownTime = 0;
-			StartCoroutine(getBallsForMesh());
-	    }
+        ConnectAndDestroyBalls();
 
         if( LevelData.mode == ModeGame.Vertical && TargetCounter >= 6 && GamePlay.Instance.GameStatus == GameState.Playing )
         {
@@ -400,21 +365,18 @@ public class mainscript : MonoBehaviour {
         
 	}
 
-	public void CheckLosing(){
-		fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
-		foreach(GameObject obj in fixedBalls) {
-			if(obj.layer == 9){
-                //if(transform.position.y <= gameOverBorder  ){
-                //    if(!mainscript.ElectricBoost)
-                //        Camera.main.GetComponent<mainscript>().gameOver = true;
-                //    else
-                //    {
-                //        mainscript.Instance.BurnRows(3);
-                //    }
-                //}
-			}
-		}
-	}
+	public void CheckLosing()
+    {
+        if (GamePlay.Instance.GameStatus == GameState.Playing)
+        {
+            float stageMinYWorldSpace = meshes.transform.position.y + curFixedBallLocalMinY - creatorBall.BallColliderRadius;
+            if (stageMinYWorldSpace < bottomBorder.transform.position.y)
+            {
+                // TODO: 如何结束游戏？
+                GamePlay.Instance.GameStatus = GameState.GameOver;
+            }
+        }
+    }
 
 	IEnumerator startBonusLiana(){
 		while(true){
@@ -440,22 +402,8 @@ public class mainscript : MonoBehaviour {
 
 	}
 	
-	IEnumerator getBallsForMesh(){
-		GameObject[] meshes = GameObject.FindGameObjectsWithTag("Mesh");
-		foreach(GameObject obj1 in meshes) {    											
-			Collider2D[] fixedBalls = Physics2D.OverlapCircleAll(obj1.transform.position, 0.1f, 1<<9);  //balls
-			foreach(Collider2D obj in fixedBalls) {
-				obj1.GetComponent<Grid>().Busy = obj.gameObject;
-				obj.GetComponent<bouncer>().offset = obj1.GetComponent<Grid>().offset;
-			}
-		}
-		yield return new WaitForSeconds(0.2f);
-	}
-
-	
 	public GameObject createFirstBall(Vector3 vector3){
-		GameObject gm = GameObject.Find ("Creator");
-		return gm.GetComponent<creatorBall>().createBall(vector3, BallColor.random, true);
+        return creatorBall.createBall(vector3, BallColor.random, true);
 	}
 	
 	public void connectNearBallsGlobal(){
@@ -475,8 +423,8 @@ public class mainscript : MonoBehaviour {
         {
             creatorBall.AddMesh();
             dropingDown = true;
-            GameObject Meshes = GameObject.Find("-Meshes");
-            iTween.MoveAdd(Meshes, iTween.Hash("y", 0.5f, "time", 0.3, "easetype", iTween.EaseType.linear, "onComplete", "OnMoveFinished"));
+            GameObject meshes = GameObject.Find("-Meshes");
+            iTween.MoveAdd(meshes, iTween.Hash("y", 0.5f, "time", 0.3, "easetype", iTween.EaseType.linear, "onComplete", "OnMoveFinished"));
 
         }
   
@@ -495,8 +443,7 @@ public class mainscript : MonoBehaviour {
 			if(obj.layer == 9)
 				obj.GetComponent<bouncer>().dropDown();
 		}
-		GameObject gm = GameObject.Find ("Creator");
-		gm.GetComponent<creatorBall>().createRow(0);
+        creatorBall.createRow(0);
 	//	Invoke("destroyAloneBall", 1f);
 	//	destroyAloneBall();
 	}
@@ -525,7 +472,6 @@ public class mainscript : MonoBehaviour {
 			connectNearBallsGlobal();
 			i=0;
             int willDestroy = 0;
-			destringAloneBall = true;
 			Camera.main.GetComponent<mainscript>().arraycounter = 0;
 			GameObject[] fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];			// detect alone balls
 			Camera.main.GetComponent<mainscript>().controlArray.Clear();
@@ -552,9 +498,8 @@ public class mainscript : MonoBehaviour {
 					}	
 				}
 			}
-			destringAloneBall = false;
 		// 和mesh有关的似乎都和弹力有关系，目前不用管
-		StartCoroutine(getBallsForMesh());
+		StartCoroutine(creatorBall.connectAllBallsToMeshes());
 		dropingDown = false;
         //if( willDestroy > 0)
         //    yield return new WaitForSeconds( 0.5f );
@@ -703,7 +648,7 @@ public class mainscript : MonoBehaviour {
 		Camera.main.GetComponent<mainscript>().bounceCounter = 0;
 	//	obj.GetComponent<OTSprite>().collidable = false;
 	//	Destroy(obj);
-		obj.GetComponent<ball>().Destroyed = true;
+        obj.GetComponent<ball>().Destroyed = true;
 		obj.GetComponent<ball>().growUp();
 		Camera.main.GetComponent<mainscript>().explode(obj.gameObject);
 	//	Score.Instance.addScore( 3);
@@ -724,7 +669,7 @@ public class mainscript : MonoBehaviour {
 		foreach(GameObject obj in b) {
 //			obj.GetComponent<OTSprite>().collidable = false;
 			if(obj.name.IndexOf("ball")==0) obj.layer = 0;
-			if(!obj.GetComponent<ball>().Destroyed){
+            if(!obj.GetComponent<ball>().Destroyed){
                 //if(soundPool<5)
                 //    obj.GetComponent<ball>().growUpPlaySound();
                 //else
@@ -743,9 +688,32 @@ public class mainscript : MonoBehaviour {
 			}
 		}
         CheckFreeChicken();
+        UpdateLocalMinYFromAllFixedBalls();
 	//	Score.Instance.addScore( scoreCounter);
 
 	}
+
+    public void UpdateLocalMinYFromSingleBall(ball fixedBall)
+    {
+        // 我们在这用localMeshPos而不用localPosition, 因为我们在coroutine里，localPosition可能因为动画改变，而localMeshPos更稳定
+        if (!fixedBall.Destroyed && fixedBall.LocalMeshPos.y < curFixedBallLocalMinY)
+        {
+            curFixedBallLocalMinY = fixedBall.LocalMeshPos.y;
+        }
+    }
+
+    public void UpdateLocalMinYFromAllFixedBalls()
+    {
+        curFixedBallLocalMinY = 9999f;
+        GameObject fixedBalls = GameObject.Find( "-Ball" );
+
+        foreach( Transform item in fixedBalls.transform )
+        {
+            ball fixedBall = item.gameObject.GetComponent<ball>();
+            UpdateLocalMinYFromSingleBall(fixedBall);
+        }
+        //Debug.Log(string.Format("MinY recalculated! MinY={0}", curFixedBallLocalMinY));
+    }
 
     // 交换两个即将fire的ball
 	public void ChangeBoost(){
