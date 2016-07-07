@@ -222,8 +222,6 @@ namespace InitScriptName
             InitScript.Instance.BoostActivated = true;
             if (boostType != BoostType.FiveBallsBoost)
                 mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy.GetComponent<ball>().SetBoost(boostType);
-            else
-                LevelData.LimitAmount += 5;
             PlayerPrefs.SetInt("" + boostType, PlayerPrefs.GetInt("" + boostType) - 1);
             PlayerPrefs.Save();
             ReloadBoosts();

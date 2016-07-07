@@ -107,16 +107,6 @@ public class ball : MonoBehaviour
 
     }
 
-    public void PushBallAFterWin ()
-    {
-        GetComponent<CircleCollider2D> ().offset = Vector2.zero;
-
-        setTarget = true;
-        startTime = Time.time;
-        target = Vector3.zero;
-        Invoke ("StartFall", 0.4f);
-    }
-
     // Update is called once per frame
     void Update ()
     {

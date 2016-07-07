@@ -104,8 +104,7 @@ public class creatorBall : MonoBehaviour
                 string blocksString = line.Replace("LIMIT", string.Empty).Trim();
                 string[] sizes = blocksString.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
                 limitType = (LIMIT)int.Parse(sizes[0]);
-                LevelData.LimitAmount = int.Parse(sizes[1]);
-
+                // 注意：sizes[1]本来是用于限制每关球数量，我们取消了
             }
             else if (line.StartsWith("COLOR LIMIT "))
             {

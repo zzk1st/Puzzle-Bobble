@@ -76,10 +76,7 @@ public class GamePlay : MonoBehaviour {
         if(Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
         {
             if( Input.GetKey( KeyCode.W ) ) GamePlay.Instance.GameStatus = GameState.Win;
-            if( Input.GetKey( KeyCode.L ) ) { LevelData.LimitAmount = 0; GamePlay.Instance.GameStatus = GameState.GameOver; }
             if( Input.GetKey( KeyCode.D ) ) mainscript.Instance.destroyAllballs() ;
-            if( Input.GetKey( KeyCode.M ) ) LevelData.LimitAmount = 1;
-
         }
     }
 	
@@ -119,20 +116,6 @@ public class GamePlay : MonoBehaviour {
             item.StartFall();
         }
 
-        while( LevelData.LimitAmount > 0 )
-        {
-            if( mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy != null )
-            {
-                LevelData.LimitAmount--;
-                ball ball = mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy.GetComponent<ball>();
-                mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy = null;
-                ball.transform.parent = mainscript.Instance.Balls;
-                ball.tag = "Ball";
-                ball.PushBallAFterWin();
-
-            }
-            yield return new WaitForEndOfFrame();
-        }
         foreach( ball item in balls )
         {
             if(item != null)
@@ -196,8 +179,6 @@ public class GamePlay : MonoBehaviour {
         GameObject.Find( "Canvas" ).transform.Find( "OutOfMoves" ).gameObject.SetActive( true );
         yield return new WaitForSeconds( 1.5f );
         GameObject.Find( "Canvas" ).transform.Find( "OutOfMoves" ).gameObject.SetActive( false );
-        if(LevelData.LimitAmount <= 0)
-            GameObject.Find( "Canvas" ).transform.Find( "MenuPreGameOver" ).gameObject.SetActive( true );
         yield return new WaitForSeconds( 0.1f );
 
     }

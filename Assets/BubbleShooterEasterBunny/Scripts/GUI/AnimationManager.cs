@@ -167,7 +167,6 @@ public class AnimationManager : MonoBehaviour
             if( InitScript.Gems >= 12 )
             {
                 InitScript.Instance.SpendGems( 12 );
-                LevelData.LimitAmount += 12;
                 GamePlay.Instance.GameStatus = GameState.WaitAfterClose;
                 gameObject.SetActive( false );
 

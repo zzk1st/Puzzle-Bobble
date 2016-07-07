@@ -65,7 +65,7 @@ public class Grid : MonoBehaviour
             }
             else if( name == "boxSecond" && !Grid.waitForAnim )
             {
-                if( ( GamePlay.Instance.GameStatus == GameState.Playing || GamePlay.Instance.GameStatus == GameState.Win || GamePlay.Instance.GameStatus == GameState.WaitForChicken ) && LevelData.LimitAmount > 0 )
+                if(( GamePlay.Instance.GameStatus == GameState.Playing || GamePlay.Instance.GameStatus == GameState.Win || GamePlay.Instance.GameStatus == GameState.WaitForChicken ))
                 {
                     busy = Camera.main.GetComponent<mainscript>().createFirstBall( transform.position );
 

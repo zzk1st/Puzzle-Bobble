@@ -270,7 +270,6 @@ public class mainscript : MonoBehaviour {
             // 找到同色的ball并将其销毁
             checkBall.GetComponent<ball>().checkNearestColor();
             Destroy(checkBall.GetComponent<Rigidbody>());
-            LevelData.LimitAmount--;
             checkBall = null;
             //connectNearBallsGlobal();
             int missCount = 1;
@@ -331,10 +330,6 @@ public class mainscript : MonoBehaviour {
         else if( LevelData.mode == ModeGame.Animals && TargetCounter >= TotalTargets && GamePlay.Instance.GameStatus == GameState.Playing )
             GamePlay.Instance.GameStatus = GameState.Win;
 
-        else if( LevelData.LimitAmount <= 0 && GamePlay.Instance.GameStatus == GameState.Playing && newBall == null )
-        {
-            GamePlay.Instance.GameStatus = GameState.GameOver;
-        }
         ProgressBarScript.Instance.UpdateDisplay( (float)score * 100f / ( (float)LevelData.star1 / ( ( LevelData.star1 * 100f / LevelData.star3 ) ) * 100f ) / 100f );
 
         if( score >= LevelData.star1 && stars <= 0 )
