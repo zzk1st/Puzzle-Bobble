@@ -27,6 +27,7 @@ TagManager:
   - cloud
   - light
   - black_hole
+  - dir_indicator
   layers:
   - Default
   - TransparentFX
