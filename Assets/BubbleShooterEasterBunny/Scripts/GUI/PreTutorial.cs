@@ -9,14 +9,17 @@ public class PreTutorial : MonoBehaviour {
 	void Start () {
         GetComponent<Image>().sprite = pictures[(int)LevelData.mode];
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.swish[0] );
-
 	}
 	
-	// Update is called once per frame
+    // 注意此函数在动画结束被调用了！
 	public void  Stop() {
+        
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.swish[1] );
 
         GamePlay.Instance.GameStatus = GameState.Tutorial;
         gameObject.SetActive( false );
+
+        mainscript.Instance.ballShooter.Initialize();
+
 	}
 }

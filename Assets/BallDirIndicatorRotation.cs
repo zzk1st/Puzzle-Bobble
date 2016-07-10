@@ -16,6 +16,8 @@ public class BallDirIndicatorRotation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // 这是啥？
+        /*
         if (mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy != null)
         {
             col = mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy.GetComponent<SpriteRenderer>().sprite.texture.GetPixelBilinear(0.1f, 0.6f);
@@ -27,5 +29,6 @@ public class BallDirIndicatorRotation : MonoBehaviour
 
         float rotZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, rotZ + rotationOffset);
+        */
     }
 }

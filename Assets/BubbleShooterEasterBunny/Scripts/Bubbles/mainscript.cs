@@ -77,9 +77,6 @@ public class mainscript : MonoBehaviour {
 	public AudioClip click;
 	public AudioClip levelBells;
 	float appearLevelTime;
-	public GameObject boxCatapult;
-	public GameObject boxFirst;
-	public GameObject boxSecond;
 	public GameObject ElectricLiana;
 	public GameObject BonusLiana;
 	public GameObject BonusScore;
@@ -91,13 +88,14 @@ public class mainscript : MonoBehaviour {
 
 	public GameObject BoostChanging;
 
-    public creatorBall creatorBall;
+    public CreatorBall creatorBall;
 
     public GameObject TopBorder;
     public Transform Balls;
     public Hashtable animTable = new Hashtable();
     public static Vector3 lastBall;
     public GameObject FireEffect;
+    public BallShooter ballShooter;
     public static int doubleScore=1;
     
     public int TotalTargets;
@@ -158,7 +156,6 @@ public class mainscript : MonoBehaviour {
 
     public GameObject arrows;
  	int stageTemp;
-	public GameObject newBall2;
     private int maxCols;
     private int maxRows;
     private LIMIT limitType;
@@ -184,9 +181,11 @@ public class mainscript : MonoBehaviour {
 			//arcadeMode = true;
 		}
 
-        creatorBall = GameObject.Find("Creator").GetComponent<creatorBall>();
+        creatorBall = GameObject.Find("Creator").GetComponent<CreatorBall>();
         bottomBorder = GameObject.Find("BottomBorder");
         meshes = GameObject.Find("-Meshes");
+
+        ballShooter = GameObject.Find("BallShooter").GetComponent<BallShooter>();
 
 		StartCoroutine( CheckColors());
 
@@ -268,7 +267,7 @@ public class mainscript : MonoBehaviour {
         if( checkBall != null &&( GamePlay.Instance.GameStatus == GameState.Playing || GamePlay.Instance.GameStatus == GameState.WaitForChicken ))
         {
             // 找到同色的ball并将其销毁
-            checkBall.GetComponent<ball>().checkNearestColor();
+            checkBall.GetComponent<Ball>().checkNearestColorAndDelete();
             Destroy(checkBall.GetComponent<Rigidbody>());
             checkBall = null;
             //connectNearBallsGlobal();
@@ -397,17 +396,13 @@ public class mainscript : MonoBehaviour {
 
 	}
 	
-	public GameObject createFirstBall(Vector3 vector3){
-        return creatorBall.createBall(vector3, BallColor.random, true);
-	}
-	
 	public void connectNearBallsGlobal(){
 		///connect near balls
 		fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
 		foreach(GameObject obj in fixedBalls) {
 			// layer 9就是ball
 			if(obj.layer == 9)
-				obj.GetComponent<ball>().connectNearBalls();
+				obj.GetComponent<Ball>().connectNearBalls();
 		}
 	
 	}
@@ -455,8 +450,6 @@ public class mainscript : MonoBehaviour {
 	}
 	
 	public IEnumerator destroyAloneBall(){
-        mainscript.Instance.newBall2 = null;
-
         //if( GamePlay.Instance.GameStatus == GameState.Playing )
         //    mainscript.Instance.newBall = null;
         yield return new WaitForSeconds( Mathf.Clamp( (float)countOfPreparedToDestroy / 50, 0.6f, (float)countOfPreparedToDestroy / 50 ) );
@@ -475,14 +468,14 @@ public class mainscript : MonoBehaviour {
 					if(obj.layer == 9){
 
 						if(!findInArray(Camera.main.GetComponent<mainscript>().controlArray, obj.gameObject) ){
-							if(obj.GetComponent<ball>().nearBalls.Count<7 && obj.GetComponent<ball>().nearBalls.Count>0){
+							if(obj.GetComponent<Ball>().nearBalls.Count<7 && obj.GetComponent<Ball>().nearBalls.Count>0){
 												i++;
 							//	if(i>5){ i = 0; yield return new WaitForSeconds(0.5f); yield return new WaitForSeconds(0.5f);}
 						//		if(dropingDown) yield return new WaitForSeconds(1f);
                                                 yield return new WaitForEndOfFrame();
 								ArrayList b = new ArrayList();
 								// 详见checkNearestBall的注释
-								obj.GetComponent<ball>().checkNearestBall(b);
+								obj.GetComponent<Ball>().checkNearestBall(b);
 								if(b.Count >0 ){
                                     willDestroy++;
 									// 删掉ball，并调用StartFall让ball掉落
@@ -493,7 +486,7 @@ public class mainscript : MonoBehaviour {
 					}	
 				}
 			}
-		// 和mesh有关的似乎都和弹力有关系，目前不用管
+
 		StartCoroutine(creatorBall.connectAllBallsToMeshes());
 		dropingDown = false;
         //if( willDestroy > 0)
@@ -517,7 +510,8 @@ public class mainscript : MonoBehaviour {
 
     public void SetColorsForNewBall()
     {
-
+        // TODO: 重新使用这行代码
+        /*
         GameObject ball = null;
         if( boxCatapult.GetComponent<Grid>().Busy != null && colorsDict .Count>0)
         {
@@ -528,6 +522,7 @@ public class mainscript : MonoBehaviour {
                 ball.GetComponent<ColorBallScript>().SetColor( (BallColor)mainscript.colorsDict[Random.Range( 0, mainscript.colorsDict.Count )] ); 
             }
         }
+        */
     }
 
     public void GetColorsInGame()
@@ -544,16 +539,6 @@ public class mainscript : MonoBehaviour {
                 i++;
             }
         }
-//        print( colorsDict.Count );
-        
-        //if( !colorsDict.ContainsValue( (BallColor)System.Enum.Parse( typeof( BallColor ), boxCatapult.GetComponent<Grid>().Busy.tag ) ) )
-        //{
-        //    boxCatapult.GetComponent<Grid>().Busy.GetComponent<ColorBallScript>().SetColor((BallColor) colorsDict[ Random.Range( 0, colorsDict.Count)]);
-        //}
-        //if( !colorsDict.ContainsValue( (BallColor)System.Enum.Parse( typeof( BallColor ), boxSecond.GetComponent<Grid>().Busy.tag ) ) )
-        //{
-        //    boxSecond.GetComponent<Grid>().Busy.GetComponent<ColorBallScript>().SetColor( (BallColor)colorsDict[Random.Range( 0, colorsDict.Count )] );
-        //}
     }
 
     public void CheckFreeChicken()
@@ -624,7 +609,7 @@ public class mainscript : MonoBehaviour {
     {
         foreach( Transform item in Balls )
         {
-            item.GetComponent<ball>().CheckBallCrossedBorder();
+            item.GetComponent<Ball>().CheckBallCrossedBorder();
         }
     }
 
@@ -643,8 +628,8 @@ public class mainscript : MonoBehaviour {
 		Camera.main.GetComponent<mainscript>().bounceCounter = 0;
 	//	obj.GetComponent<OTSprite>().collidable = false;
 	//	Destroy(obj);
-        obj.GetComponent<ball>().Destroyed = true;
-		obj.GetComponent<ball>().growUp();
+        obj.GetComponent<Ball>().Destroyed = true;
+		obj.GetComponent<Ball>().growUp();
 		Camera.main.GetComponent<mainscript>().explode(obj.gameObject);
 	//	Score.Instance.addScore( 3);
 
@@ -664,7 +649,7 @@ public class mainscript : MonoBehaviour {
 		foreach(GameObject obj in b) {
 //			obj.GetComponent<OTSprite>().collidable = false;
 			if(obj.name.IndexOf("ball")==0) obj.layer = 0;
-            if(!obj.GetComponent<ball>().Destroyed){
+            if(!obj.GetComponent<Ball>().Destroyed){
                 //if(soundPool<5)
                 //    obj.GetComponent<ball>().growUpPlaySound();
                 //else
@@ -676,7 +661,7 @@ public class mainscript : MonoBehaviour {
 				}
 				scoreCounter ++;
 					// 让没接上的ball都掉落
-                    obj.GetComponent<ball>().StartFall();
+                    obj.GetComponent<Ball>().StartFall();
 			//	Destroy(obj);
 			//	obj.GetComponent<ball>().destroyed = true;
 			//	Camera.main.GetComponent<mainscript>().explode(obj.gameObject);
@@ -688,7 +673,7 @@ public class mainscript : MonoBehaviour {
 
 	}
 
-    public void UpdateLocalMinYFromSingleBall(ball fixedBall)
+    public void UpdateLocalMinYFromSingleBall(Ball fixedBall)
     {
         // 我们在这用localMeshPos而不用localPosition, 因为我们在coroutine里，localPosition可能因为动画改变，而localMeshPos更稳定
         if (!fixedBall.Destroyed && fixedBall.LocalMeshPos.y < curFixedBallLocalMinY)
@@ -704,28 +689,11 @@ public class mainscript : MonoBehaviour {
 
         foreach( Transform item in fixedBalls.transform )
         {
-            ball fixedBall = item.gameObject.GetComponent<ball>();
+            Ball fixedBall = item.gameObject.GetComponent<Ball>();
             UpdateLocalMinYFromSingleBall(fixedBall);
         }
         //Debug.Log(string.Format("MinY recalculated! MinY={0}", curFixedBallLocalMinY));
     }
-
-    // 交换两个即将fire的ball
-	public void ChangeBoost(){
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.swish[0] );
-        // 这是个静态变量
-		Grid.waitForAnim = true;
-		GameObject ball1 = boxSecond.GetComponent<Grid>().Busy;
-		boxCatapult.GetComponent<Grid>().Busy.GetComponent<ball>().newBall = false;
-        // iTween是一个第三方lib，主要用来用script做animation
-		iTween.MoveTo(boxSecond.GetComponent<Grid>().Busy,iTween.Hash("position", boxCatapult.transform.position, "time",0.3 , "easetype",iTween.EaseType.linear,"onComplete","newBall"));
-		iTween.MoveTo(boxCatapult.GetComponent<Grid>().Busy,iTween.Hash("position", boxSecond.transform.position, "time",0.3 , "easetype",iTween.EaseType.linear));
-		boxSecond.GetComponent<Grid>().Busy = boxCatapult.GetComponent<Grid>().Busy;
-		boxCatapult.GetComponent<Grid>().Busy = ball1;
-//		boxFirst.GetComponent<Grid>().Busy = boxSecond.GetComponent<Grid>().Busy;
-		//boxCatapult.GetComponent<Grid>().BounceFrom(boxFirst);
-	}
-
 
     public void destroyAllballs()
     {
@@ -739,8 +707,6 @@ public class mainscript : MonoBehaviour {
         }
             CheckFreeChicken();
     }
-
-
 }
 
 

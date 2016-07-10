@@ -358,14 +358,6 @@ public class AnimationManager : MonoBehaviour
 
     }
 
-    public void Info()
-    {
-        if( Application.loadedLevelName == "map" || Application.loadedLevelName == "menu" )
-            GameObject.Find( "Canvas" ).transform.Find( "Tutorial" ).gameObject.SetActive( true );
-        else
-            GameObject.Find( "Canvas" ).transform.Find( "PreTutorial" ).gameObject.SetActive( true );
-    }
-
     public void Quit()
     {
         if( Application.loadedLevelName == "game" )

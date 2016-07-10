@@ -126,7 +126,7 @@ public class LevelData
                     //if (!colorsDict.ContainsValue((BallColor)mapValue) && mapValue != 9)
                     //    colorsDict.Add(key++, (BallColor)mapValue);
 
-                    map[mapLine * creatorBall.columns + i] = value;
+                    map[mapLine * CreatorBall.columns + i] = value;
                 }
                 mapLine++;
             }
@@ -155,11 +155,11 @@ public class LevelData
 
         BallColor exceptedColor = BallColor.violet;
 
-        for (int i = 0; i < creatorBall.rows; i++)
+        for (int i = 0; i < CreatorBall.rows; i++)
         {
-            for (int j = 0; j < creatorBall.columns; j++)
+            for (int j = 0; j < CreatorBall.columns; j++)
             {
-                XmlElement element = (XmlElement)elemList[i * creatorBall.columns + j];
+                XmlElement element = (XmlElement)elemList[i * CreatorBall.columns + j];
                 int value = int.Parse(element.GetAttribute("gid"));
 
                 if (!colorsDict.ContainsValue((BallColor)value) && value > 0 && value < (int)BallColor.random)
@@ -169,7 +169,7 @@ public class LevelData
 
                 }
 
-                map[i * creatorBall.columns + j] = value;
+                map[i * CreatorBall.columns + j] = value;
             }
 
         }

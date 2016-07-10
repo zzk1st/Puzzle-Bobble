@@ -42,11 +42,11 @@ public class DrawLine : MonoBehaviour
 
     private void GeneratePositionsPoints()
     {
-        if (mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy != null)
-        {
-            col = mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy.GetComponent<SpriteRenderer>().sprite.texture.GetPixelBilinear(0.6f, 0.6f);
-            col.a = 1;
-        }
+        //if (mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy != null)
+        //{
+        //    col = mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy.GetComponent<SpriteRenderer>().sprite.texture.GetPixelBilinear(0.6f, 0.6f);
+        //    col.a = 1;
+        //}
 
         HidePoints();
 

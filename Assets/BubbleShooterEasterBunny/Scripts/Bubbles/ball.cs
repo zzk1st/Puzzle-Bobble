@@ -5,8 +5,19 @@ using InitScriptName;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
-public class ball : MonoBehaviour
+public class Ball : MonoBehaviour
 {
+    public enum BallState {
+        Waiting,
+        ReadyToShoot,
+        Flying,
+        Fixed,
+        Exploded,
+        Dropped
+    };
+
+    public BallState state;
+
     public float LaunchForce;
     public Sprite[] sprites;
     public Sprite[] boosts;
@@ -18,7 +29,7 @@ public class ball : MonoBehaviour
     public Vector3 target;
     Vector2 worldPos;
     Vector3 forceVect;
-    public bool setTarget;
+    public bool flying;
     public float startTime;
     float duration = 1.0f;
     public GameObject mesh;         //表示new ball发生碰撞后被attach到的mesh
@@ -27,7 +38,6 @@ public class ball : MonoBehaviour
     Vector3 dropTarget;
     float row;
     string str;
-    public bool newBall;
     float mTouchOffsetX;
     float mTouchOffsetY;
     float xOffset;
@@ -73,7 +83,6 @@ public class ball : MonoBehaviour
     private bool touchedTop;
     private bool touchedSide;
     private int fireBallLimit = 10;
-    private bool launched;
     private bool animStarted;
 
     private float ballAnimForce = 0.15f;    // 播放碰撞动画时，给每个球施加的力，力越大位移越大
@@ -92,74 +101,50 @@ public class ball : MonoBehaviour
         // Add the custom tile action controller to this tile
         //      sprite.AddController(new MyActions(this));  
 
-        topBorder = Camera.main.GetComponent<mainscript> ().topBorder;
-        leftBorder = Camera.main.GetComponent<mainscript> ().leftBorder;
-        rightBorder = Camera.main.GetComponent<mainscript> ().rightBorder;
-        gameOver = Camera.main.GetComponent<mainscript> ().gameOver;
-        isPaused = Camera.main.GetComponent<mainscript> ().isPaused;
-        dropedDown = Camera.main.GetComponent<mainscript> ().dropingDown;
+        topBorder = mainscript.Instance.topBorder;
+        leftBorder = mainscript.Instance.leftBorder;
+        rightBorder = mainscript.Instance.rightBorder;
+        gameOver = mainscript.Instance.gameOver;
+        isPaused = mainscript.Instance.isPaused;
+        dropedDown = mainscript.Instance.dropingDown;
     }
 
-    IEnumerator AllowLaunchBall ()
+    public void Fire()
     {
-        yield return new WaitForSeconds (2);
-        mainscript.StopControl = false;
-
-    }
-
-    // Update is called once per frame
-    void Update ()
-    {
-        // 发射ball
-        if (Input.GetMouseButtonUp (0))
+        GameObject ball = gameObject;
+        // ClickOnGUI检查是否单击在gui上
+        // newBall表示这是不是一个准备发射的ball
+        if (!ClickOnGUI() &&
+            state == BallState.ReadyToShoot && 
+            !mainscript.Instance.gameOver && GamePlay.Instance.GameStatus == GameState.Playing)
         {
-            GameObject ball = gameObject;
-            // ClickOnGUI检查是否单击在gui上
-            // newBall表示这是不是一个准备发射的ball
-            if (!ClickOnGUI (Input.mousePosition) && !launched && !ball.GetComponent<ball> ().setTarget && mainscript.Instance.newBall2 == null /*&& mainscript.Instance.newBall == null*/ && newBall && !Camera.main.GetComponent<mainscript> ().gameOver && (GamePlay.Instance.GameStatus == GameState.Playing || GamePlay.Instance.GameStatus == GameState.WaitForChicken)) {
-                Vector3 pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-                worldPos = pos;
-                if (worldPos.y > -1.5f && !mainscript.StopControl) {
-                    launched = true;
-                    rabbit.Play ("rabbit_move");
-                    SoundBase.Instance.GetComponent<AudioSource> ().PlayOneShot (SoundBase.Instance.swish [0]);
-                    mTouchOffsetX = (worldPos.x - ball.transform.position.x); //+ MathUtils.random(-10, 10);
-                    mTouchOffsetY = (worldPos.y - ball.transform.position.y);
-                    xOffset = (float)Mathf.Cos (Mathf.Atan2 (mTouchOffsetY, mTouchOffsetX));
-                    yOffset = (float)Mathf.Sin (Mathf.Atan2 (mTouchOffsetY, mTouchOffsetX));
-                    speed = new Vector2 (xOffset, yOffset);
-                    if (!fireBall)
-                        GetComponent<CircleCollider2D> ().enabled = true;
-                    target = worldPos;
+            Vector3 pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+            worldPos = pos;
+            if (worldPos.y > -1.5f && !mainscript.StopControl) {
+                rabbit.Play ("rabbit_move");
+                SoundBase.Instance.GetComponent<AudioSource> ().PlayOneShot (SoundBase.Instance.swish [0]);
+                mTouchOffsetX = (worldPos.x - ball.transform.position.x); //+ MathUtils.random(-10, 10);
+                mTouchOffsetY = (worldPos.y - ball.transform.position.y);
+                xOffset = (float)Mathf.Cos (Mathf.Atan2 (mTouchOffsetY, mTouchOffsetX));
+                yOffset = (float)Mathf.Sin (Mathf.Atan2 (mTouchOffsetY, mTouchOffsetX));
+                speed = new Vector2 (xOffset, yOffset);
+                if (!fireBall)
+                    GetComponent<CircleCollider2D> ().enabled = true;
+                target = worldPos;
 
-                    setTarget = true;
-                    startTime = Time.time;
-                    dropTarget = transform.position;
-                    InitScript.Instance.BoostActivated = false;
-                    mainscript.Instance.newBall = gameObject;
-                    mainscript.Instance.newBall2 = gameObject;
-                    // 取消circle collider的isTrigger, 以便触发ball和border的碰撞检测
-                    CircleCollider2D coll = GetComponent<CircleCollider2D>();
-                    coll.isTrigger = false;
-                    // 在这里给发射的ball赋予一个force，产生初速度
-                    GetComponent<Rigidbody2D> ().AddForce ((target - dropTarget).normalized * LaunchForce, ForceMode2D.Force);
+                flying = true;
+                startTime = Time.time;
+                dropTarget = transform.position;
+                InitScript.Instance.BoostActivated = false;
+                mainscript.Instance.newBall = gameObject;
+                // 取消circle collider的isTrigger, 以便触发ball和border的碰撞检测
+                CircleCollider2D coll = GetComponent<CircleCollider2D>();
+                coll.isTrigger = false;
+                // 在这里给发射的ball赋予一个force，产生初速度
+                GetComponent<Rigidbody2D> ().AddForce ((target - dropTarget).normalized * LaunchForce, ForceMode2D.Force);
 
-                    //Debug.DrawLine( DrawLine.waypoints[0], target );
-                    //Debug.Break();
-                }
+                state = BallState.Flying;
             }
-        }
-
-        // 也不知道这行干什么用的，但注释掉似乎完全不影响，似乎和fireball有关
-        if (setTarget)
-            triggerEnter ();
-
-        if ((transform.position.y <= -10 || transform.position.y >= 5) && fireBall && !Destroyed) {
-            mainscript.Instance.CheckFreeChicken ();
-            setTarget = false;
-            launched = false;
-            DestroySingle (gameObject, 0.00001f);
-            mainscript.Instance.checkBall = gameObject;
         }
     }
 
@@ -173,11 +158,18 @@ public class ball : MonoBehaviour
         mainscript.Instance.UpdateLocalMinYFromSingleBall(this);
     }
 
-    bool ClickOnGUI (Vector3 mousePos)
+    public void DisconnectFromCurrentGrid()
     {
-        UnityEngine.EventSystems.EventSystem ct
-           = UnityEngine.EventSystems.EventSystem.current;
+        if (mesh != null)
+        {
+            Grid grid = mesh.GetComponent<Grid>();
+            grid.Busy = null;
+        }
+    }
 
+    bool ClickOnGUI()
+    {
+        UnityEngine.EventSystems.EventSystem ct = UnityEngine.EventSystems.EventSystem.current;
 
         if (ct.IsPointerOverGameObject ())
             return true;
@@ -209,10 +201,10 @@ public class ball : MonoBehaviour
             transform.position = meshPos;
 
             stopedBall = false;
-            if (newBall) {
+            //if (newBall)
+            {
                 //在前边条件下，如果又是个new ball，那么就把它变成一个固定的ball
                 // disable ball script，设置layer等
-                newBall = false;
                 gameObject.layer = 9;
                 Camera.main.GetComponent<mainscript> ().checkBall = gameObject;
                 this.enabled = false;
@@ -259,7 +251,7 @@ public class ball : MonoBehaviour
         int ballLayer = LayerMask.NameToLayer("Ball");
         Collider2D[] fixedBalls = Physics2D.OverlapCircleAll (transform.position, 0.5f, 1 << ballLayer);
         foreach (Collider2D obj in fixedBalls) {
-            gm.GetComponent<creatorBall> ().createBall (obj.transform.position);
+            gm.GetComponent<CreatorBall> ().createBall (obj.transform.position);
             Destroy (obj.gameObject);
         }
 
@@ -292,7 +284,7 @@ public class ball : MonoBehaviour
         }
     }
 
-    public void checkNearestColor ()
+    public void checkNearestColorAndDelete ()
     {
         // 该方法用来查找是否有其它ball与之相连，形成三个或以上的ball，如果有则将其销毁
         int counter = 0;
@@ -341,9 +333,7 @@ public class ball : MonoBehaviour
     public void StartFall ()
     {
         enabled = false;
-
-        if (mesh != null)
-            mesh.GetComponent<Grid> ().Busy = null;
+        DisconnectFromCurrentGrid();
         if (gameObject == null)
             return;
         if (LevelData.mode == ModeGame.Vertical && isTarget) {
@@ -351,7 +341,6 @@ public class ball : MonoBehaviour
         } else if (LevelData.mode == ModeGame.Animals && isTarget) {
             StartCoroutine (FlyToTarget ());
         }
-        setTarget = false;
         transform.SetParent (null);
         gameObject.layer = 13;
         gameObject.tag = "Ball";
@@ -363,7 +352,7 @@ public class ball : MonoBehaviour
         gameObject.GetComponent<Rigidbody2D> ().velocity = gameObject.GetComponent<Rigidbody2D> ().velocity + new Vector2 (Random.Range (-2, 2), 0);
         gameObject.GetComponent<CircleCollider2D> ().enabled = true;
         gameObject.GetComponent<CircleCollider2D> ().isTrigger = false;
-        GetComponent<ball> ().falling = true;
+        GetComponent<Ball> ().falling = true;
 
     }
 
@@ -415,7 +404,7 @@ public class ball : MonoBehaviour
                         if (!findInArray (b, obj.gameObject)) {
                             //print( gameObject + " " + distTemp );
                             Camera.main.GetComponent<mainscript> ().arraycounter++;
-                            if (obj.GetComponent<ball> ().checkNearestBall (b))
+                            if (obj.GetComponent<Ball> ().checkNearestBall (b))
                                 return true;
                         }
                     }
@@ -446,32 +435,19 @@ public class ball : MonoBehaviour
     {
         //	AudioSource.PlayClipAtPoint(join, new Vector3(5, 1, 2));
         GameObject busyMesh = null;
-        float searchRadius = 0.2f;
+        float searchRadius = CreatorBall.Instance.BallColliderRadius;
         while (findMesh) {
             Vector3 centerPoint = transform.position;
             // 注意在这里，系统根据球的位置试图找到所有的collider2D，实际是在寻找与之对应的mesh
             // 只寻找layer 10的，就是全部的mesh
-            Collider2D[] fixedBalls1 = Physics2D.OverlapCircleAll (centerPoint, 0.1f, 1 << 10);
-
-            foreach (Collider2D obj1 in fixedBalls1) {
-                if (obj1.gameObject.GetComponent<Grid> () == null)
+            Collider2D[] fixedBalls = Physics2D.OverlapCircleAll (centerPoint, searchRadius, 1 << 10);  //meshes
+            foreach (Collider2D obj in fixedBalls) {
+                if (obj.gameObject.GetComponent<Grid> () == null)
                     DestroySingle (gameObject, 0.00001f);
-                else if (obj1.gameObject.GetComponent<Grid> ().Busy == null) {
+                else if (obj.gameObject.GetComponent<Grid> ().Busy == null) {
                     findMesh = false;
                     stopedBall = true;
-                    ConnectToGrid(obj1.gameObject.GetComponent<Grid>());
-                }
-            }
-            if (findMesh) {
-                Collider2D[] fixedBalls = Physics2D.OverlapCircleAll (centerPoint, searchRadius, 1 << 10);  //meshes
-                foreach (Collider2D obj in fixedBalls) {
-                    if (obj.gameObject.GetComponent<Grid> () == null)
-                        DestroySingle (gameObject, 0.00001f);
-                    else if (obj.gameObject.GetComponent<Grid> ().Busy == null) {
-                        findMesh = false;
-                        stopedBall = true;
-                        ConnectToGrid(obj.gameObject.GetComponent<Grid>());
-                    }
+                    ConnectToGrid(obj.gameObject.GetComponent<Grid>());
                 }
             }
 				
@@ -500,7 +476,7 @@ public class ball : MonoBehaviour
             // 现在的newball直接回到meshPos，太丑了
             PlayHitAnim (meshPos, animTable);
         }
-        creatorBall.Instance.OffGridColliders ();
+        CreatorBall.Instance.OffGridColliders ();
 
         yield return new WaitForSeconds (0.5f);
 
@@ -515,7 +491,7 @@ public class ball : MonoBehaviour
         // 该参数控制球受力大小
         foreach (Collider2D obj in fixedBalls) {
             if (!animTable.ContainsKey (obj.gameObject) && obj.gameObject != gameObject && animTable.Count < 20)
-                obj.GetComponent<ball> ().PlayHitAnimCorStart (newBallPos, animTable);
+                obj.GetComponent<Ball> ().PlayHitAnimCorStart (newBallPos, animTable);
         }
     }
 
@@ -620,12 +596,12 @@ public class ball : MonoBehaviour
     void OnTriggerEnter2D (Collider2D other)
     {
         // stop
-        if (other.gameObject.name.Contains ("ball") && setTarget) {
+        if (other.gameObject.name.Contains ("ball") && flying) {
             //当一个ball作为发射ball的时候，ball script是enabled的
             //一旦它碰到了其它ball（stopBall设成true），那么这个ball script就会被disable
             //所以判断一个ball script是不是enabled，就能知道这是不是个固定的ball
             // 注意script被disable之后，其变量仍然可用，函数依然可调用，只是callback不起作用了
-            if (!other.gameObject.GetComponent<ball> ().enabled) {
+            if (!other.gameObject.GetComponent<Ball> ().enabled) {
                 if ((other.gameObject.tag == "black_hole") && GamePlay.Instance.GameStatus == GameState.Playing) {
                     SoundBase.Instance.GetComponent<AudioSource> ().PlayOneShot (SoundBase.Instance.black_hole);
                     DestroySingle (gameObject);
@@ -650,7 +626,7 @@ public class ball : MonoBehaviour
                 //           FindLight(gameObject);
             }
             //          }
-        } else if (other.gameObject.name == "TopBorder" && setTarget) {
+        } else if (other.gameObject.name == "TopBorder" && flying) {
             if (LevelData.mode == ModeGame.Vertical || LevelData.mode == ModeGame.Animals) {
                 if (!findMesh) {
                     transform.position = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
@@ -668,11 +644,10 @@ public class ball : MonoBehaviour
 
     void StopBall (bool pulltoMesh = true, Transform otherBall = null)
     {
-        launched = true;
         mainscript.lastBall = gameObject.transform.position;
-        creatorBall.Instance.EnableGridColliders ();
+        CreatorBall.Instance.EnableGridColliders ();
         target = Vector2.zero;
-        setTarget = false;
+        flying = false;
         findMesh = true;
         GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
         CircleCollider2D cc = GetComponent<CircleCollider2D>();
@@ -739,37 +714,13 @@ public class ball : MonoBehaviour
 
     }
 
-    void triggerEnter ()
-    {
-        //// check if we collided with a left block and adjust our speed and rotation accordingly
-        if (transform.position.x <= leftBorder && target.x < 0 && !touchedSide && fireBall) {
-            //  touchedSide = true;
-            Invoke ("CanceltouchedSide", 0.1f);
-            target = new Vector2 (target.x * -1, target.y);
-            GetComponent<Rigidbody2D> ().velocity = new Vector2 (GetComponent<Rigidbody2D> ().velocity.x * -1, GetComponent<Rigidbody2D> ().velocity.y);
-        }
-        // check if we collided with a right block and adjust our speed and rotation accordingly
-        if (transform.position.x >= rightBorder && target.x > 0 && !touchedSide && fireBall) {
-            //  touchedSide = true;
-            Invoke ("CanceltouchedSide", 0.1f);
-            target = new Vector2 (target.x * -1, target.y);
-            GetComponent<Rigidbody2D> ().velocity = new Vector2 (GetComponent<Rigidbody2D> ().velocity.x * -1, GetComponent<Rigidbody2D> ().velocity.y);
-        }
-//             check if we collided with a right block and adjust our speed and rotation accordingly
-        if (transform.position.y >= topBorder && target.y > 0 && LevelData.mode == ModeGame.Rounded && !touchedTop) {
-            touchedTop = true;
-            // target = new Vector2( target.x, -target.y );
-            GetComponent<Rigidbody2D> ().velocity = new Vector2 (GetComponent<Rigidbody2D> ().velocity.x, GetComponent<Rigidbody2D> ().velocity.y * -1);
-            //         print( target.y );
-        }
-    }
-
     void CanceltouchedSide ()
     {
         touchedSide = false;
 
     }
 
+    // TODO: refactor this destroy method with the one in mainscript.cs
     public void destroy (ArrayList b, float speed = 0.1f)
     {
         StartCoroutine (DestroyCor (b, speed));
@@ -787,14 +738,9 @@ public class ball : MonoBehaviour
         int rate = 0;
         int soundPool = 0;
         foreach (GameObject obj in l) {
-            if (obj == null)
-                continue;
-            if (obj.name.IndexOf ("ball") == 0)
-                obj.layer = 0;
-            //GameObject obj2 = findInArrayGameObject( b, obj );
-            //if(obj2 != null)
+            DisconnectFromCurrentGrid();
             // 让ball爆炸
-            obj.GetComponent<ball> ().growUp ();
+            obj.GetComponent<Ball> ().growUp ();
             soundPool++;
             GetComponent<Collider2D> ().enabled = false;
             if (scoreCounter > 3) {
@@ -804,7 +750,7 @@ public class ball : MonoBehaviour
             scoreCounter += 10;
             if (b.Count > 10 && Random.Range (0, 10) > 5)
                 mainscript.Instance.perfect.SetActive (true);
-            obj.GetComponent<ball> ().Destroyed = true;
+            obj.GetComponent<Ball> ().Destroyed = true;
             //		Destroy(obj);
 
             //  Camera.main.GetComponent<mainscript>().explode( obj.gameObject );
@@ -827,12 +773,12 @@ public class ball : MonoBehaviour
         int soundPool = 0;
         if (obj.name.IndexOf ("ball") == 0)
             obj.layer = 0;
-        obj.GetComponent<ball> ().growUp ();
+        obj.GetComponent<Ball> ().growUp ();
         soundPool++;
 
         if (obj.tag == "light") {
             SoundBase.Instance.GetComponent<AudioSource> ().PlayOneShot (SoundBase.Instance.spark);
-            obj.GetComponent<ball> ().DestroyLine ();
+            obj.GetComponent<Ball> ().DestroyLine ();
         }
 
         if (scoreCounter > 3) {
@@ -840,37 +786,14 @@ public class ball : MonoBehaviour
             scoreCounter += rate;
         }
         scoreCounter += 10;
-        obj.GetComponent<ball> ().Destroyed = true;
+        obj.GetComponent<Ball> ().Destroyed = true;
         mainscript.Instance.PopupScore (scoreCounter, transform.position);
 
     }
 
     public void SplashDestroy ()
     {
-        if (setTarget)
-            mainscript.Instance.newBall2 = null;
         Destroy (gameObject);
-    }
-
-    public void destroy ()
-    {
-        growUpPlaySound ();
-        destroy (gameObject);
-    }
-
-    public void destroy (GameObject obj)
-    {
-        if (obj.name.IndexOf ("ball") == 0)
-            obj.layer = 0;
-
-        Camera.main.GetComponent<mainscript> ().bounceCounter = 0;
-        //	collider.enabled = false;
-        obj.GetComponent<ball> ().destroyed = true;
-        //	Destroy(obj);
-        //obj.GetComponent<ball>().growUpPlaySound();
-        obj.GetComponent<ball> ().growUp ();
-        //	Invoke("playPop",1/(float)Random.Range(2,10));
-        Camera.main.GetComponent<mainscript> ().explode (obj.gameObject);
     }
 
     public void growUp ()

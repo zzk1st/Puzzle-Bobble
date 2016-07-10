@@ -105,18 +105,18 @@ public class GamePlay : MonoBehaviour {
 
         foreach( GameObject item in GameObject.FindGameObjectsWithTag("Ball") )
         {
-            item.GetComponent<ball>().StartFall();
+            item.GetComponent<Ball>().StartFall();
                                    
         }
        // StartCoroutine( PushRestBalls() );
         Transform b = GameObject.Find( "-Ball" ).transform;
-        ball[] balls = GameObject.Find( "-Ball" ).GetComponentsInChildren<ball>();
-        foreach( ball item in balls )
+        Ball[] balls = GameObject.Find( "-Ball" ).GetComponentsInChildren<Ball>();
+        foreach( Ball item in balls )
         {
             item.StartFall();
         }
 
-        foreach( ball item in balls )
+        foreach( Ball item in balls )
         {
             if(item != null)
                 item.StartFall();
@@ -140,26 +140,6 @@ public class GamePlay : MonoBehaviour {
         GameObject.Find( "Canvas" ).transform.Find( "MenuComplete" ).gameObject.SetActive( true );
 
     }
-
-    //IEnumerator PushRestBalls()
-    //{
-
-    //    while( LevelData.limitAmount  > 0)
-    //    {
-    //        if( mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy != null )
-    //        {
-    //            LevelData.limitAmount--;
-    //            ball b = mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy.GetComponent<ball>();
-    //            mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy = null;
-    //            b.transform.parent = mainscript.Instance.Balls;
-    //            b.tag = "Ball";
-    //            b.PushBallAFterWin();
-
-    //        }
-    //        yield return new WaitForEndOfFrame();
-    //    }
-
-    //}
 
     void ShowTutorial()
     {

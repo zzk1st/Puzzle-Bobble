@@ -4,17 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-public class creatorBall : MonoBehaviour
+public class CreatorBall : MonoBehaviour
 {
-    public static creatorBall Instance;
+    public static CreatorBall Instance;
     public GameObject ball_hd;
     public GameObject ball_ld;
     public GameObject thePrefab;        // box
     public float InitialMoveUpSpeed;
     public float BallColliderRadius;
     GameObject ball;
-    string[] ballsForCatapult = new string[11];
-    string[] ballsForMatrix = new string[11];
     public static int columns = 11;
     public static int rows = 70;
     public static List<Vector2> grid = new List<Vector2>();
@@ -215,7 +213,7 @@ public class creatorBall : MonoBehaviour
                     table.Add( item.position.y );
                 }
             }
-            else if( !item.GetComponent<ball>().Destroyed )
+            else if( !item.GetComponent<Ball>().Destroyed )
             {
                 if( item.position.y > lineY && mainscript.Instance.TopBorder.transform.position.y > 5f )
                 {
@@ -294,7 +292,7 @@ public class creatorBall : MonoBehaviour
             Collider2D[] fixedBalls = Physics2D.OverlapCircleAll( meshPos, 0.2f, 1 << ballLayer);
             foreach( Collider2D fixedBall in fixedBalls )
             {
-                fixedBall.gameObject.GetComponent<ball>().ConnectToGrid(mesh.GetComponent<Grid>());
+                fixedBall.gameObject.GetComponent<Ball>().ConnectToGrid(mesh.GetComponent<Grid>());
             }
         }
 
@@ -380,7 +378,7 @@ public class creatorBall : MonoBehaviour
         {
             // 只有当不是newball的时候，parent才设置成meshes，newball的parent随后会在stopball里设置
             b.transform.parent = Meshes.transform;
-            b.GetComponent<ball>().enabled = false;
+            b.GetComponent<Ball>().enabled = false;
             b.GetComponent<CircleCollider2D>().offset = Vector2.zero;
         }
 
@@ -395,7 +393,7 @@ public class creatorBall : MonoBehaviour
         b2.GetComponent<ColorBallScript>().SetColor( 11 );
         b2.transform.parent = Meshes.transform;
         b2.tag = "empty";
-        b2.GetComponent<ball>().enabled = false;
+        b2.GetComponent<Ball>().enabled = false;
         b2.gameObject.layer = 9;
         b2.GetComponent<Animation>().Play( "cat_idle" );
         b2.GetComponent<SpriteRenderer>().sortingOrder = 20;
@@ -488,7 +486,7 @@ public class creatorBall : MonoBehaviour
                 lastRow = j;
             }
         }
-        creatorBall.Instance.OffGridColliders();
+        CreatorBall.Instance.OffGridColliders();
 
     }
 

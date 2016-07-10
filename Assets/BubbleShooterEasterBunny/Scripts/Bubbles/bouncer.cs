@@ -29,7 +29,7 @@ public class bouncer : MonoBehaviour
     IEnumerator bonceCoroutine()
     {
 
-        while (Vector3.Distance(transform.position, targetPrepare) > 1 && !isPaused && !GetComponent<ball>().setTarget)
+        while (Vector3.Distance(transform.position, targetPrepare) > 1 && !isPaused && !GetComponent<Ball>().flying)
         {
             //transform.position  += targetPrepare * Time.deltaTime;
             transform.position = Vector3.Lerp(tempPosition, targetPrepare, (Time.time - startTime) * 2f);
@@ -39,45 +39,25 @@ public class bouncer : MonoBehaviour
 
     }
 
-    IEnumerator bonceToCatapultCoroutine()
-    {
-
-        /*	while (Vector3.Distance(transform.position, targetPrepare)>1 && !isPaused && !GetComponent<ball>().setTarget ){
-                //transform.position  += targetPrepare * Time.deltaTime;
-                transform.position = Vector3.Lerp(tempPosition, targetPrepare,  (Time.time - startTime)*2);
-                //	transform.position  = targetPrepare ;
-                yield return new WaitForSeconds(1f/5f);
-            }
-            if(!isPaused)*/
-        Invoke("delayedBonceToCatapultCoroutine", 0.5f);
-        yield return new WaitForSeconds(1f / 5f);
-    }
-
-    void delayedBonceToCatapultCoroutine()
-    {
-        transform.position = targetPrepare;
-        GetComponent<ball>().newBall = true;
-
-    }
-
-    void newBall()
-    {
-        GetComponent<ball>().newBall = true;
-        Grid.waitForAnim = false;
-    }
-
-    public void bounceToCatapult(Vector3 vector3)
+    public void BounceToCatapult(Vector3 vector3)
     {
         vector3 = new Vector3(vector3.x, vector3.y, gameObject.transform.position.z);
         tempPosition = transform.position;
         targetPrepare = vector3;
         startBounce = true;
         startTime = Time.time;
-        iTween.MoveTo(gameObject, iTween.Hash("position", vector3, "time", 0.3, "easetype", iTween.EaseType.linear, "onComplete", "newBall"));
-        //		StartCoroutine(bonceToCatapultCoroutine());
-        //transform.position = vector3;
+        iTween.MoveTo(gameObject, iTween.Hash("position", vector3, "time", 0.3, "easetype", iTween.EaseType.linear, "onComplete", "OnBounceToCatapultComplete"));
         Grid.waitForAnim = false;
+    }
 
+    void OnBounceToCatapultComplete()
+    {
+        mainscript.Instance.ballShooter.OnBounceToCatapultComplete();
+    }
+
+    void OnSwapBallsComplete()
+    {
+        mainscript.Instance.ballShooter.OnSwapBallsComplete();
     }
 
     public void bounceTo(Vector3 vector3)
@@ -217,7 +197,7 @@ public class bouncer : MonoBehaviour
                     {
                         counter++;
                         b.Add(obj);
-                        obj.GetComponent<ball>().checkNextNearestColor(b, counter);
+                        obj.GetComponent<Ball>().checkNextNearestColor(b, counter);
                         //		destroy();
                         //obj.GetComponent<mesh>().checkNextNearestColor();
                         //		obj.GetComponent<mesh>().destroy();

@@ -45,7 +45,7 @@ public class bonus : MonoBehaviour {
 	public void OnTriggerEnter2D(Collider2D owner)
 	{
 		// check if we collided with a top block and adjust our speed and rotation accordingly
-		if (owner.gameObject.name.IndexOf("ball")==0 && owner.gameObject.GetComponent<ball>().setTarget)
+		if (owner.gameObject.name.IndexOf("ball")==0 && owner.gameObject.GetComponent<Ball>().flying)
 		{
 			//SoundBase.Instance.audio.PlayOneShot(SoundBase.Instance.Pickup);
 			if(name.Contains("bonus_liana")){
