@@ -473,16 +473,16 @@ public class CreatorBall : MonoBehaviour
             for( int i = 0; i < columns; i++ )
             {
                 if( j % 2 == 0 ) offset = 0; else offset = offsetStep;
-                GameObject b = Instantiate( thePrefab, transform.position, transform.rotation ) as GameObject;
+                GameObject newMesh = Instantiate( thePrefab, transform.position, transform.rotation ) as GameObject;
                 // 每个球最初的位置由creator的世界坐标系决定
-                Vector3 v = new Vector3( transform.position.x + i * b.transform.localScale.x + offset, transform.position.y - j * b.transform.localScale.y, transform.position.z );
-                b.transform.parent = Meshes.transform;
-                b.transform.localPosition = v;
+                Vector3 v = new Vector3( transform.position.x + i * newMesh.transform.localScale.x + offset, transform.position.y - j * newMesh.transform.localScale.y, transform.position.z );
+                newMesh.transform.parent = Meshes.transform;
+                newMesh.transform.localPosition = v;
                 //Debug.Log(String.Format("row={0}, col={1}, LocalPosition={2}, WorldPosition={3}", j, i, b.transform.localPosition, b.transform.position));
                 GameObject[] fixedBalls = GameObject.FindGameObjectsWithTag( "Mesh" );
-                b.name = b.name + fixedBalls.Length.ToString();
-                b.GetComponent<Grid>().offset = offset;
-                squares.Add( b );
+                newMesh.name = newMesh.name + fixedBalls.Length.ToString();
+                newMesh.GetComponent<Grid>().offset = offset;
+                squares.Add(newMesh);
                 lastRow = j;
             }
         }

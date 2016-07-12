@@ -79,7 +79,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874c74a952017a44e9030e4a79ea43aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LaunchForce: 700
+  state: 0
+  LaunchForce: 500
   sprites:
   - {fileID: 0}
   - {fileID: 0}
@@ -98,17 +99,16 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 7c12fc33ea5c19f4999085809829f965, type: 3}
   isTarget: 0
   target: {x: 0, y: 0, z: 0}
-  setTarget: 0
+  flying: 0
   startTime: 0
   mesh: {fileID: 0}
-  findMesh: 0
-  newBall: 0
   targetPosition: {x: 0, y: 0, z: 0}
   NotSorting: 0
   countNEarBalls: 0
   swish: {fileID: 0}
   pops: {fileID: 0}
   join: {fileID: 0}
+  LocalMeshPos: {x: 0, y: 0, z: 0}
   falling: 0
 --- !u!114 &11400002
 MonoBehaviour:
