@@ -12,6 +12,9 @@ public class BallShooter : MonoBehaviour {
     public GameObject boxCatapult;
     public GameObject boxCartridge;
 
+    //spriteRenderer used to hold the ball direction indicator sprite
+    SpriteRenderer spriteRenderer;
+
     GameObject catapultBall;
     GameObject cartridgeBall;
 
@@ -22,7 +25,8 @@ public class BallShooter : MonoBehaviour {
     {
         creatorBall = GameObject.Find("Creator").GetComponent<CreatorBall>();
         currentES = UnityEngine.EventSystems.EventSystem.current;
-	}
+        spriteRenderer = GameObject.Find("dir_indicator").GetComponent<SpriteRenderer>();
+    }
 
     public void Initialize()
     {
@@ -62,6 +66,15 @@ public class BallShooter : MonoBehaviour {
             catapultBall = cartridgeBall;
             catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
             catapultBall.GetComponent<bouncer>().BounceToCatapult(boxCatapult.transform.position);
+
+            // Currently Disabled. Find color according to texture.
+            // Alternative way: get color string by catapultBall.tag, then assign color
+            // via a mapping from color string to actual color.
+
+            //Color col = catapultBall.GetComponent<Grid>().Busy.GetComponent<SpriteRenderer>().sprite.texture.GetPixelBilinear(0.1f, 0.6f);
+            //col.a = 1;
+            //spriteRenderer.color = col;
+            
 
             cartridgeBall = creatorBall.createBall(boxCartridge.transform.position, BallColor.random, true);
             cartridgeBall.GetComponent<Ball>().state = Ball.BallState.Waiting;
