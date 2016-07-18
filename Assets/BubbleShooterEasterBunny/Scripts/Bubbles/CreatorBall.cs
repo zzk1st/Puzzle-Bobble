@@ -12,6 +12,7 @@ public class CreatorBall : MonoBehaviour
     public GameObject thePrefab;        // box
     public float InitialMoveUpSpeed;
     public float BallColliderRadius;
+    public float BallRealRadius;
     GameObject ball;
     public static int columns = 11;
     public static int rows = 70;
@@ -213,7 +214,7 @@ public class CreatorBall : MonoBehaviour
                     table.Add( item.position.y );
                 }
             }
-            else if( !item.GetComponent<Ball>().Destroyed )
+            else
             {
                 if( item.position.y > lineY && mainscript.Instance.TopBorder.transform.position.y > 5f )
                 {

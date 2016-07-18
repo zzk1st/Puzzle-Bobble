@@ -349,7 +349,8 @@ MonoBehaviour:
   ball_ld: {fileID: 0}
   thePrefab: {fileID: 100000, guid: e0240944f3bd27e449975ef82726c682, type: 2}
   InitialMoveUpSpeed: 4
-  BallColliderRadius: 0.28
+  BallColliderRadius: 0.25
+  BallRealRadius: 0.33
   squares: []
 --- !u!4 &39308811
 Transform:

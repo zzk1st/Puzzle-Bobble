@@ -155,7 +155,6 @@ public class mainscript : MonoBehaviour {
     public GameObject[] locksBoosts;
 
     public GameObject arrows;
- 	int stageTemp;
     private int maxCols;
     private int maxRows;
     private LIMIT limitType;
@@ -243,13 +242,6 @@ public class mainscript : MonoBehaviour {
     {
         Instance = this;
 
-        //	AdmobAd.Instance().LoadInterstitialAd(true);
-        //		audio.PlayClipAtPoint(ambient, new Vector3(5, 1, 2));
-        //audio.loop = true;
-        //		if(DisplayMetricsAndroid.WidthPixels>700){
-        //			hd = true;
-        //		}
-        stageTemp = 1;
         RandomizeWaitTime();
         score = 0;
         if (PlayerPrefs.GetInt("noSound") == 1) noSound = true;
@@ -264,36 +256,23 @@ public class mainscript : MonoBehaviour {
     {
         // 游戏中最重要的算法部分：检测ball是否连上，销毁，以及判断是否有其它drop的balls
         // checkBall在ball.cs中被赋值，当ball停住的时候，就说明需要判断连接了，这个值也就被设定了
-        if( checkBall != null &&( GamePlay.Instance.GameStatus == GameState.Playing || GamePlay.Instance.GameStatus == GameState.WaitForChicken ))
+        if (checkBall != null && GamePlay.Instance.GameStatus == GameState.Playing)
         {
             // 找到同色的ball并将其销毁
-            checkBall.GetComponent<Ball>().checkNearestColorAndDelete();
-            Destroy(checkBall.GetComponent<Rigidbody>());
+            checkNearestColorAndDelete(checkBall);
+            StartCoroutine(destroyAloneBalls());
             checkBall = null;
-            //connectNearBallsGlobal();
-            int missCount = 1;
-            if(stage >= 3) missCount = 2;
-            if(stage >= 9) missCount = 1;
-            //Invoke("destroyAloneBall", 0.5f);
-            StartCoroutine( destroyAloneBall() );
-
-            if(!arcadeMode){
-                if (bounceCounter >= missCount)
-                {
-                    bounceCounter = 0;
-                    //Invoke("dropUp", 0.1f);
-                }
-            }
         }
     }
 
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
         CheckLosing();
 
-		if(noSound)
+		if (noSound)
 			GetComponent<AudioSource>().volume = 0;
-		if(!noSound)
+		if (!noSound)
 			GetComponent<AudioSource>().volume = 0.5f;
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -301,58 +280,41 @@ public class mainscript : MonoBehaviour {
             //			GameObject.Find("PauseButton").GetComponent<clickButton>().OnMouseDown();
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-           // creatorBall.AddMesh();
-
-        }
-		if(gameOver && !gameOverShown){
-			gameOverShown = true;
-
-		//	return;
-		}
-
-        if( GamePlay.Instance.GameStatus == GameState.Win )
-        {
-
-         //   return;
-        }
-
         ConnectAndDestroyBalls();
 
-        if( LevelData.mode == ModeGame.Vertical && TargetCounter >= 6 && GamePlay.Instance.GameStatus == GameState.Playing )
+        if ( LevelData.mode == ModeGame.Vertical && TargetCounter >= 6 && GamePlay.Instance.GameStatus == GameState.Playing )
         {
             GamePlay.Instance.GameStatus = GameState.Win;
         }
-        else if( LevelData.mode == ModeGame.Rounded && TargetCounter >= 1 && GamePlay.Instance.GameStatus == GameState.WaitForChicken )
+        else if ( LevelData.mode == ModeGame.Rounded && TargetCounter >= 1 && GamePlay.Instance.GameStatus == GameState.WaitForChicken )
             GamePlay.Instance.GameStatus = GameState.Win;
-        else if( LevelData.mode == ModeGame.Animals && TargetCounter >= TotalTargets && GamePlay.Instance.GameStatus == GameState.Playing )
+        else if ( LevelData.mode == ModeGame.Animals && TargetCounter >= TotalTargets && GamePlay.Instance.GameStatus == GameState.Playing )
             GamePlay.Instance.GameStatus = GameState.Win;
 
         ProgressBarScript.Instance.UpdateDisplay( (float)score * 100f / ( (float)LevelData.star1 / ( ( LevelData.star1 * 100f / LevelData.star3 ) ) * 100f ) / 100f );
 
-        if( score >= LevelData.star1 && stars <= 0 )
+        if ( score >= LevelData.star1 && stars <= 0 )
         {
             stars = 1;
         }
-        if( score >= LevelData.star2 && stars <= 1 )
+        if ( score >= LevelData.star2 && stars <= 1 )
         {
             stars = 2;
         }
-        if( score >= LevelData.star3 && stars <= 2 )
+        if ( score >= LevelData.star3 && stars <= 2 )
         {
             stars = 3;
         }
 
-        if( score >= LevelData.star1 )
+        if ( score >= LevelData.star1 )
         {
             starsObject[0].SetActive( true );
         }
-        if( score >= LevelData.star2 )
+        if ( score >= LevelData.star2 )
         {
             starsObject[1].SetActive( true );
         }
-        if( score >= LevelData.star3 )
+        if ( score >= LevelData.star3 )
         {
             starsObject[2].SetActive( true );
         }
@@ -372,39 +334,16 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-	IEnumerator startBonusLiana(){
-		while(true){
-			yield return new WaitForSeconds(Random.Range(30,120));
-			Instantiate(BonusLiana);
-		}
-	}
-
-	IEnumerator startBonusScore(){
-		while(true){
-			yield return new WaitForSeconds(Random.Range(5,20));
-			Instantiate(BonusScore);
-		}
-	}
-	
-	IEnumerator startButterfly(){
-		while(true){
-			yield return new WaitForSeconds(Random.Range(5,10));
-			GameObject gm = GameObject.Find ("Creator");
-			revertButterFly *=-1;
-			gm.GetComponent<creatorButterFly>().createButterFly(revertButterFly);
-		}
-
-	}
-	
-	public void connectNearBallsGlobal(){
-		///connect near balls
+	public void connectNearBallsGlobal()
+    {
 		fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
-		foreach(GameObject obj in fixedBalls) {
-			// layer 9就是ball
-			if(obj.layer == 9)
-				obj.GetComponent<Ball>().connectNearBalls();
+		foreach(GameObject obj in fixedBalls)
+        {
+			if(obj.layer == LayerMask.NameToLayer("Ball"))  // 只能是ball layer里的，falling balls被排除
+            {
+                obj.GetComponent<Ball>().connectNearbyBalls();
+            }
 		}
-	
 	}
 
     public void dropUp()
@@ -425,19 +364,6 @@ public class mainscript : MonoBehaviour {
         dropingDown = false;
     }
 
-	public void dropDown(){
-
-		dropingDown = true;
-		fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
-		foreach(GameObject obj in fixedBalls) {
-			if(obj.layer == 9)
-				obj.GetComponent<bouncer>().dropDown();
-		}
-        creatorBall.createRow(0);
-	//	Invoke("destroyAloneBall", 1f);
-	//	destroyAloneBall();
-	}
-	
 	public void explode(GameObject gameObject){
 		//gameObject.GetComponent<Detonator>().Explode();
 	}
@@ -449,16 +375,9 @@ public class mainscript : MonoBehaviour {
 	    waitTime = Time.time + Random.Range(minimumWaitTime, maximumWaitTime);
 	}
 	
-	public IEnumerator destroyAloneBall(){
-        //if( GamePlay.Instance.GameStatus == GameState.Playing )
-        //    mainscript.Instance.newBall = null;
+	public IEnumerator destroyAloneBalls()
+    {
         yield return new WaitForSeconds( Mathf.Clamp( (float)countOfPreparedToDestroy / 50, 0.6f, (float)countOfPreparedToDestroy / 50 ) );
- //       yield return new WaitForSeconds( 0.6f );
-		int i;
-	//	while(true){
-			// 剔除掉所有balls，第一步先连接所有的ball
-			connectNearBallsGlobal();
-			i=0;
             int willDestroy = 0;
 			Camera.main.GetComponent<mainscript>().arraycounter = 0;
 			GameObject[] fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];			// detect alone balls
@@ -468,18 +387,15 @@ public class mainscript : MonoBehaviour {
 					if(obj.layer == 9){
 
 						if(!findInArray(Camera.main.GetComponent<mainscript>().controlArray, obj.gameObject) ){
-							if(obj.GetComponent<Ball>().nearBalls.Count<7 && obj.GetComponent<Ball>().nearBalls.Count>0){
-												i++;
-							//	if(i>5){ i = 0; yield return new WaitForSeconds(0.5f); yield return new WaitForSeconds(0.5f);}
-						//		if(dropingDown) yield return new WaitForSeconds(1f);
-                                                yield return new WaitForEndOfFrame();
+                            if(obj.GetComponent<Ball>().nearbyBalls.Count<7 && obj.GetComponent<Ball>().nearbyBalls.Count>0){
+                                yield return new WaitForEndOfFrame();
 								ArrayList b = new ArrayList();
 								// 详见checkNearestBall的注释
 								obj.GetComponent<Ball>().checkNearestBall(b);
 								if(b.Count >0 ){
                                     willDestroy++;
 									// 删掉ball，并调用StartFall让ball掉落
-									destroy (b);
+									DropBalls(b);
 								}
 							}
 						}
@@ -487,25 +403,16 @@ public class mainscript : MonoBehaviour {
 				}
 			}
 
+        // 当所有ball掉落之后，很多nearby balls发生改变，重新连接nearby balls
+        connectNearBallsGlobal();
 		StartCoroutine(creatorBall.connectAllBallsToMeshes());
 		dropingDown = false;
-        //if( willDestroy > 0)
-        //    yield return new WaitForSeconds( 0.5f );
-
-        if( LevelData.mode == ModeGame.Rounded )
-        {
-            CheckBallsBorderCross();
-        }
 
         yield return new WaitForSeconds( 0.0f );
 		// 下面这几步是为了让新产生的球不再有以前没有出现过的颜色
         GetColorsInGame();
         mainscript.Instance.newBall = null;
         SetColorsForNewBall();
-
-		//	Debug.Log(i);
-	//		yield return new WaitForSeconds(2f);
-	//	}
 	}
 
     public void SetColorsForNewBall()
@@ -541,81 +448,8 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-    public void CheckFreeChicken()
+	public bool findInArray(ArrayList b, GameObject destObj)
     {
-        if( LevelData.mode != ModeGame.Rounded ) return;
-        if(GamePlay.Instance.GameStatus == GameState.Playing)
-            StartCoroutine( CheckFreeChickenCor() );
-    }
-
-    IEnumerator CheckFreeChickenCor()
-    {
-        //  yield return new WaitForSeconds( Mathf.Clamp( (float)countOfPreparedToDestroy / 100, 1.5f, (float)countOfPreparedToDestroy / 100 ) );
-        GamePlay.Instance.GameStatus = GameState.WaitForChicken;
-        yield return new WaitForSeconds( 1.5f );
-        bool finishGame = false;
-        if( LevelData.mode == ModeGame.Rounded )
-        {
-            finishGame = true;
-
-            GameObject balls = GameObject.Find( "-Ball" );
-//            print( "check free chicken " +  balls.transform.childCount);
-            foreach( Transform item in balls.transform )
-            {
-                if( item.tag != "Ball" && item.tag != "chicken" )
-                {
-                    finishGame = false;
-                }
-            }
-        }
-        if( !finishGame )
-        {
-            GetColorsInGame();
-
-            GamePlay.Instance.GameStatus = GameState.Playing;
-        }
-
-        else if( finishGame )
-        {
-            GamePlay.Instance.GameStatus = GameState.WaitForChicken;
-
-            GameObject chicken = GameObject.FindGameObjectWithTag( "chicken" );
-            chicken.GetComponent<SpriteRenderer>().sortingLayerName = "UI layer";
-            Vector3 targetPos = new Vector3( 2.3f, 6, 0 );
-            mainscript.Instance.TargetCounter++;
-            AnimationCurve curveX = new AnimationCurve( new Keyframe( 0, chicken.transform.position.x ), new Keyframe( 0.5f, targetPos.x ) );
-            AnimationCurve curveY = new AnimationCurve( new Keyframe( 0, chicken.transform.position.y ), new Keyframe( 0.5f, targetPos.y ) );
-            curveY.AddKey( 0.2f, chicken.transform.position.y - 1 );
-            float startTime = Time.time;
-            Vector3 startPos = chicken.transform.position;
-            float speed = 0.2f;
-            float distCovered = 0;
-            while( distCovered < 0.6f )
-            {
-                distCovered = ( Time.time - startTime );
-                chicken.transform.position = new Vector3( curveX.Evaluate( distCovered ), curveY.Evaluate( distCovered ), 0 );
-                chicken.transform.Rotate( Vector3.back * 10 );
-                yield return new WaitForEndOfFrame();
-            }
-            Destroy( chicken );
-
-            //if(chicken.GetComponent<SmoothMove>() == null)
-            //    chicken.AddComponent<SmoothMove>();
-        }
-    }
-
-
-    void CheckBallsBorderCross()
-    {
-        foreach( Transform item in Balls )
-        {
-            item.GetComponent<Ball>().CheckBallCrossedBorder();
-        }
-    }
-
- 
-
-	public bool findInArray(ArrayList b, GameObject destObj){
 		foreach(GameObject obj in b) {
 			
 			if(obj == destObj) return true;
@@ -623,51 +457,31 @@ public class mainscript : MonoBehaviour {
 		return false;
 	}
 	
-	public void destroy( GameObject obj){
-		if(obj.name.IndexOf("ball")==0) obj.layer = 0;
-		Camera.main.GetComponent<mainscript>().bounceCounter = 0;
-	//	obj.GetComponent<OTSprite>().collidable = false;
-	//	Destroy(obj);
-        obj.GetComponent<Ball>().Destroyed = true;
-		obj.GetComponent<Ball>().growUp();
-		Camera.main.GetComponent<mainscript>().explode(obj.gameObject);
-	//	Score.Instance.addScore( 3);
-
-	}
-	
 	void playPop(){
 	//	if(!Camera.main.GetComponent<mainscript>().noSound) SoundBase.Instance.audio.PlayOneShot(SoundBase.Instance.Pops);
 			//AudioSource.PlayClipAtPoint(pops, transform.position);
 	}
 	
-	public void destroy( ArrayList b){
+    // DropBalls, 注意和DestroyBalls并不相同，后者是让球爆炸，这个是让球落下
+	public void DropBalls(ArrayList b)
+    {
 		Camera.main.GetComponent<mainscript>().bounceCounter = 0;
 		int scoreCounter = 0;
 		int rate = 0;
-		int soundPool=0;
 
 		foreach(GameObject obj in b) {
 //			obj.GetComponent<OTSprite>().collidable = false;
 			if(obj.name.IndexOf("ball")==0) obj.layer = 0;
-            if(!obj.GetComponent<Ball>().Destroyed){
-                //if(soundPool<5)
-                //    obj.GetComponent<ball>().growUpPlaySound();
-                //else
-                //    obj.GetComponent<ball>().growUp();
-		//		soundPool++;
-				if(scoreCounter > 3){
-					rate +=3;
-					scoreCounter += rate;
-				}
-				scoreCounter ++;
-					// 让没接上的ball都掉落
-                    obj.GetComponent<Ball>().StartFall();
-			//	Destroy(obj);
-			//	obj.GetComponent<ball>().destroyed = true;
-			//	Camera.main.GetComponent<mainscript>().explode(obj.gameObject);
+
+			if(scoreCounter > 3){
+				rate +=3;
+				scoreCounter += rate;
 			}
+			scoreCounter ++;
+
+			// 让没接上的ball都掉落
+            obj.GetComponent<Ball>().StartFall();
 		}
-        CheckFreeChicken();
         UpdateLocalMinYFromAllFixedBalls();
 	//	Score.Instance.addScore( scoreCounter);
 
@@ -676,7 +490,7 @@ public class mainscript : MonoBehaviour {
     public void UpdateLocalMinYFromSingleBall(Ball fixedBall)
     {
         // 我们在这用localMeshPos而不用localPosition, 因为我们在coroutine里，localPosition可能因为动画改变，而localMeshPos更稳定
-        if (!fixedBall.Destroyed && fixedBall.LocalMeshPos.y < curFixedBallLocalMinY)
+        if (fixedBall.LocalMeshPos.y < curFixedBallLocalMinY)
         {
             curFixedBallLocalMinY = fixedBall.LocalMeshPos.y;
         }
@@ -689,23 +503,81 @@ public class mainscript : MonoBehaviour {
 
         foreach( Transform item in fixedBalls.transform )
         {
-            Ball fixedBall = item.gameObject.GetComponent<Ball>();
-            UpdateLocalMinYFromSingleBall(fixedBall);
+            GameObject fixedBall = item.gameObject;
+            if (fixedBall.GetComponent<CircleCollider2D>().enabled)
+            {
+                UpdateLocalMinYFromSingleBall(fixedBall.GetComponent<Ball>());
+            }
         }
         //Debug.Log(string.Format("MinY recalculated! MinY={0}", curFixedBallLocalMinY));
     }
 
-    public void destroyAllballs()
+    public void checkNearestColorAndDelete(GameObject checkBallGO)
     {
-        foreach( Transform item in Balls )
-        {
-            if( item.tag != "chicken" )
-            {
+        // 该方法用来查找是否有其它ball与之相连，形成三个或以上的ball，如果有则将其销毁
+        Ball checkBall = checkBallGO.GetComponent<Ball>();
 
-                destroy( item.gameObject );
-            }
+        ArrayList ballsToDelete = new ArrayList ();
+        ballsToDelete.Add (checkBallGO);
+        checkBall.checkNextNearestColor(ballsToDelete);
+        mainscript.Instance.countOfPreparedToDestroy = ballsToDelete.Count;
+
+        if (ballsToDelete.Count >= 3)
+        {
+            mainscript.Instance.ComboCount++;
+            // 在这里调用coroutine将其销毁
+            DestroyBalls(ballsToDelete, 0.00001f);
+
+            // 给整个关卡一个向上的force
+            GameObject Meshes = GameObject.Find( "-Meshes" );
+            Rigidbody2D rb = Meshes.GetComponent<Rigidbody2D>();
+            rb.AddForce(Vector2.up * mainscript.Instance.StageBounceForce);
         }
-            CheckFreeChicken();
+        if (ballsToDelete.Count < 3)
+        {
+            Camera.main.GetComponent<mainscript> ().bounceCounter++;
+            mainscript.Instance.ComboCount = 0;
+        }
+
+        Camera.main.GetComponent<mainscript> ().dropingDown = false;
+    }
+
+    // TODO: refactor this destroy method with the one in mainscript.cs
+    public void DestroyBalls(ArrayList balls, float speed = 0.1f)
+    {
+        StartCoroutine(DestroyCor(balls, speed));
+    }
+
+    IEnumerator DestroyCor(ArrayList balls, float speed = 0.1f)
+    {
+        Camera.main.GetComponent<mainscript> ().bounceCounter = 0;
+        int scoreCounter = 0;
+        int rate = 0;
+        int soundPool = 0;
+        foreach (GameObject ballGO in balls)
+        {
+            Ball ball = ballGO.GetComponent<Ball>();
+            ball.DisconnectFromCurrentGrid();   // 从meshes里删除引用
+            ballGO.layer = LayerMask.NameToLayer("ExplodedBall");   // 从ball layer移除，防止之后connect nearball时候再连上
+            ballGO.GetComponent<CircleCollider2D>().enabled = false;    //删掉CircleCollider，防止再碰撞检测
+
+            // 让ball爆炸
+            ball.Explode();
+
+            soundPool++;
+            if (scoreCounter > 3) {
+                rate += 10;
+                scoreCounter += rate;
+            }
+            scoreCounter += 10;
+            if (balls.Count > 10 && Random.Range(0, 10) > 5)
+                mainscript.Instance.perfect.SetActive(true);
+
+            if (balls.Count < 10 || soundPool % 20 == 0)
+                yield return new WaitForSeconds (speed);
+        }
+        mainscript.Instance.PopupScore(scoreCounter, transform.position);
+        mainscript.Instance.UpdateLocalMinYFromAllFixedBalls();
     }
 }
 

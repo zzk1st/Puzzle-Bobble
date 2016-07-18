@@ -76,7 +76,6 @@ public class GamePlay : MonoBehaviour {
         if(Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
         {
             if( Input.GetKey( KeyCode.W ) ) GamePlay.Instance.GameStatus = GameState.Win;
-            if( Input.GetKey( KeyCode.D ) ) mainscript.Instance.destroyAllballs() ;
         }
     }
 	
