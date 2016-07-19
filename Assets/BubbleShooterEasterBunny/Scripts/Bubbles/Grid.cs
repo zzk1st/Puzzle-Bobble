@@ -16,10 +16,7 @@ public class Grid : MonoBehaviour
             {
                 if( value.GetComponent<Ball>() != null )
                 {
-                    if( !value.GetComponent<Ball>().NotSorting  )
-                    {
-                        value.GetComponent<Ball>().mesh = gameObject;
-                    }
+                    value.GetComponent<Ball>().mesh = gameObject;
                 }
 
             }

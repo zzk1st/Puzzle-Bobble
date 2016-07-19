@@ -38,7 +38,7 @@ TagManager:
   - 
   - 
   - gui
-  - Ball
+  - FixedBall
   - Mesh
   - Obstacles
   - Pot

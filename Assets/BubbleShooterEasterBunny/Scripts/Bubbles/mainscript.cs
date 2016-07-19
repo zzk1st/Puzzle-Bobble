@@ -11,8 +11,6 @@ public class mainscript : MonoBehaviour {
 
 	public static mainscript Instance;
 	GameObject ball;
-    Vector2 speed =                     // Star movement speed / second
-        new Vector2(250, 250);          
 	GameObject PauseDialogLD;
 	GameObject OverDialogLD;
 	GameObject PauseDialogHD;
@@ -28,7 +26,6 @@ public class mainscript : MonoBehaviour {
 	Vector2 worldPos;
 	Vector2 startPos;
 	float startTime;
-	float duration = 1.0f;
 	bool setTarget;
 	float mTouchOffsetX;
 	float mTouchOffsetY;
@@ -39,9 +36,6 @@ public class mainscript : MonoBehaviour {
 	public Vector2[][] meshArray;
 	int offset;
 	public GameObject checkBall;
-	public GameObject newBall;
-	float waitTime = 0f;
-	int revertButterFly = 1;
     private static int score;
     private float curFixedBallLocalMinY; // 当前所有fixed balls的最小y值，用来测试关卡是否过线
 
@@ -60,7 +54,6 @@ public class mainscript : MonoBehaviour {
 	const int STAGE_7 = 5500;
 	const int STAGE_8 = 6900;
 	const int STAGE_9 = 8500;
-	public int arraycounter = 0;
 	public ArrayList controlArray = new ArrayList();
 	public bool dropingDown;
 	public bool isPaused;
@@ -93,7 +86,6 @@ public class mainscript : MonoBehaviour {
     public GameObject TopBorder;
     public Transform Balls;
     public Hashtable animTable = new Hashtable();
-    public static Vector3 lastBall;
     public GameObject FireEffect;
     public BallShooter ballShooter;
     public static int doubleScore=1;
@@ -101,8 +93,6 @@ public class mainscript : MonoBehaviour {
     public int TotalTargets;
 
     public int countOfPreparedToDestroy;
-
-    public int potSounds;
 
     public static Dictionary<int, BallColor> colorsDict = new Dictionary<int, BallColor>();
 
@@ -339,7 +329,7 @@ public class mainscript : MonoBehaviour {
 		fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
 		foreach(GameObject obj in fixedBalls)
         {
-			if(obj.layer == LayerMask.NameToLayer("Ball"))  // 只能是ball layer里的，falling balls被排除
+			if(obj.layer == LayerMask.NameToLayer("FixedBall"))  // 只能是ball layer里的，falling balls被排除
             {
                 obj.GetComponent<Ball>().connectNearbyBalls();
             }
@@ -372,36 +362,33 @@ public class mainscript : MonoBehaviour {
 	{
 	    const float minimumWaitTime = 5f;
 	    const float maximumWaitTime = 10f;
-	    waitTime = Time.time + Random.Range(minimumWaitTime, maximumWaitTime);
 	}
 	
 	public IEnumerator destroyAloneBalls()
     {
-        yield return new WaitForSeconds( Mathf.Clamp( (float)countOfPreparedToDestroy / 50, 0.6f, (float)countOfPreparedToDestroy / 50 ) );
-            int willDestroy = 0;
-			Camera.main.GetComponent<mainscript>().arraycounter = 0;
-			GameObject[] fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];			// detect alone balls
-			Camera.main.GetComponent<mainscript>().controlArray.Clear();
-			foreach(GameObject obj in fixedBalls) {
-				if(obj!=null){
-					if(obj.layer == 9){
-
-						if(!findInArray(Camera.main.GetComponent<mainscript>().controlArray, obj.gameObject) ){
-                            if(obj.GetComponent<Ball>().nearbyBalls.Count<7 && obj.GetComponent<Ball>().nearbyBalls.Count>0){
-                                yield return new WaitForEndOfFrame();
-								ArrayList b = new ArrayList();
-								// 详见checkNearestBall的注释
-								obj.GetComponent<Ball>().checkNearestBall(b);
-								if(b.Count >0 ){
-                                    willDestroy++;
-									// 删掉ball，并调用StartFall让ball掉落
-									DropBalls(b);
-								}
-							}
-						}
-					}	
+        //yield return new WaitForSeconds( Mathf.Clamp( (float)countOfPreparedToDestroy / 50, 0.6f, (float)countOfPreparedToDestroy / 50 ) );
+        int willDestroy = 0;
+		GameObject[] fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];			// detect alone balls
+		Camera.main.GetComponent<mainscript>().controlArray.Clear();
+		foreach(GameObject obj in fixedBalls)
+        {
+            if (obj.layer == LayerMask.NameToLayer("FixedBall"))
+            {
+				if (!findInArray(Camera.main.GetComponent<mainscript>().controlArray, obj.gameObject))
+                {
+                    yield return new WaitForEndOfFrame();
+					ArrayList b = new ArrayList();
+					// 详见checkNearestBall的注释
+					obj.GetComponent<Ball>().checkNearestBall(b);
+					if(b.Count >0 )
+                    {
+                        willDestroy++;
+						// 删掉ball，并调用StartFall让ball掉落
+						DropBalls(b);
+					}
 				}
-			}
+			}	
+		}
 
         // 当所有ball掉落之后，很多nearby balls发生改变，重新连接nearby balls
         connectNearBallsGlobal();
@@ -411,7 +398,6 @@ public class mainscript : MonoBehaviour {
         yield return new WaitForSeconds( 0.0f );
 		// 下面这几步是为了让新产生的球不再有以前没有出现过的颜色
         GetColorsInGame();
-        mainscript.Instance.newBall = null;
         SetColorsForNewBall();
 	}
 
@@ -463,16 +449,13 @@ public class mainscript : MonoBehaviour {
 	}
 	
     // DropBalls, 注意和DestroyBalls并不相同，后者是让球爆炸，这个是让球落下
-	public void DropBalls(ArrayList b)
+	public void DropBalls(ArrayList ballsToDrop)
     {
 		Camera.main.GetComponent<mainscript>().bounceCounter = 0;
 		int scoreCounter = 0;
 		int rate = 0;
 
-		foreach(GameObject obj in b) {
-//			obj.GetComponent<OTSprite>().collidable = false;
-			if(obj.name.IndexOf("ball")==0) obj.layer = 0;
-
+        foreach(GameObject ball in ballsToDrop) {
 			if(scoreCounter > 3){
 				rate +=3;
 				scoreCounter += rate;
@@ -480,11 +463,10 @@ public class mainscript : MonoBehaviour {
 			scoreCounter ++;
 
 			// 让没接上的ball都掉落
-            obj.GetComponent<Ball>().StartFall();
+            ball.GetComponent<Ball>().StartFall();
 		}
-        UpdateLocalMinYFromAllFixedBalls();
-	//	Score.Instance.addScore( scoreCounter);
 
+        UpdateLocalMinYFromAllFixedBalls();
 	}
 
     public void UpdateLocalMinYFromSingleBall(Ball fixedBall)
@@ -542,13 +524,7 @@ public class mainscript : MonoBehaviour {
         Camera.main.GetComponent<mainscript> ().dropingDown = false;
     }
 
-    // TODO: refactor this destroy method with the one in mainscript.cs
-    public void DestroyBalls(ArrayList balls, float speed = 0.1f)
-    {
-        StartCoroutine(DestroyCor(balls, speed));
-    }
-
-    IEnumerator DestroyCor(ArrayList balls, float speed = 0.1f)
+    void DestroyBalls(ArrayList balls, float speed = 0.1f)
     {
         Camera.main.GetComponent<mainscript> ().bounceCounter = 0;
         int scoreCounter = 0;
@@ -572,11 +548,10 @@ public class mainscript : MonoBehaviour {
             scoreCounter += 10;
             if (balls.Count > 10 && Random.Range(0, 10) > 5)
                 mainscript.Instance.perfect.SetActive(true);
-
-            if (balls.Count < 10 || soundPool % 20 == 0)
-                yield return new WaitForSeconds (speed);
         }
         mainscript.Instance.PopupScore(scoreCounter, transform.position);
+        // 在balls被destroyed后，需要重新计算每个球的nearby balls，以便后边计算falling balls
+        mainscript.Instance.connectNearBallsGlobal();
         mainscript.Instance.UpdateLocalMinYFromAllFixedBalls();
     }
 }

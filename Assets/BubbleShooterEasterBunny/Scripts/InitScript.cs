@@ -69,7 +69,6 @@ namespace InitScriptName
         public int FiveBallsBoost;
         public int ColorBallBoost;
         public int FireBallBoost;
-        public bool BoostActivated;
 
         Hashtable mapFriends = new Hashtable();
 
@@ -219,7 +218,6 @@ namespace InitScriptName
 
         public void SpendBoost(BoostType boostType)
         {
-            InitScript.Instance.BoostActivated = true;
             //if (boostType != BoostType.FiveBallsBoost)
             //    mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy.GetComponent<Ball>().SetBoost(boostType);
             PlayerPrefs.SetInt("" + boostType, PlayerPrefs.GetInt("" + boostType) - 1);

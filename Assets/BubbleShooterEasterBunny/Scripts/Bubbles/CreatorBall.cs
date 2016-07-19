@@ -286,7 +286,7 @@ public class CreatorBall : MonoBehaviour
     public IEnumerator connectAllBallsToMeshes()
     {
         GameObject[] meshes = GameObject.FindGameObjectsWithTag( "Mesh" );
-        int ballLayer = LayerMask.NameToLayer("Ball");
+        int ballLayer = LayerMask.NameToLayer("FixedBall");
         foreach( GameObject mesh in meshes )
         {
             Vector2 meshPos = mesh.transform.position;
@@ -366,8 +366,7 @@ public class CreatorBall : MonoBehaviour
         // Rigidbody2D在createBall里程序化的被加入
         if( newball )
         {
-
-            b.gameObject.layer = 17;
+            b.gameObject.layer = LayerMask.NameToLayer("NewBall");
             b.transform.parent = Camera.main.transform;
             Rigidbody2D rig = b.AddComponent<Rigidbody2D>();
             b.GetComponent<CircleCollider2D>().enabled = false;
@@ -377,6 +376,7 @@ public class CreatorBall : MonoBehaviour
         }
         else
         {
+            b.GetComponent<Ball>().state = Ball.BallState.Fixed;
             // 只有当不是newball的时候，parent才设置成meshes，newball的parent随后会在stopball里设置
             b.transform.parent = Meshes.transform;
             b.GetComponent<Ball>().enabled = false;

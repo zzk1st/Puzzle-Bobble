@@ -97,19 +97,15 @@ MonoBehaviour:
   boosts:
   - {fileID: 21300000, guid: f462ea89e9892e84d9bc35ef559a8095, type: 3}
   - {fileID: 21300000, guid: 7c12fc33ea5c19f4999085809829f965, type: 3}
-  isTarget: 0
-  target: {x: 0, y: 0, z: 0}
   flying: 0
   startTime: 0
   mesh: {fileID: 0}
   targetPosition: {x: 0, y: 0, z: 0}
-  NotSorting: 0
-  countNEarBalls: 0
+  dropFadeTime: 0.5
   swish: {fileID: 0}
   pops: {fileID: 0}
   join: {fileID: 0}
   LocalMeshPos: {x: 0, y: 0, z: 0}
-  falling: 0
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -123,7 +119,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startBounce: 0
   offset: 0
-  countNEarBalls: 0
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -160,7 +160,7 @@ public class DrawLine : MonoBehaviour
                             line.SetPosition(2, waypoints[2]);
                             break;
                         }
-                        else if (item.collider.gameObject.layer == LayerMask.NameToLayer("Ball"))
+                        else if (item.collider.gameObject.layer == LayerMask.NameToLayer("FixedBall"))
                         {
                             Debug.DrawLine( waypoints[0], waypoints[1], Color.red );  //waypoints[0] + ( (Vector2)dir - waypoints[0] ).normalized * 10
                             Debug.DrawLine( waypoints[0], dir, Color.blue );

@@ -96,7 +96,6 @@ public class GamePlay : MonoBehaviour {
            //  SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.swish[0] );
            //  GameObject.Find( "Canvas" ).transform.Find( "PreComplete" ).gameObject.SetActive( true );
             yield return new WaitForSeconds( 1f );
-            GameObject.Find( "CanvasPots" ).transform.Find( "Black" ).gameObject.SetActive( false );
             //     SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.swish[0] );
           //  yield return new WaitForSeconds( 1.5f );
             yield return new WaitForSeconds( 0.5f );
