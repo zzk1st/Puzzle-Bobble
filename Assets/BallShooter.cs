@@ -17,12 +17,14 @@ public class BallShooter : MonoBehaviour {
 
     GameObject catapultBall;
     GameObject cartridgeBall;
+    float bottomBoarderY;  //低于此线就不能发射球
 
     CreatorBall creatorBall;
     UnityEngine.EventSystems.EventSystem currentES;
 	// Use this for initialization
 	void Start ()
     {
+        bottomBoarderY = GameObject.Find("BottomBorder").transform.position.y;
         creatorBall = GameObject.Find("Creator").GetComponent<CreatorBall>();
         currentES = UnityEngine.EventSystems.EventSystem.current;
         spriteRenderer = GameObject.Find("dir_indicator").GetComponent<SpriteRenderer>();
@@ -37,8 +39,9 @@ public class BallShooter : MonoBehaviour {
 
     public void Update()
     {
+        Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         // currentES.IsPointerOverGameObject()用来检测是否鼠标点击的是GUI
-        if (Input.GetMouseButtonUp (0) && !currentES.IsPointerOverGameObject())
+        if (pos.y > bottomBoarderY && Input.GetMouseButtonUp (0) && !currentES.IsPointerOverGameObject())
         {
             Fire();
         }

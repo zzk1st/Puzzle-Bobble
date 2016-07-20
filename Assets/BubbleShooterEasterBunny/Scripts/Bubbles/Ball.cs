@@ -36,6 +36,7 @@ public class Ball : MonoBehaviour
     public ArrayList nearbyBalls = new ArrayList();
     //	private OTSpriteBatch spriteBatch = null;
     GameObject ballsNode;      // 所有ball的parent
+    float bottomBoarderY;  //低于此线就不能发射球
     bool isPaused;
     public AudioClip swish;
     public AudioClip pops;
@@ -57,6 +58,7 @@ public class Ball : MonoBehaviour
         rabbit = GameObject.Find ("Rabbit").gameObject.GetComponent<Animation>();
         ballsNode = GameObject.Find("-Ball");
         isPaused = mainscript.Instance.isPaused;
+        bottomBoarderY = GameObject.Find("BottomBorder").transform.position.y; //获取生死线的Y坐标
     }
 
     public void Fire()
@@ -68,7 +70,7 @@ public class Ball : MonoBehaviour
             !mainscript.Instance.gameOver && GamePlay.Instance.GameStatus == GameState.Playing)
         {
             Vector3 pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-            if (pos.y > -1.5f && !mainscript.StopControl)
+            if (pos.y > bottomBoarderY && !mainscript.StopControl)
             {
                 rabbit.Play ("rabbit_move");
                 SoundBase.Instance.GetComponent<AudioSource> ().PlayOneShot (SoundBase.Instance.swish [0]);
