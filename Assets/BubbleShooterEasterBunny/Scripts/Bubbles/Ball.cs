@@ -97,7 +97,7 @@ public class Ball : MonoBehaviour
         LocalMeshPos = grid.gameObject.transform.localPosition;
         GetComponent<bouncer>().offset = grid.offset;
 
-        mainscript.Instance.UpdateLocalMinYFromSingleBall(this);
+        mainscript.Instance.platformController.UpdateLocalMinYFromSingleBall(this);
     }
 
     public void DisconnectFromCurrentGrid()

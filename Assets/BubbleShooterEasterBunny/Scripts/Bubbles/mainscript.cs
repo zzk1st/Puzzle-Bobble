@@ -81,22 +81,28 @@ public class mainscript : MonoBehaviour {
 
 	public GameObject BoostChanging;
 
-    public CreatorBall creatorBall;
-
     public GameObject TopBorder;
     public Transform Balls;
     public Hashtable animTable = new Hashtable();
     public GameObject FireEffect;
-    public BallShooter ballShooter;
+    private BallShooter _ballShooter;
+    public BallShooter ballShooter
+    {
+        get { return _ballShooter; }
+    }
+
     public static int doubleScore=1;
+    private PlatformController _platformController;
+    public PlatformController platformController
+    {
+        get { return _platformController; }
+    }
     
     public int TotalTargets;
 
     public int countOfPreparedToDestroy;
 
     public static Dictionary<int, BallColor> colorsDict = new Dictionary<int, BallColor>();
-
-    public float StageBounceForce;
 
     private int _ComboCount;
 
@@ -156,9 +162,10 @@ public class mainscript : MonoBehaviour {
     //	public int[][] meshMatrix = new int[15][17];
     // Use this for initialization
 
-    void Awake(){
+    void Awake()
+    {
+        Instance = this;
         if( InitScript.Instance == null ) gameObject.AddComponent<InitScript>();
-
 
         currentLevel = PlayerPrefs.GetInt( "OpenLevel", 1 );
 		stage = 1;
@@ -170,15 +177,23 @@ public class mainscript : MonoBehaviour {
 			//arcadeMode = true;
 		}
 
-        creatorBall = GameObject.Find("Creator").GetComponent<CreatorBall>();
-        bottomBorder = GameObject.Find("BottomBorder");
-        meshes = GameObject.Find("-Meshes");
 
-        ballShooter = GameObject.Find("BallShooter").GetComponent<BallShooter>();
-
-		StartCoroutine( CheckColors());
-
+		StartCoroutine(CheckColors());
 	}
+
+    void Start()
+    {
+        _ballShooter = GameObject.Find("BallShooter").GetComponent<BallShooter>();
+        meshes = GameObject.Find("-Meshes");
+        _platformController = meshes.GetComponent<PlatformController>();
+        bottomBorder = GameObject.Find("BottomBorder");
+
+        RandomizeWaitTime();
+        score = 0;
+        if (PlayerPrefs.GetInt("noSound") == 1) noSound = true;
+
+        GamePlay.Instance.GameStatus = GameState.BlockedGame;
+    }
 
 	IEnumerator CheckColors ()
 	{
@@ -228,20 +243,6 @@ public class mainscript : MonoBehaviour {
 		}
 	}
 
-    void Start()
-    {
-        Instance = this;
-
-        RandomizeWaitTime();
-        score = 0;
-        if (PlayerPrefs.GetInt("noSound") == 1) noSound = true;
-        //		if(PlayerPrefs.GetInt("arcade")==1){ arcadeMode = true; 		highScore = PlayerPrefs.GetInt("scoreArcade");}
-        //		if(PlayerPrefs.GetInt("arcade")==0){ arcadeMode = false;		highScore = PlayerPrefs.GetInt("score");}
-
-        GamePlay.Instance.GameStatus = GameState.BlockedGame;
-        //		GameObject.Find("GUIHighscore").GetComponent<GUIText>().text = "High Score: " + highScore+"";
-    }
-	
     void ConnectAndDestroyBalls()
     {
         // 游戏中最重要的算法部分：检测ball是否连上，销毁，以及判断是否有其它drop的balls
@@ -315,7 +316,7 @@ public class mainscript : MonoBehaviour {
     {
         if (GamePlay.Instance.GameStatus == GameState.Playing)
         {
-            float stageMinYWorldSpace = meshes.transform.position.y + curFixedBallLocalMinY - creatorBall.BallColliderRadius;
+            float stageMinYWorldSpace = platformController.curPlatformMinY;
             if (stageMinYWorldSpace < bottomBorder.transform.position.y)
             {
                 // TODO: 如何结束游戏？
@@ -340,7 +341,7 @@ public class mainscript : MonoBehaviour {
     {
         if (!dropingDown)
         {
-            creatorBall.AddMesh();
+            CreatorBall.Instance.AddMesh();
             dropingDown = true;
             GameObject meshes = GameObject.Find("-Meshes");
             iTween.MoveAdd(meshes, iTween.Hash("y", 0.5f, "time", 0.3, "easetype", iTween.EaseType.linear, "onComplete", "OnMoveFinished"));
@@ -367,35 +368,41 @@ public class mainscript : MonoBehaviour {
 	public IEnumerator destroyAloneBalls()
     {
         //yield return new WaitForSeconds( Mathf.Clamp( (float)countOfPreparedToDestroy / 50, 0.6f, (float)countOfPreparedToDestroy / 50 ) );
-        int willDestroy = 0;
 		GameObject[] fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];			// detect alone balls
 		Camera.main.GetComponent<mainscript>().controlArray.Clear();
+
+        ArrayList ballsToDrop = new ArrayList();
 		foreach(GameObject obj in fixedBalls)
         {
             if (obj.layer == LayerMask.NameToLayer("FixedBall"))
             {
 				if (!findInArray(Camera.main.GetComponent<mainscript>().controlArray, obj.gameObject))
                 {
-                    yield return new WaitForEndOfFrame();
 					ArrayList b = new ArrayList();
 					// 详见checkNearestBall的注释
 					obj.GetComponent<Ball>().checkNearestBall(b);
 					if(b.Count >0 )
                     {
-                        willDestroy++;
-						// 删掉ball，并调用StartFall让ball掉落
-						DropBalls(b);
+                        ballsToDrop.AddRange(b);
 					}
+
 				}
 			}	
 		}
 
+        yield return new WaitForEndOfFrame();
+        // 删掉ball，并调用StartFall让ball掉落
+        if (ballsToDrop.Count > 0)
+        {
+            DropBalls(ballsToDrop);
+            platformController.ballRemovedFromPlatform();
+        }
+
         // 当所有ball掉落之后，很多nearby balls发生改变，重新连接nearby balls
         connectNearBallsGlobal();
-		StartCoroutine(creatorBall.connectAllBallsToMeshes());
+        StartCoroutine(CreatorBall.Instance.connectAllBallsToMeshes());
 		dropingDown = false;
 
-        yield return new WaitForSeconds( 0.0f );
 		// 下面这几步是为了让新产生的球不再有以前没有出现过的颜色
         GetColorsInGame();
         SetColorsForNewBall();
@@ -465,34 +472,7 @@ public class mainscript : MonoBehaviour {
 			// 让没接上的ball都掉落
             ball.GetComponent<Ball>().StartFall();
 		}
-
-        UpdateLocalMinYFromAllFixedBalls();
 	}
-
-    public void UpdateLocalMinYFromSingleBall(Ball fixedBall)
-    {
-        // 我们在这用localMeshPos而不用localPosition, 因为我们在coroutine里，localPosition可能因为动画改变，而localMeshPos更稳定
-        if (fixedBall.LocalMeshPos.y < curFixedBallLocalMinY)
-        {
-            curFixedBallLocalMinY = fixedBall.LocalMeshPos.y;
-        }
-    }
-
-    public void UpdateLocalMinYFromAllFixedBalls()
-    {
-        curFixedBallLocalMinY = 9999f;
-        GameObject fixedBalls = GameObject.Find( "-Ball" );
-
-        foreach( Transform item in fixedBalls.transform )
-        {
-            GameObject fixedBall = item.gameObject;
-            if (fixedBall.GetComponent<CircleCollider2D>().enabled)
-            {
-                UpdateLocalMinYFromSingleBall(fixedBall.GetComponent<Ball>());
-            }
-        }
-        //Debug.Log(string.Format("MinY recalculated! MinY={0}", curFixedBallLocalMinY));
-    }
 
     public void checkNearestColorAndDelete(GameObject checkBallGO)
     {
@@ -510,10 +490,7 @@ public class mainscript : MonoBehaviour {
             // 在这里调用coroutine将其销毁
             DestroyBalls(ballsToDelete, 0.00001f);
 
-            // 给整个关卡一个向上的force
-            GameObject Meshes = GameObject.Find( "-Meshes" );
-            Rigidbody2D rb = Meshes.GetComponent<Rigidbody2D>();
-            rb.AddForce(Vector2.up * mainscript.Instance.StageBounceForce);
+            platformController.ballRemovedFromPlatform();
         }
         if (ballsToDelete.Count < 3)
         {
@@ -552,7 +529,7 @@ public class mainscript : MonoBehaviour {
         mainscript.Instance.PopupScore(scoreCounter, transform.position);
         // 在balls被destroyed后，需要重新计算每个球的nearby balls，以便后边计算falling balls
         mainscript.Instance.connectNearBallsGlobal();
-        mainscript.Instance.UpdateLocalMinYFromAllFixedBalls();
+        mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
     }
 }
 

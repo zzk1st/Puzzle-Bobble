@@ -297,7 +297,7 @@ public class CreatorBall : MonoBehaviour
             }
         }
 
-        mainscript.Instance.UpdateLocalMinYFromAllFixedBalls();
+        mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
         // 这是干什么用的？
         yield return new WaitForSeconds( 0.5f );
     }
