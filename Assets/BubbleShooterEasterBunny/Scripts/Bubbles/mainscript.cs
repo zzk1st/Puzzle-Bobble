@@ -191,8 +191,6 @@ public class mainscript : MonoBehaviour {
         RandomizeWaitTime();
         score = 0;
         if (PlayerPrefs.GetInt("noSound") == 1) noSound = true;
-
-        GamePlay.Instance.GameStatus = GameState.BlockedGame;
     }
 
 	IEnumerator CheckColors ()
@@ -211,7 +209,7 @@ public class mainscript : MonoBehaviour {
         {
 
             yield return new WaitForSeconds( 30 );
-            if( GamePlay.Instance.GameStatus == GameState.Playing )
+            if( GameManager.Instance.GameStatus == GameStatus.Playing )
             {
                 arrows.SetActive( true );
 
@@ -247,7 +245,7 @@ public class mainscript : MonoBehaviour {
     {
         // 游戏中最重要的算法部分：检测ball是否连上，销毁，以及判断是否有其它drop的balls
         // checkBall在ball.cs中被赋值，当ball停住的时候，就说明需要判断连接了，这个值也就被设定了
-        if (checkBall != null && GamePlay.Instance.GameStatus == GameState.Playing)
+        if (checkBall != null && GameManager.Instance.GameStatus == GameStatus.Playing)
         {
             // 找到同色的ball并将其销毁
             checkNearestColorAndDelete(checkBall);
@@ -273,14 +271,10 @@ public class mainscript : MonoBehaviour {
 
         ConnectAndDestroyBalls();
 
-        if ( LevelData.mode == ModeGame.Vertical && TargetCounter >= 6 && GamePlay.Instance.GameStatus == GameState.Playing )
+        if ( LevelData.mode == ModeGame.Vertical && TargetCounter >= 6 && GameManager.Instance.GameStatus == GameStatus.Playing )
         {
-            GamePlay.Instance.GameStatus = GameState.Win;
+            GameManager.Instance.Win();
         }
-        else if ( LevelData.mode == ModeGame.Rounded && TargetCounter >= 1 && GamePlay.Instance.GameStatus == GameState.WaitForChicken )
-            GamePlay.Instance.GameStatus = GameState.Win;
-        else if ( LevelData.mode == ModeGame.Animals && TargetCounter >= TotalTargets && GamePlay.Instance.GameStatus == GameState.Playing )
-            GamePlay.Instance.GameStatus = GameState.Win;
 
         ProgressBarScript.Instance.UpdateDisplay( (float)score * 100f / ( (float)LevelData.star1 / ( ( LevelData.star1 * 100f / LevelData.star3 ) ) * 100f ) / 100f );
 
@@ -314,13 +308,13 @@ public class mainscript : MonoBehaviour {
 
 	public void CheckLosing()
     {
-        if (GamePlay.Instance.GameStatus == GameState.Playing)
+        if (GameManager.Instance.GameStatus == GameStatus.Playing)
         {
             float stageMinYWorldSpace = platformController.curPlatformMinY;
             if (stageMinYWorldSpace < bottomBorder.transform.position.y)
             {
                 // TODO: 如何结束游戏？
-                GamePlay.Instance.GameStatus = GameState.GameOver;
+                GameManager.Instance.GameOver();
             }
         }
     }

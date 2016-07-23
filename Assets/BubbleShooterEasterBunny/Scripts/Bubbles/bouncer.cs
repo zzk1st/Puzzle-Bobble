@@ -37,19 +37,4 @@ public class bouncer : MonoBehaviour
     {
         mainscript.Instance.ballShooter.OnSwapBallsComplete();
     }
-
-    public void bounceTo(Vector3 vector3)
-    {
-        vector3 = new Vector3(vector3.x, vector3.y, gameObject.transform.position.z);
-        tempPosition = transform.position;
-        targetPrepare = vector3;
-        startBounce = true;
-        startTime = Time.time;
-        if( GamePlay.Instance.GameStatus == GameState.Playing )
-            iTween.MoveTo(gameObject, iTween.Hash("position", vector3, "time", 0.3, "easetype", iTween.EaseType.linear));
-        else if( GamePlay.Instance.GameStatus == GameState.Win )
-            iTween.MoveTo(gameObject, iTween.Hash("position", vector3, "time", 0.00001, "easetype", iTween.EaseType.linear));
-        //StartCoroutine(bonceCoroutine());
-        //transform.position = vector3;
-    }
 }

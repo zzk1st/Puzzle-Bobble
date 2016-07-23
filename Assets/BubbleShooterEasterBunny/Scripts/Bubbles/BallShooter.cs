@@ -39,11 +39,14 @@ public class BallShooter : MonoBehaviour {
 
     public void Update()
     {
-        Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // currentES.IsPointerOverGameObject()用来检测是否鼠标点击的是GUI
-        if (pos.y > bottomBoarderY && Input.GetMouseButtonUp (0) && !currentES.IsPointerOverGameObject())
+        if (GameManager.Instance.GameStatus == GameStatus.Playing)
         {
-            Fire();
+            Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            // currentES.IsPointerOverGameObject()用来检测是否鼠标点击的是GUI
+            if (pos.y > bottomBoarderY && Input.GetMouseButtonUp (0) && !currentES.IsPointerOverGameObject())
+            {
+                Fire();
+            }
         }
     }
 
@@ -86,17 +89,20 @@ public class BallShooter : MonoBehaviour {
 
     public void SwapBalls()
     {
-        if (state == BallShooterState.ReadyToShoot)
+        if (GameManager.Instance.GameStatus == GameStatus.Playing)
         {
-            state = BallShooterState.Swapping;
-            // stopped here
-            iTween.MoveTo(cartridgeBall, iTween.Hash("position", boxCatapult.transform.position,
-                                                     "time", 0.3 ,
-                                                     "easetype",iTween.EaseType.linear));
-            iTween.MoveTo(catapultBall, iTween.Hash("position", boxCartridge.transform.position,
-                                                    "time", 0.3 ,
-                                                    "easetype",iTween.EaseType.linear,
-                                                    "onComplete", "OnSwapBallsComplete"));
+            if (state == BallShooterState.ReadyToShoot)
+            {
+                state = BallShooterState.Swapping;
+                // stopped here
+                iTween.MoveTo(cartridgeBall, iTween.Hash("position", boxCatapult.transform.position,
+                                                         "time", 0.3 ,
+                                                         "easetype",iTween.EaseType.linear));
+                iTween.MoveTo(catapultBall, iTween.Hash("position", boxCartridge.transform.position,
+                                                        "time", 0.3 ,
+                                                        "easetype",iTween.EaseType.linear,
+                                                        "onComplete", "OnSwapBallsComplete"));
+            }
         }
     }
 

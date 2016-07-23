@@ -21,13 +21,13 @@ public class BoostShop : MonoBehaviour {
 
     void Update()
     {
-        GamePlay.Instance.GameStatus = GameState.Pause;
+        GameManager.Instance.Pause();
     }
 	
 	// Update is called once per frame
 	public void SetBoost (BoostType _boostType ) 
     {
-        GamePlay.Instance.GameStatus = GameState.Pause;
+        GameManager.Instance.Pause();
         boostType = _boostType;
         gameObject.SetActive( true );
         icon.sprite = icons[(int)_boostType];
