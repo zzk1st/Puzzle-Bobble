@@ -3,82 +3,90 @@ using System.Collections;
 using InitScriptName;
 
 
-public enum GameState
+public enum GameStatus
 {
+    None,
     Playing,
-    Highscore,
-    GameOver,
     Pause,
     Win,
-    WaitForPopup,
-    WaitAfterClose,
-    BlockedGame,
+    GameOver,
+    Demo,       // Demo模式下播放动画，但不能使用任何操作
     Tutorial,
-    PreTutorial,
-    WaitForChicken
+    PreTutorial
 }
 
-
-public class GamePlay : MonoBehaviour {
-    public static GamePlay Instance;
-    private GameState gameStatus;
+/// <summary>
+/// Game manager: 主要控制游戏进程，停止／继续，和游戏输赢后的各种动作
+///               对GameStatus，我们应该只调用它读取当前状态，而不应该通过其直接修改游戏状态
+/// </summary>
+public class GameManager : MonoBehaviour
+{
+    public static GameManager Instance;
+    private GameStatus gameStatus;
+    private GameStatus lastGameStatus;
     bool winStarted;
-    public GameState GameStatus
+    public GameStatus GameStatus
     {
-        get { return GamePlay.Instance.gameStatus; }
-        set 
-        {
-            if( GamePlay.Instance.gameStatus != value )
-            {
-                if( value == GameState.Win )
-                {
-                    if( !winStarted )
-                        StartCoroutine( WinAction ());
-                }
-                else if( value == GameState.GameOver )
-                {
-                    StartCoroutine( LoseAction() );
-                }
-                else if( value == GameState.Tutorial && gameStatus != GameState.Playing )
-                {
-                    value = GameState.Playing;
-                    gameStatus = value;
-                  //  ShowTutorial();
-                }
-                else if( value == GameState.PreTutorial && gameStatus != GameState.Playing )
-                {
-                    ShowPreTutorial();
-                }
-
-            }
-            if( value == GameState.WaitAfterClose )
-                StartCoroutine( WaitAfterClose() );
-
-            if( value == GameState.Tutorial )
-            {
-                if( gameStatus != GameState.Playing )
-                    GamePlay.Instance.gameStatus = value;
-
-            }
-          
-                    GamePlay.Instance.gameStatus = value;
-
-        }
+        get { return GameManager.Instance.gameStatus; }
     }
 
 	// Use this for initialization
 	void Start () {
         Instance = this;
+        setGameStatus(GameStatus.None);
 	}
 
     void Update()
     {
-        if(Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
-        {
-            if( Input.GetKey( KeyCode.W ) ) GamePlay.Instance.GameStatus = GameState.Win;
-        }
     }
 	
+    public void Play()
+    {
+        setGameStatus(GameStatus.Playing);
+    }
+
+    public void Win()
+    {
+        setGameStatus(GameStatus.Win);
+        if( !winStarted )
+            StartCoroutine( WinAction ());
+    }
+
+    public void Pause()
+    {
+        setGameStatus(GameStatus.Pause);
+        Time.timeScale = 0;
+    }
+
+    public void Resume()
+    {
+        setGameStatus(lastGameStatus);
+        Time.timeScale = 1;
+    }
+
+    public void GameOver()
+    {
+        setGameStatus(GameStatus.GameOver);
+        StartCoroutine(LoseAction());
+    }
+
+    public void Demo()
+    {
+        setGameStatus(GameStatus.Demo);
+    }
+
+    public void PreTutorial()
+    {
+        setGameStatus(GameStatus.PreTutorial);
+        ShowPreTutorial();
+    }
+
+    void setGameStatus(GameStatus newStatus)
+    {
+        lastGameStatus = gameStatus;
+        gameStatus = newStatus;
+    }
+
 	// Update is called once per frame
 	IEnumerator WinAction () 
     {
@@ -139,12 +147,6 @@ public class GamePlay : MonoBehaviour {
 
     }
 
-    void ShowTutorial()
-    {
-        //GameObject.Find( "Canvas" ).transform.Find( "Tutorial" ).gameObject.SetActive( true );
-        
-
-    }
     void ShowPreTutorial()
     {
         GameObject.Find( "Canvas" ).transform.Find( "PreTutorial" ).gameObject.SetActive( true );
@@ -158,12 +160,5 @@ public class GamePlay : MonoBehaviour {
         yield return new WaitForSeconds( 1.5f );
         GameObject.Find( "Canvas" ).transform.Find( "OutOfMoves" ).gameObject.SetActive( false );
         yield return new WaitForSeconds( 0.1f );
-
-    }
-
-    IEnumerator WaitAfterClose()
-    {
-        yield return new WaitForSeconds( 1 );
-        GameStatus = GameState.Playing;
     }
 }

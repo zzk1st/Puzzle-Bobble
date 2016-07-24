@@ -148,9 +148,9 @@ public class AnimationManager : MonoBehaviour
 
         if( Application.loadedLevelName == "game" )
         {
-            if( GamePlay.Instance.GameStatus == GameState.Pause )
+            if( GameManager.Instance.GameStatus == GameStatus.Pause )
             {
-                GamePlay.Instance.GameStatus = GameState.WaitAfterClose;
+                GameManager.Instance.Resume();
 
             }
         }
@@ -167,7 +167,6 @@ public class AnimationManager : MonoBehaviour
             if( InitScript.Gems >= 12 )
             {
                 InitScript.Instance.SpendGems( 12 );
-                GamePlay.Instance.GameStatus = GameState.WaitAfterClose;
                 gameObject.SetActive( false );
 
             }
@@ -203,7 +202,7 @@ public class AnimationManager : MonoBehaviour
     public void PlayTutorial()
     {
 //        SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.click );
-        GamePlay.Instance.GameStatus = GameState.Playing;
+        GameManager.Instance.Play();
 //        CloseMenu();
     }
 
@@ -374,11 +373,11 @@ public class AnimationManager : MonoBehaviour
 
     public void FiveBallsBoost()
     {
-        if( GamePlay.Instance.GameStatus != GameState.Playing ) return;
+        if( GameManager.Instance.GameStatus != GameStatus.Playing ) return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
         if( InitScript.Instance.FiveBallsBoost > 0 )
         {
-            if( GamePlay.Instance.GameStatus == GameState.Playing )
+            if( GameManager.Instance.GameStatus == GameStatus.Playing )
                 InitScript.Instance.SpendBoost( BoostType.FiveBallsBoost );
         }
         else
@@ -388,11 +387,11 @@ public class AnimationManager : MonoBehaviour
     }
     public void ColorBallBoost()
     {
-        if( GamePlay.Instance.GameStatus != GameState.Playing ) return;
+        if( GameManager.Instance.GameStatus != GameStatus.Playing ) return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
         if( InitScript.Instance.ColorBallBoost > 0 )
         {
-            if( GamePlay.Instance.GameStatus == GameState.Playing )
+            if( GameManager.Instance.GameStatus == GameStatus.Playing )
                 InitScript.Instance.SpendBoost( BoostType.ColorBallBoost );
         }
         else
@@ -403,11 +402,11 @@ public class AnimationManager : MonoBehaviour
     }
     public void FireBallBoost()
     {
-        if( GamePlay.Instance.GameStatus != GameState.Playing ) return;
+        if( GameManager.Instance.GameStatus != GameStatus.Playing ) return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
         if( InitScript.Instance.FireBallBoost > 0 )
         {
-            if( GamePlay.Instance.GameStatus == GameState.Playing )
+            if( GameManager.Instance.GameStatus == GameStatus.Playing )
                 InitScript.Instance.SpendBoost( BoostType.FireBallBoost );
         }
         else

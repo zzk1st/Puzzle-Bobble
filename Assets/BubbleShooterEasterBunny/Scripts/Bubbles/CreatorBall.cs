@@ -48,7 +48,7 @@ public class CreatorBall : MonoBehaviour
             GameObject ob = GameObject.Find( "-Meshes" );
             ob.transform.position += Vector3.up * 2f;
             LockLevelRounded slider = ob.AddComponent<LockLevelRounded>();
-            GamePlay.Instance.GameStatus = GameState.PreTutorial;
+            GameManager.Instance.PreTutorial();
         }
         createMesh();
         LoadMap( LevelData.map );
@@ -199,7 +199,8 @@ public class CreatorBall : MonoBehaviour
     {
         yield return new WaitForSeconds( 0.1f );
         if( !inGameCheck )
-            GamePlay.Instance.GameStatus = GameState.BlockedGame;
+            GameManager.Instance.Demo();
+
         bool up = false;
         List<float> table = new List<float>();
         // lineY(WorldSpace)，表示整个球的底部应该移到的位置
@@ -264,13 +265,8 @@ public class CreatorBall : MonoBehaviour
             }
         }
 
-        //Debug.Log("lift finished");
-        if( GamePlay.Instance.GameStatus == GameState.BlockedGame )
-            GamePlay.Instance.GameStatus = GameState.PreTutorial;
-        else if( GamePlay.Instance.GameStatus != GameState.GameOver && GamePlay.Instance.GameStatus != GameState.Win )
-            GamePlay.Instance.GameStatus = GameState.Playing;
-
-
+        if( GameManager.Instance.GameStatus == GameStatus.Demo )
+            GameManager.Instance.PreTutorial();
     }
 
     public void MoveLevelDown()
@@ -343,7 +339,7 @@ public class CreatorBall : MonoBehaviour
             color = (BallColor)LevelData.colorsDict[UnityEngine.Random.Range( 0, LevelData.colorsDict.Count )];
 		if( newball && mainscript.colorsDict.Count > 0 )
         {
-            if( GamePlay.Instance.GameStatus == GameState.Playing )
+            if( GameManager.Instance.GameStatus == GameStatus.Playing )
             {
                 mainscript.Instance.GetColorsInGame();
                 color = (BallColor)mainscript.colorsDict[UnityEngine.Random.Range( 0, mainscript.colorsDict.Count )];
@@ -372,7 +368,7 @@ public class CreatorBall : MonoBehaviour
             Rigidbody2D rig = b.AddComponent<Rigidbody2D>();
             b.GetComponent<CircleCollider2D>().enabled = false;
             rig.gravityScale = 0;
-            if( GamePlay.Instance.GameStatus == GameState.Playing )
+            if( GameManager.Instance.GameStatus == GameStatus.Playing )
                 b.GetComponent<Animation>().Play();
         }
         else

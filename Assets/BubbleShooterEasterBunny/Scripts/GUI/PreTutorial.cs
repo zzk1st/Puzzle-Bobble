@@ -16,7 +16,7 @@ public class PreTutorial : MonoBehaviour {
         
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.swish[1] );
 
-        GamePlay.Instance.GameStatus = GameState.Tutorial;
+        GameManager.Instance.Play();
         gameObject.SetActive( false );
 
         mainscript.Instance.ballShooter.Initialize();

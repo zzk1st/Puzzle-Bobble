@@ -67,7 +67,7 @@ public class Ball : MonoBehaviour
         // newBall表示这是不是一个准备发射的ball
         if (!ClickOnGUI() &&
             state == BallState.ReadyToShoot && 
-            !mainscript.Instance.gameOver && GamePlay.Instance.GameStatus == GameState.Playing)
+            !mainscript.Instance.gameOver && GameManager.Instance.GameStatus == GameStatus.Playing)
         {
             Vector3 pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
             if (pos.y > bottomBoarderY && !mainscript.StopControl)
