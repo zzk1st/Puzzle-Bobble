@@ -86,9 +86,14 @@ public class mainscript : MonoBehaviour {
     public Hashtable animTable = new Hashtable();
     public GameObject FireEffect;
     private BallShooter _ballShooter;
+    private ScoreManager _scoreManager;
     public BallShooter ballShooter
     {
         get { return _ballShooter; }
+    }
+    public ScoreManager scoreManager
+    {
+        get { return _scoreManager; }
     }
 
     public static int doubleScore=1;
@@ -224,7 +229,7 @@ public class mainscript : MonoBehaviour {
     public void PopupScore(int value, Vector3 pos)
     {
         Score += value;
-        Transform parent = GameObject.Find( "CanvasScore" ).transform;
+        Transform parent = GameObject.Find( "Scores" ).transform;
         GameObject poptxt = Instantiate( popupScore, pos, Quaternion.identity ) as GameObject;
         poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
         poptxt.transform.SetParent( parent );
@@ -282,33 +287,41 @@ public class mainscript : MonoBehaviour {
         else if ( LevelData.mode == ModeGame.Animals && TargetCounter >= TotalTargets && GamePlay.Instance.GameStatus == GameState.Playing )
             GamePlay.Instance.GameStatus = GameState.Win;
 
-        ProgressBarScript.Instance.UpdateDisplay( (float)score * 100f / ( (float)LevelData.star1 / ( ( LevelData.star1 * 100f / LevelData.star3 ) ) * 100f ) / 100f );
 
-        if ( score >= LevelData.star1 && stars <= 0 )
+        //计算进度条应显示当前分数占最高级别（三星）的百分之多少
+        ProgressBarScript.Instance.UpdateDisplay((float)score / LevelData.stars[2]);
+
+        //更新星星个数
+        if (stars < 3)
+            stars += score / LevelData.stars[stars];
+        for (int i = 0; i < stars; ++i)
+            starsObject[i].SetActive(true);
+
+        /*if ( score >= LevelData.stars[0] && stars <= 0 )
         {
             stars = 1;
         }
-        if ( score >= LevelData.star2 && stars <= 1 )
+        if ( score >= LevelData.stars[1] && stars <= 1 )
         {
             stars = 2;
         }
-        if ( score >= LevelData.star3 && stars <= 2 )
+        if ( score >= LevelData.stars[2] && stars <= 2 )
         {
             stars = 3;
-        }
+        }*/
 
-        if ( score >= LevelData.star1 )
+        /*if ( score >= LevelData.stars[0] )
         {
             starsObject[0].SetActive( true );
         }
-        if ( score >= LevelData.star2 )
+        if ( score >= LevelData.stars[1] )
         {
             starsObject[1].SetActive( true );
         }
-        if ( score >= LevelData.star3 )
+        if ( score >= LevelData.stars[2] )
         {
             starsObject[2].SetActive( true );
-        }
+        }*/
         
 	}
 

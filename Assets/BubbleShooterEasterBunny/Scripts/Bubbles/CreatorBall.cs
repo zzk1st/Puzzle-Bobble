@@ -114,9 +114,10 @@ public class CreatorBall : MonoBehaviour
             {
                 string blocksString = line.Replace("STARS", string.Empty).Trim();
                 string[] blocksNumbers = blocksString.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
-                LevelData.star1 = int.Parse(blocksNumbers[0]);
-                LevelData.star2 = int.Parse(blocksNumbers[1]);
-                LevelData.star3 = int.Parse(blocksNumbers[2]);
+                for (int i = 0; i < 3; ++i)
+                {
+                    LevelData.stars[i] = int.Parse(blocksNumbers[i]);
+                }
             }
             else
             { //Maps

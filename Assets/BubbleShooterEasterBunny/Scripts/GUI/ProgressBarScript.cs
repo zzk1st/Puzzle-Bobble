@@ -49,8 +49,8 @@ public class ProgressBarScript : MonoBehaviour {
     void PrepareStars()
     {
         float width = GetComponent<RectTransform>().rect.width;
-        transform.Find( "Star1" ).localPosition = new Vector3( LevelData.star1 * 100 / LevelData.star3 * width / 100 - ( width / 2f ), transform.Find( "Star1" ).localPosition.y, 0 );
-        transform.Find( "Star2" ).localPosition = new Vector3( LevelData.star2 * 100 / LevelData.star3 * width / 100 - ( width / 2f ), transform.Find( "Star2" ).localPosition.y, 0 );
+        transform.Find( "Star1" ).localPosition = new Vector3( (float)LevelData.stars[0] / LevelData.stars[2] * width - ( width / 2f ), transform.Find( "Star1" ).localPosition.y, 0 );
+        transform.Find( "Star2" ).localPosition = new Vector3( (float)LevelData.stars[1] / LevelData.stars[2] * width - ( width / 2f ), transform.Find( "Star2" ).localPosition.y, 0 );
     }
 
 }

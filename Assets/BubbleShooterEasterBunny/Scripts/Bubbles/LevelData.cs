@@ -37,9 +37,7 @@ public class LevelData
     public static Dictionary<int, BallColor> colorsDict = new Dictionary<int, BallColor>();
     static int key;
     public static int colors;
-    public static int star1;
-    public static int star2;
-    public static int star3;
+    public static int[] stars = new int[3];
     public static void LoadDataFromXML(int currentLevel)
     {
         requestMissions.Clear();
@@ -143,9 +141,9 @@ public class LevelData
             if (element.GetAttribute("name") == "GM") mode = (ModeGame)int.Parse(element.GetAttribute("value"));
             if (element.GetAttribute("name") == "LMT") limitAmount = int.Parse(element.GetAttribute("value"));
             if (element.GetAttribute("name") == "COLORS") colors = int.Parse(element.GetAttribute("value"));
-            if (element.GetAttribute("name") == "STAR1") star1 = int.Parse(element.GetAttribute("value"));
-            if (element.GetAttribute("name") == "STAR2") star2 = int.Parse(element.GetAttribute("value"));
-            if (element.GetAttribute("name") == "STAR3") star3 = int.Parse(element.GetAttribute("value"));
+            if (element.GetAttribute("name") == "STAR1") stars[0] = int.Parse(element.GetAttribute("value"));
+            if (element.GetAttribute("name") == "STAR2") stars[1] = int.Parse(element.GetAttribute("value"));
+            if (element.GetAttribute("name") == "STAR3") stars[2] = int.Parse(element.GetAttribute("value"));
             //    Debug.Log(element.GetAttribute("value"));
         }
 
