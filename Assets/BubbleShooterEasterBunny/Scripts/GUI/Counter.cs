@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine.UI;
 using InitScriptName;
+using UnityEngine.SceneManagement;
+
 public class Counter : MonoBehaviour {
   //  UILabel label;
     Text label;
@@ -65,7 +67,7 @@ public class Counter : MonoBehaviour {
 
     string GetTarget()
     {
-        if( Application.loadedLevelName == "map" )
+        if( SceneManager.GetActiveScene().name == "map" )
         {
             if( InitScript.Instance.currentTarget == Target.Top ) return "Clear the top";
             else if( InitScript.Instance.currentTarget == Target.Chicken ) return "Rescue the chicken";

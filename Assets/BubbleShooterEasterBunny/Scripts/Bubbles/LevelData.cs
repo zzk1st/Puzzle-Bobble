@@ -151,7 +151,7 @@ public class LevelData
         colorsDict.Clear();
         key = 0;
 
-        BallColor exceptedColor = BallColor.violet;
+        //BallColor exceptedColor = BallColor.violet;
 
         for (int i = 0; i < CreatorBall.rows; i++)
         {
@@ -191,7 +191,7 @@ public class LevelData
                 BallColor randCol = BallColor.yellow;
                 while (colorsDict.ContainsValue(randCol))
                 {
-                    randCol = randomList[UnityEngine.Random.RandomRange(0, randomList.Count)];
+                    randCol = randomList[UnityEngine.Random.Range(0, randomList.Count)];
                 }
                 colorsDict.Add(2 + i, randCol);
                 
@@ -238,8 +238,6 @@ public class LevelData
     {
         string[] lines = mapText.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
         LevelData.colorsDict.Clear();
-        int mapLine = 0;
-        int key = 0;
         foreach (string line in lines)
         {
             if (line.StartsWith("MODE "))

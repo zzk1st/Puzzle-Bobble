@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 using System.Collections.Generic;
 using System.Collections;
@@ -77,7 +78,7 @@ namespace InitScriptName
         public void Awake()
         {
             Instance = this;
-            if (Application.loadedLevelName == "map")
+            if (SceneManager.GetActiveScene().name == "map")
             {
                 if (GameObject.Find("Canvas").transform.Find("MenuPlay").gameObject.activeSelf) GameObject.Find("Canvas").transform.Find("MenuPlay").gameObject.SetActive(false);
 
@@ -292,7 +293,7 @@ namespace InitScriptName
             PlayerPrefs.SetFloat("RestLifeTimer", RestLifeTimer);
             //		}
             PlayerPrefs.SetInt("Lifes", Lifes);
-            if (Application.loadedLevel != 2)
+            if (SceneManager.sceneCount != 2)
                 PlayerPrefs.SetString("DateOfExit", DateTime.Now.ToString());
             PlayerPrefs.SetInt("Gems", Gems);
             PlayerPrefs.Save();

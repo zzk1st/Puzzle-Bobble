@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using UnityEngine.SceneManagement;
 
 public class CreatorBall : MonoBehaviour
 {
@@ -156,7 +157,7 @@ public class CreatorBall : MonoBehaviour
                 BallColor randCol = BallColor.yellow;
                 while (LevelData.colorsDict.ContainsValue(randCol))
                 {
-                    randCol = randomList[UnityEngine.Random.RandomRange(0, randomList.Count)];
+                    randCol = randomList[UnityEngine.Random.Range(0, randomList.Count)];
                 }
                 LevelData.colorsDict.Add(2 + i, randCol);
 
@@ -169,7 +170,7 @@ public class CreatorBall : MonoBehaviour
     public void LoadMap( int[] pMap )
     {
         map = pMap;
-        int key = -1;
+        //int key = -1;
         int roww = 0;
         for( int i = 0; i < rows; i++ )
         {
@@ -246,8 +247,8 @@ public class CreatorBall : MonoBehaviour
             Vector3 targetPos = Meshes.transform.position + Vector3.up * targetY;
             float startTime = Time.time;
             Vector3 startPos = Meshes.transform.position;
-            float speed = 0.5f;
-            float distCovered = 0;
+            //float speed = 0.5f;
+            //float distCovered = 0;
             while (Math.Abs(Meshes.transform.position.y - targetPos.y) > 0.1f)
             {
                 float realSpeed = InitialMoveUpSpeed * Time.deltaTime;

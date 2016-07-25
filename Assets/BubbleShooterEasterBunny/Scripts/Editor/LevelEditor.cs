@@ -552,9 +552,9 @@ public class LevelEditor : EditorWindow
         TextAsset mapText = Resources.Load("Levels/" + currentLevel) as TextAsset;
         if (mapText == null)
         {
-            return false;
             SaveLevel();
             mapText = Resources.Load("Levels/" + currentLevel) as TextAsset;
+            return false;
         }
         ProcessGameDataFromString(mapText.text);
         return true;

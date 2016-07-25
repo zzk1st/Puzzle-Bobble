@@ -4,7 +4,7 @@ using System;
 using UnityEngine.UI;
 using InitScriptName;
 using System.Collections.Generic;
-
+using UnityEngine.SceneManagement;
 
 
 public class AnimationManager : MonoBehaviour
@@ -139,14 +139,14 @@ public class AnimationManager : MonoBehaviour
         }
         if( gameObject.name == "MenuComplete" )
         {
-             Application.LoadLevel( "map" );
+            SceneManager.LoadScene("map");
         }
         if( gameObject.name == "MenuGameOver" )
         {
-            Application.LoadLevel( "map" );
+            SceneManager.LoadScene( "map" );
         }
 
-        if( Application.loadedLevelName == "game" )
+        if( SceneManager.GetActiveScene().name == "game")
         {
             if( GameManager.Instance.GameStatus == GameStatus.Pause )
             {
@@ -177,7 +177,7 @@ public class AnimationManager : MonoBehaviour
         }
         else if( gameObject.name == "MenuGameOver" )
         {
-            Application.LoadLevel( "map" );
+            SceneManager.LoadScene( "map" );
         }
         else if( gameObject.name == "MenuPlay" )
         {
@@ -185,7 +185,7 @@ public class AnimationManager : MonoBehaviour
             {
                 InitScript.Instance.SpendLife( 1 );
 
-                Application.LoadLevel( "game" );
+                SceneManager.LoadScene( "game" );
             }
             else
             {
@@ -195,7 +195,7 @@ public class AnimationManager : MonoBehaviour
         }
         else if( gameObject.name == "PlayMain" )
         {
-            Application.LoadLevel( "map" );
+            SceneManager.LoadScene( "map" );
         }
     }
 
@@ -359,8 +359,8 @@ public class AnimationManager : MonoBehaviour
 
     public void Quit()
     {
-        if( Application.loadedLevelName == "game" )
-            Application.LoadLevel( "map" );
+        if( SceneManager.GetActiveScene().name == "game" )
+            SceneManager.LoadScene( "map" );
         else
             Application.Quit();
     }

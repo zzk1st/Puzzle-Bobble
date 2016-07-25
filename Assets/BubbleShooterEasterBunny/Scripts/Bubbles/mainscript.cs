@@ -193,7 +193,7 @@ public class mainscript : MonoBehaviour {
         _platformController = meshes.GetComponent<PlatformController>();
         bottomBorder = GameObject.Find("BottomBorder");
 
-        RandomizeWaitTime();
+        //RandomizeWaitTime();
         score = 0;
         if (PlayerPrefs.GetInt("noSound") == 1) noSound = true;
     }
@@ -366,11 +366,11 @@ public class mainscript : MonoBehaviour {
 		//gameObject.GetComponent<Detonator>().Explode();
 	}
 	
-	void RandomizeWaitTime()
+	/*void RandomizeWaitTime()
 	{
 	    const float minimumWaitTime = 5f;
 	    const float maximumWaitTime = 10f;
-	}
+	}*/
 	
 	public IEnumerator destroyAloneBalls()
     {
