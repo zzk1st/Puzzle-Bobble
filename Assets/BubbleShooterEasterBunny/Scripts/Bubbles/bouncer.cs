@@ -8,7 +8,6 @@ public class bouncer : MonoBehaviour
     bool isPaused;
     public bool startBounce;
     float startTime;
-    public float offset;
 
     // Use this for initialization
     void Start()

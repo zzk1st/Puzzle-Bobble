@@ -407,7 +407,7 @@ public class mainscript : MonoBehaviour {
 
         // 当所有ball掉落之后，很多nearby balls发生改变，重新连接nearby balls
         connectNearBallsGlobal();
-        StartCoroutine(CreatorBall.Instance.connectAllBallsToMeshes());
+        CreatorBall.Instance.connectAllBallsToMeshes();
 		dropingDown = false;
 
 		// 下面这几步是为了让新产生的球不再有以前没有出现过的颜色

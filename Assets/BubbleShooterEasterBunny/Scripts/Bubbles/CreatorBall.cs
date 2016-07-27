@@ -53,8 +53,8 @@ public class CreatorBall : MonoBehaviour
         }
         createMesh();
         LoadMap( LevelData.map );
+        connectAllBallsToMeshes();
         Camera.main.GetComponent<mainscript>().connectNearBallsGlobal();
-        StartCoroutine( connectAllBallsToMeshes() );
     }
 
     public void LoadLevel()
@@ -281,7 +281,7 @@ public class CreatorBall : MonoBehaviour
     }
 
     // 该函数用来遍历每个grid，寻找其对应位置的fixed ball，然后将两者connect起来
-    public IEnumerator connectAllBallsToMeshes()
+    public void connectAllBallsToMeshes()
     {
         GameObject[] meshes = GameObject.FindGameObjectsWithTag( "Mesh" );
         int ballLayer = LayerMask.NameToLayer("FixedBall");
@@ -296,8 +296,6 @@ public class CreatorBall : MonoBehaviour
         }
 
         mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
-        // 这是干什么用的？
-        yield return new WaitForSeconds( 0.5f );
     }
 
     public void EnableGridColliders()
@@ -480,7 +478,6 @@ public class CreatorBall : MonoBehaviour
                 //Debug.Log(String.Format("row={0}, col={1}, LocalPosition={2}, WorldPosition={3}", j, i, b.transform.localPosition, b.transform.position));
                 GameObject[] fixedBalls = GameObject.FindGameObjectsWithTag( "Mesh" );
                 newMesh.name = newMesh.name + fixedBalls.Length.ToString();
-                newMesh.GetComponent<Grid>().offset = offset;
                 squares.Add(newMesh);
                 lastRow = j;
             }
@@ -503,7 +500,6 @@ public class CreatorBall : MonoBehaviour
             b.transform.position = v;
             GameObject[] fixedBalls = GameObject.FindGameObjectsWithTag( "Mesh" );
             b.name = b.name + fixedBalls.Length.ToString();
-            b.GetComponent<Grid>().offset = offset;
             squares.Add( b );
         }
         lastRow = j;

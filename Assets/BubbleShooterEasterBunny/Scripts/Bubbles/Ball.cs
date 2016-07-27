@@ -52,6 +52,8 @@ public class Ball : MonoBehaviour
     private float ballAnimForce = 0.15f;    // 播放碰撞动画时，给每个球施加的力，力越大位移越大
     private float ballAnimSpeed = 5f;       // 播放碰撞动画的速度，数越大播放越快
 
+    private Vector2 speedBeforeColl; // 球在撞击前最后的速度
+
     // Use this for initialization
     void Start ()
     {
@@ -95,7 +97,6 @@ public class Ball : MonoBehaviour
         grid.Busy = this.gameObject;
         meshPos = grid.gameObject.transform.position;
         LocalMeshPos = grid.gameObject.transform.localPosition;
-        GetComponent<bouncer>().offset = grid.offset;
 
         mainscript.Instance.platformController.UpdateLocalMinYFromSingleBall(this);
     }
@@ -246,7 +247,7 @@ public class Ball : MonoBehaviour
 
         //连接周围的ball，结果记录在ball自己的nearBalls里（一个ArrayList）
         int layerMask = 1 << LayerMask.NameToLayer("FixedBall");
-        Collider2D[] nearbyBallsColl = Physics2D.OverlapCircleAll(transform.position, 2.2f * CreatorBall.Instance.BallRealRadius, layerMask);
+        Collider2D[] nearbyBallsColl = Physics2D.OverlapCircleAll(meshPos, 2.2f * CreatorBall.Instance.BallRealRadius, layerMask);
 
         foreach (Collider2D nearbyBallColl in nearbyBallsColl)
         {
@@ -278,7 +279,9 @@ public class Ball : MonoBehaviour
                     ConnectToGrid(meshCollided.gameObject.GetComponent<Grid>());
                     transform.parent = ballsNode.transform;
                     // TODO: 找到一种更好的办法让击打的ball移动到meshPos
-                    transform.position = meshPos;
+                    //transform.position = meshPos;
+                    iTween.MoveTo(gameObject, iTween.Hash("position", meshPos, "speed", speedBeforeColl.magnitude));
+
                     break;
                 }
             }
@@ -299,10 +302,11 @@ public class Ball : MonoBehaviour
         {
             Hashtable animTable = mainscript.Instance.animTable;
             animTable.Clear();
+            animTable.Add(gameObject, gameObject);
             // start hit animation
             // TODO: 改进HitAnim，变成有慢动作的效果，并且增加newball本身的anim，删掉FixedUpdate()里强制设成meshPos
             // 现在的newball直接回到meshPos，太丑了
-            PlayHitAnim (meshPos, animTable);
+            PlayHitAnim(meshPos, animTable);
         }
 
         CreatorBall.Instance.OffGridColliders();
@@ -314,7 +318,7 @@ public class Ball : MonoBehaviour
     {
         // 对该球周围的所有球（该球自己除外），调用每个球的PlayHitAnimCorStart
         int layerMask = 1 << LayerMask.NameToLayer ("FixedBall");
-        Collider2D[] fixedBalls = Physics2D.OverlapCircleAll (transform.position, 0.5f, layerMask);
+        Collider2D[] fixedBalls = Physics2D.OverlapCircleAll(transform.position, 0.5f, layerMask);
         // 该参数控制球受力大小
         foreach (Collider2D obj in fixedBalls) {
             if (!animTable.ContainsKey (obj.gameObject) && obj.gameObject != gameObject && animTable.Count < 20)
@@ -424,6 +428,7 @@ public class Ball : MonoBehaviour
         this.enabled = false;
 
         flying = false;
+        speedBeforeColl = GetComponent<Rigidbody2D>().velocity;
         // 设置circle collider
         CircleCollider2D cc = GetComponent<CircleCollider2D>();
         cc.offset = Vector2.zero;
