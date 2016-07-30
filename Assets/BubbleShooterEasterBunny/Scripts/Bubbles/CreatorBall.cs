@@ -17,7 +17,6 @@ public class CreatorBall : MonoBehaviour
     GameObject ball;
     public static int columns = 11;
     public static int rows = 70;
-    public static List<Vector2> grid = new List<Vector2>();
     int lastRow;
     float offsetStep = 0.33f;
     //private OTSpriteBatch spriteBatch = null;  
@@ -26,8 +25,6 @@ public class CreatorBall : MonoBehaviour
     public List<GameObject> squares = new List<GameObject>();       // 存储了所有用来做mesh的box
     int[] map;
     private int maxCols;
-    private int maxRows;
-    private LIMIT limitType;
 
     // Use this for initialization
     void Start()
@@ -46,15 +43,13 @@ public class CreatorBall : MonoBehaviour
             // GameObject.Find( "TopBorder" ).transform.position += Vector3.down * 3.5f;
             GameObject.Find( "TopBorder" ).transform.parent = null;
             GameObject.Find( "TopBorder" ).GetComponent<SpriteRenderer>().enabled = false;
-            GameObject ob = GameObject.Find( "-Meshes" );
+            GameObject ob = GameObject.Find( "-Grids" );
             ob.transform.position += Vector3.up * 2f;
-            LockLevelRounded slider = ob.AddComponent<LockLevelRounded>();
             GameManager.Instance.PreTutorial();
         }
-        createMesh();
+
+        mainscript.Instance.gridManager.CreateGrids(rows, columns);
         LoadMap( LevelData.map );
-        connectAllBallsToMeshes();
-        Camera.main.GetComponent<mainscript>().connectNearBallsGlobal();
     }
 
     public void LoadLevel()
@@ -97,13 +92,13 @@ public class CreatorBall : MonoBehaviour
                 string blocksString = line.Replace("SIZE", string.Empty).Trim();
                 string[] sizes = blocksString.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
                 maxCols = int.Parse(sizes[0]);
-                maxRows = int.Parse(sizes[1]);
+                //maxRows = int.Parse(sizes[1]);
             }
             else if (line.StartsWith("LIMIT "))
             {
                 string blocksString = line.Replace("LIMIT", string.Empty).Trim();
                 string[] sizes = blocksString.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
-                limitType = (LIMIT)int.Parse(sizes[0]);
+                //limitType = (LIMIT)int.Parse(sizes[0]);
                 // 注意：sizes[1]本来是用于限制每关球数量，我们取消了
             }
             else if (line.StartsWith("COLOR LIMIT "))
@@ -181,11 +176,11 @@ public class CreatorBall : MonoBehaviour
                 {
                     roww = i;
                     if (LevelData.mode == ModeGame.Rounded) roww = i +4;
-                    createBall( GetSquare(roww, j ).transform.position, (BallColor)mapValue, false, i );
+                    createBall(mainscript.Instance.gridManager.GetGrid(roww, j).transform.position, (BallColor)mapValue, false, i );
                 }
                 else if( mapValue == 0 && LevelData.mode == ModeGame.Vertical && i == 0 )
                 {
-                    Instantiate( Resources.Load( "Prefabs/TargetStar" ), GetSquare( i, j ).transform.position, Quaternion.identity );
+                    //Instantiate( Resources.Load( "Prefabs/TargetStar" ), GetSquare( i, j ).transform.position, Quaternion.identity );
                 }
             }
         }
@@ -202,7 +197,6 @@ public class CreatorBall : MonoBehaviour
         if( !inGameCheck )
             GameManager.Instance.Demo();
 
-        bool up = false;
         List<float> table = new List<float>();
         // lineY(WorldSpace)，表示整个球的底部应该移到的位置
         float lineY = -1.3f;//GameObject.Find( "GameOverBorder" ).transform.position.y;
@@ -226,7 +220,6 @@ public class CreatorBall : MonoBehaviour
                 else if( item.position.y < lineY + 1f )
                 {
                     table.Add( item.position.y );
-                    up = true;
                 }
             }
             i++;
@@ -235,14 +228,14 @@ public class CreatorBall : MonoBehaviour
 
         if( table.Count > 0 )
         {
-            if( up ) AddMesh();
+            //if( up ) AddMesh();
 
             // 球的底部和lineY要求的位置差多少（WorldSpace)
             float targetY = 0;
             table.Sort();
             if( !inGameCheck ) targetY = lineY - table[0] + 2.5f;
             else targetY = lineY - table[0] + 1.5f;
-            GameObject Meshes = GameObject.Find( "-Meshes" );
+            GameObject Meshes = GameObject.Find( "-Grids" );
             Rigidbody2D rb = Meshes.GetComponent<Rigidbody2D>();
             Vector3 targetPos = Meshes.transform.position + Vector3.up * targetY;
             float startTime = Time.time;
@@ -278,39 +271,6 @@ public class CreatorBall : MonoBehaviour
     private bool BubbleBelowLine()
     {
         throw new System.NotImplementedException();
-    }
-
-    // 该函数用来遍历每个grid，寻找其对应位置的fixed ball，然后将两者connect起来
-    public void connectAllBallsToMeshes()
-    {
-        GameObject[] meshes = GameObject.FindGameObjectsWithTag( "Mesh" );
-        int ballLayer = LayerMask.NameToLayer("FixedBall");
-        foreach( GameObject mesh in meshes )
-        {
-            Vector2 meshPos = mesh.transform.position;
-            Collider2D[] fixedBalls = Physics2D.OverlapCircleAll( meshPos, 0.2f, 1 << ballLayer);
-            foreach( Collider2D fixedBall in fixedBalls )
-            {
-                fixedBall.gameObject.GetComponent<Ball>().ConnectToGrid(mesh.GetComponent<Grid>());
-            }
-        }
-
-        mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
-    }
-
-    public void EnableGridColliders()
-    {
-        foreach( GameObject item in squares )
-        {
-            item.GetComponent<BoxCollider2D>().enabled = true;
-        }
-    }
-    public void OffGridColliders()
-    {
-        foreach( GameObject item in squares )
-        {
-            item.GetComponent<BoxCollider2D>().enabled = false;
-        }
     }
 
     public void createRow( int j )
@@ -377,6 +337,8 @@ public class CreatorBall : MonoBehaviour
             b.transform.parent = Meshes.transform;
             b.GetComponent<Ball>().enabled = false;
             b.GetComponent<CircleCollider2D>().offset = Vector2.zero;
+            mainscript.Instance.gridManager.ConnectBallToGrid(b);
+            mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
         }
 
         return b.gameObject;
@@ -459,36 +421,10 @@ public class CreatorBall : MonoBehaviour
         return sTag;
     }
 
-    public void createMesh()
-    {
-        // mesh没有用六边形，而只用了长方形，这样判断起来效率更高
-        GameObject Meshes = GameObject.Find( "-Meshes" );
-        float offset = 0;
-        //Debug.Log(String.Format("MeshPosition={0}", Meshes.transform.position));
-        for( int j = 0; j < rows + 1; j++ )
-        {
-            for( int i = 0; i < columns; i++ )
-            {
-                if( j % 2 == 0 ) offset = 0; else offset = offsetStep;
-                GameObject newMesh = Instantiate( thePrefab, transform.position, transform.rotation ) as GameObject;
-                // 每个球最初的位置由creator的世界坐标系决定
-                Vector3 v = new Vector3( transform.position.x + i * newMesh.transform.localScale.x + offset, transform.position.y - j * newMesh.transform.localScale.y, transform.position.z );
-                newMesh.transform.parent = Meshes.transform;
-                newMesh.transform.localPosition = v;
-                //Debug.Log(String.Format("row={0}, col={1}, LocalPosition={2}, WorldPosition={3}", j, i, b.transform.localPosition, b.transform.position));
-                GameObject[] fixedBalls = GameObject.FindGameObjectsWithTag( "Mesh" );
-                newMesh.name = newMesh.name + fixedBalls.Length.ToString();
-                squares.Add(newMesh);
-                lastRow = j;
-            }
-        }
-        CreatorBall.Instance.OffGridColliders();
-
-    }
-
+    /*
     public void AddMesh()
     {
-        GameObject Meshes = GameObject.Find( "-Meshes" );
+        GameObject Meshes = GameObject.Find( "-Grids" );
         float offset = 0;
         int j = lastRow + 1;
         for( int i = 0; i < columns; i++ )
@@ -505,11 +441,5 @@ public class CreatorBall : MonoBehaviour
         lastRow = j;
 
     }
-
-    public GameObject GetSquare( int row, int col )
-    {
-        return squares[row * columns + col];
-    }
-
-
+    */
 }

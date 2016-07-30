@@ -24,7 +24,6 @@ public class bouncer : MonoBehaviour
         startBounce = true;
         startTime = Time.time;
         iTween.MoveTo(gameObject, iTween.Hash("position", vector3, "time", 0.3, "easetype", iTween.EaseType.linear, "onComplete", "OnBounceToCatapultComplete"));
-        Grid.waitForAnim = false;
     }
 
     void OnBounceToCatapultComplete()

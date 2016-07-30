@@ -33,7 +33,7 @@ public class PlatformController : MonoBehaviour
 
     void Start()
     {
-        platform = GameObject.Find("-Meshes");
+        platform = GameObject.Find("-Grids");
     }
 
     void OnCollisionEnter2D(Collision2D coll)
@@ -45,7 +45,7 @@ public class PlatformController : MonoBehaviour
                  );
     }
 
-    public void ballRemovedFromPlatform()
+    public void BallRemovedFromPlatform()
     {
         // TODO: 在dropball结束之后运行该函数
         UpdateLocalMinYFromAllFixedBalls();
@@ -93,10 +93,9 @@ public class PlatformController : MonoBehaviour
 
     public void UpdateLocalMinYFromSingleBall(Ball fixedBall)
     {
-        // 我们在这用localMeshPos而不用localPosition, 因为我们在coroutine里，localPosition可能因为动画改变，而localMeshPos更稳定
-        if (fixedBall.LocalMeshPos.y < _curFixedBallLocalMinY)
+        if (fixedBall.grid.localPos.y < _curFixedBallLocalMinY)
         {
-            _curFixedBallLocalMinY = fixedBall.LocalMeshPos.y;
+            _curFixedBallLocalMinY = fixedBall.grid.localPos.y;
         }
     }
 

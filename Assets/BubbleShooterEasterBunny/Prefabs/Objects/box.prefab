@@ -12,7 +12,7 @@ GameObject:
   - 61: {fileID: 6100000}
   m_Layer: 10
   m_Name: box
-  m_TagString: Mesh
+  m_TagString: Grid
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24,7 +24,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.040429354, y: -3.786294, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.67, y: 0.58, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -43,7 +43,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.4}
+  m_Size: {x: 0.7, y: 0.7}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -55,10 +55,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c6dadae11e95940b7aefb843b6bfeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  busy: {fileID: 0}
-  offset: 0
-  boxFirst: {fileID: 0}
-  boxSecond: {fileID: 0}
+  attachedBall: {fileID: 0}
+  Row: 0
+  Col: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
