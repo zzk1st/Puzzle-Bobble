@@ -16,6 +16,8 @@ public class Ball : MonoBehaviour
         Dropped
     };
 
+    public Grid grid;
+
     public BallState state;
 
     public float LaunchForce;
@@ -33,7 +35,6 @@ public class Ball : MonoBehaviour
     public Vector3 targetPosition;
     public float dropFadeTime;
 
-    public ArrayList nearbyBalls = new ArrayList();
     //	private OTSpriteBatch spriteBatch = null;
     GameObject ballsNode;      // 所有ball的parent
     float bottomBoarderY;  //低于此线就不能发射球
@@ -41,8 +42,6 @@ public class Ball : MonoBehaviour
     public AudioClip swish;
     public AudioClip pops;
     public AudioClip join;
-    Vector3 meshPos;        // 表示当被发射的ball发生碰撞后，应该去的位置，而这个位置是mesh决定的
-    public Vector3 LocalMeshPos;        // meshPos对应的grid local position，用于计算关卡最小y值
     bool rayTarget;
     Animation rabbit;
     private static int fireworks;
@@ -51,6 +50,7 @@ public class Ball : MonoBehaviour
 
     private float ballAnimForce = 0.15f;    // 播放碰撞动画时，给每个球施加的力，力越大位移越大
     private float ballAnimSpeed = 5f;       // 播放碰撞动画的速度，数越大播放越快
+
 
     // Use this for initialization
     void Start ()
@@ -87,25 +87,6 @@ public class Ball : MonoBehaviour
 
                 state = BallState.Flying;
             }
-        }
-    }
-
-    public void ConnectToGrid(Grid grid)
-    {
-        grid.Busy = this.gameObject;
-        meshPos = grid.gameObject.transform.position;
-        LocalMeshPos = grid.gameObject.transform.localPosition;
-        GetComponent<bouncer>().offset = grid.offset;
-
-        mainscript.Instance.platformController.UpdateLocalMinYFromSingleBall(this);
-    }
-
-    public void DisconnectFromCurrentGrid()
-    {
-        if (mesh != null)
-        {
-            Grid grid = mesh.GetComponent<Grid>();
-            grid.Busy = null;
         }
     }
 
@@ -151,7 +132,7 @@ public class Ball : MonoBehaviour
 
     public void checkNextNearestColor(ArrayList results)
     {
-        foreach (GameObject nearbyBall in nearbyBalls)
+        foreach (GameObject nearbyBall in grid.GetAdjacentBalls())
         {
             if (nearbyBall.tag == tag && !findInArray(results, nearbyBall))
             {
@@ -166,7 +147,6 @@ public class Ball : MonoBehaviour
         enabled = false;
         state = BallState.Dropped;
         transform.SetParent(null);
-        DisconnectFromCurrentGrid();
 
         // 从ball layer移除，防止之后连接nearby balls
         gameObject.layer = LayerMask.NameToLayer("FallingBall");
@@ -183,56 +163,34 @@ public class Ball : MonoBehaviour
         Destroy(gameObject, dropFadeTime);
     }
 
-    IEnumerator FlyToTarget()
-    {
-        Vector3 targetPos = new Vector3 (2.3f, 6, 0);
-        if (mainscript.Instance.TargetCounter1 < mainscript.Instance.TotalTargets)
-            mainscript.Instance.TargetCounter1++;
-
-        AnimationCurve curveX = new AnimationCurve (new Keyframe (0, transform.position.x), new Keyframe (0.5f, targetPos.x));
-        AnimationCurve curveY = new AnimationCurve (new Keyframe (0, transform.position.y), new Keyframe (0.5f, targetPos.y));
-        curveY.AddKey (0.2f, transform.position.y - 1);
-        float startTime = Time.time;
-        Vector3 startPos = transform.position;
-        float distCovered = 0;
-        while (distCovered < 0.6f) {
-            distCovered = (Time.time - startTime);
-            transform.position = new Vector3 (curveX.Evaluate (distCovered), curveY.Evaluate (distCovered), 0);
-            transform.Rotate (Vector3.back * 10);
-            yield return new WaitForEndOfFrame ();
-        }
-        Destroy (gameObject);
-
-    }
-
     public bool checkNearestBall(ArrayList ballList)
     {
         // 算法：维护一个数组，将所有有嫌疑的ball都放到数组里，然后递归调用该方法
         //      一旦出现一个在边界中或者已在controlArray中的ball，表明目前怀疑组都是clean的，清除当前b array全部球
         //      否则，继续递归调用
-        if (mainscript.Instance.TopBorder.transform.position.y - transform.position.y <= 0.5f)
+        if (grid.Row == 0)
         {
-            Camera.main.GetComponent<mainscript> ().controlArray = addFrom(ballList, Camera.main.GetComponent<mainscript> ().controlArray);
-            ballList.Clear ();
+            mainscript.Instance.controlArray = addFrom(ballList, Camera.main.GetComponent<mainscript> ().controlArray);
+            ballList.Clear();
             return true;    /// don't destroy
         }
 
-        if (findInArray(Camera.main.GetComponent<mainscript>().controlArray, gameObject))
+        if (findInArray(mainscript.Instance.controlArray, gameObject))
         {
             ballList.Clear();
             return true;
         } /// don't destroy
 
         ballList.Add(gameObject);
-        foreach (GameObject nearbyBall in nearbyBalls) {
-            if (nearbyBall != gameObject && nearbyBall != null) {
-                if (nearbyBall.gameObject.layer == LayerMask.NameToLayer("FixedBall"))
+        List<GameObject> nearbyBalls = grid.GetAdjacentBalls();
+        foreach (GameObject nearbyBall in nearbyBalls)
+        {
+            if (nearbyBall.gameObject.layer == LayerMask.NameToLayer("FixedBall"))
+            {
+                if (!findInArray(ballList, nearbyBall.gameObject))
                 {
-                    if (!findInArray (ballList, nearbyBall.gameObject))
-                    {
-                        if (nearbyBall.GetComponent<Ball>().checkNearestBall(ballList))
-                            return true;
-                    }
+                    if (nearbyBall.GetComponent<Ball>().checkNearestBall(ballList))
+                        return true;
                 }
             }
         }
@@ -240,85 +198,25 @@ public class Ball : MonoBehaviour
 
     }
 
-    public void connectNearbyBalls()
+    void pullToMesh(Transform otherBall = null)
     {
-        nearbyBalls.Clear();
 
-        //连接周围的ball，结果记录在ball自己的nearBalls里（一个ArrayList）
-        int layerMask = 1 << LayerMask.NameToLayer("FixedBall");
-        Collider2D[] nearbyBallsColl = Physics2D.OverlapCircleAll(transform.position, 2.2f * CreatorBall.Instance.BallRealRadius, layerMask);
-
-        foreach (Collider2D nearbyBallColl in nearbyBallsColl)
-        {
-            if (nearbyBallColl.gameObject != gameObject)
-            {
-                nearbyBalls.Add(nearbyBallColl.gameObject);
-            }
-        }
-    }
-
-    IEnumerator pullToMesh(Transform otherBall = null)
-    {
-        CreatorBall.Instance.EnableGridColliders();
-
-        float searchRadius = CreatorBall.Instance.BallColliderRadius;
-        // while循环用来把当前ball和grid连接起来
-        bool foundMesh = false;
-        while (!foundMesh)
-        {
-            Vector3 centerPoint = transform.position;
-            // 注意在这里，系统根据球的位置试图找到所有的collider2D，实际是在寻找与之对应的mesh
-            // 只寻找layer 10的，就是全部的mesh
-            Collider2D[] meshesCollided = Physics2D.OverlapCircleAll(centerPoint, searchRadius, 1 << LayerMask.NameToLayer("Mesh"));
-            foreach (Collider2D meshCollided in meshesCollided)
-            {
-                if (meshCollided.gameObject.GetComponent<Grid>().Busy == null)
-                {
-                    foundMesh = true;
-                    ConnectToGrid(meshCollided.gameObject.GetComponent<Grid>());
-                    transform.parent = ballsNode.transform;
-                    // TODO: 找到一种更好的办法让击打的ball移动到meshPos
-                    transform.position = meshPos;
-                    break;
-                }
-            }
-
-            if (!foundMesh)
-                searchRadius += 0.2f;
-        }
-
-        // 将grid连接好之后，将当前ball和临近的ball都连接起来，
-        // 在消除检测发生之前，我们只需要连接该球和周围球
-        connectNearbyBalls();
-        foreach (GameObject adjacentBall in nearbyBalls)
-        {
-            adjacentBall.GetComponent<Ball>().connectNearbyBalls();
-        }
-
-        if (foundMesh)
-        {
-            Hashtable animTable = mainscript.Instance.animTable;
-            animTable.Clear();
-            // start hit animation
-            // TODO: 改进HitAnim，变成有慢动作的效果，并且增加newball本身的anim，删掉FixedUpdate()里强制设成meshPos
-            // 现在的newball直接回到meshPos，太丑了
-            PlayHitAnim (meshPos, animTable);
-        }
-
-        CreatorBall.Instance.OffGridColliders();
-
-        yield return new WaitForEndOfFrame();
+        Hashtable animTable = mainscript.Instance.animTable;
+        animTable.Clear();
+        animTable.Add(gameObject, gameObject);
+        // start hit animation
+        // TODO: 改进HitAnim，变成有慢动作的效果，并且增加newball本身的anim，删掉FixedUpdate()里强制设成meshPos
+        // 现在的newball直接回到meshPos，太丑了
+        PlayHitAnim(grid.pos, animTable);
     }
 
     public void PlayHitAnim(Vector3 newBallPos, Hashtable animTable)
     {
         // 对该球周围的所有球（该球自己除外），调用每个球的PlayHitAnimCorStart
-        int layerMask = 1 << LayerMask.NameToLayer ("FixedBall");
-        Collider2D[] fixedBalls = Physics2D.OverlapCircleAll (transform.position, 0.5f, layerMask);
-        // 该参数控制球受力大小
-        foreach (Collider2D obj in fixedBalls) {
-            if (!animTable.ContainsKey (obj.gameObject) && obj.gameObject != gameObject && animTable.Count < 20)
-                obj.GetComponent<Ball> ().PlayHitAnimCorStart (newBallPos, animTable);
+        List<GameObject> fixedBalls = mainscript.Instance.gridManager.GetAdjacentBalls(gameObject);
+        foreach (GameObject ball in fixedBalls) {
+            if (!animTable.ContainsKey (ball) && ball != gameObject && animTable.Count < 20)
+                ball.GetComponent<Ball> ().PlayHitAnimCorStart(newBallPos, animTable);
         }
     }
 
@@ -419,22 +317,28 @@ public class Ball : MonoBehaviour
     void StopBall(bool pulltoMesh = true, Transform otherBall = null)
     {
         state = BallState.Fixed;
+        transform.parent = ballsNode.transform;
         gameObject.layer = LayerMask.NameToLayer("FixedBall");
-        Camera.main.GetComponent<mainscript> ().checkBall = gameObject;
         this.enabled = false;
 
         flying = false;
+        Vector2 speedBeforeColl = GetComponent<Rigidbody2D>().velocity;
+        // 删掉RigidBody2D，彻底让mesh接管运动
+        Destroy(GetComponent<Rigidbody2D>());
+
         // 设置circle collider
         CircleCollider2D cc = GetComponent<CircleCollider2D>();
         cc.offset = Vector2.zero;
         cc.isTrigger = true;
-        // 删掉RigidBody2D，彻底让mesh接管运动
-        Destroy(GetComponent<Rigidbody2D>());
 
-        //推动其它ball
-        //注意：将当前ball摆到正确位置的代码也在这里
-        //if( pulltoMesh )
-        StartCoroutine(pullToMesh(otherBall));
+        mainscript.Instance.gridManager.ConnectBallToGrid(gameObject);
+        mainscript.Instance.platformController.UpdateLocalMinYFromSingleBall(this);
+
+        mainscript.Instance.checkBall = gameObject;
+
+        iTween.MoveTo(gameObject, iTween.Hash("position", grid.pos, "speed", speedBeforeColl.magnitude));
+
+        pullToMesh(otherBall);
     }
 
     public void SplashDestroy ()

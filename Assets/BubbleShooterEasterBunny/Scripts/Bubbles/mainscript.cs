@@ -55,7 +55,6 @@ public class mainscript : MonoBehaviour {
 	const int STAGE_8 = 6900;
 	const int STAGE_9 = 8500;
 	public ArrayList controlArray = new ArrayList();
-	public bool dropingDown;
 	public bool isPaused;
 	public bool noSound;
 	public bool gameOver;
@@ -86,21 +85,29 @@ public class mainscript : MonoBehaviour {
     public Hashtable animTable = new Hashtable();
     public GameObject FireEffect;
     private BallShooter _ballShooter;
-    private ScoreManager _scoreManager;
+    //private ScoreManager _scoreManager;
     public BallShooter ballShooter
     {
         get { return _ballShooter; }
     }
+    /*
     public ScoreManager scoreManager
     {
         get { return _scoreManager; }
     }
+    */
 
     public static int doubleScore=1;
     private PlatformController _platformController;
     public PlatformController platformController
     {
         get { return _platformController; }
+    }
+
+    private GridManager _gridManager;
+    public GridManager gridManager
+    {
+        get { return _gridManager; }
     }
     
     public int TotalTargets;
@@ -188,9 +195,10 @@ public class mainscript : MonoBehaviour {
 
     void Start()
     {
+        meshes = GameObject.Find("-Grids");
         _ballShooter = GameObject.Find("BallShooter").GetComponent<BallShooter>();
-        meshes = GameObject.Find("-Meshes");
         _platformController = meshes.GetComponent<PlatformController>();
+        _gridManager = meshes.GetComponent<GridManager>();
         bottomBorder = GameObject.Find("BottomBorder");
 
         //RandomizeWaitTime();
@@ -254,7 +262,8 @@ public class mainscript : MonoBehaviour {
         {
             // 找到同色的ball并将其销毁
             checkNearestColorAndDelete(checkBall);
-            StartCoroutine(destroyAloneBalls());
+            StartCoroutine(DestroyAloneBalls());
+
             checkBall = null;
         }
     }
@@ -332,58 +341,17 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-	public void connectNearBallsGlobal()
+	public IEnumerator DestroyAloneBalls()
     {
-		fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
-		foreach(GameObject obj in fixedBalls)
-        {
-			if(obj.layer == LayerMask.NameToLayer("FixedBall"))  // 只能是ball layer里的，falling balls被排除
-            {
-                obj.GetComponent<Ball>().connectNearbyBalls();
-            }
-		}
-	}
-
-    public void dropUp()
-    {
-        if (!dropingDown)
-        {
-            CreatorBall.Instance.AddMesh();
-            dropingDown = true;
-            GameObject meshes = GameObject.Find("-Meshes");
-            iTween.MoveAdd(meshes, iTween.Hash("y", 0.5f, "time", 0.3, "easetype", iTween.EaseType.linear, "onComplete", "OnMoveFinished"));
-
-        }
-  
-    }
-
-    void OnMoveFinished()
-    {
-        dropingDown = false;
-    }
-
-	public void explode(GameObject gameObject){
-		//gameObject.GetComponent<Detonator>().Explode();
-	}
-	
-	/*void RandomizeWaitTime()
-	{
-	    const float minimumWaitTime = 5f;
-	    const float maximumWaitTime = 10f;
-	}*/
-	
-	public IEnumerator destroyAloneBalls()
-    {
-        //yield return new WaitForSeconds( Mathf.Clamp( (float)countOfPreparedToDestroy / 50, 0.6f, (float)countOfPreparedToDestroy / 50 ) );
 		GameObject[] fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];			// detect alone balls
-		Camera.main.GetComponent<mainscript>().controlArray.Clear();
+        mainscript.Instance.controlArray.Clear();
 
         ArrayList ballsToDrop = new ArrayList();
 		foreach(GameObject obj in fixedBalls)
         {
             if (obj.layer == LayerMask.NameToLayer("FixedBall"))
             {
-				if (!findInArray(Camera.main.GetComponent<mainscript>().controlArray, obj.gameObject))
+                if (!findInArray(mainscript.Instance.controlArray, obj.gameObject))
                 {
 					ArrayList b = new ArrayList();
 					// 详见checkNearestBall的注释
@@ -392,7 +360,6 @@ public class mainscript : MonoBehaviour {
                     {
                         ballsToDrop.AddRange(b);
 					}
-
 				}
 			}	
 		}
@@ -402,13 +369,8 @@ public class mainscript : MonoBehaviour {
         if (ballsToDrop.Count > 0)
         {
             DropBalls(ballsToDrop);
-            platformController.ballRemovedFromPlatform();
+            platformController.BallRemovedFromPlatform();
         }
-
-        // 当所有ball掉落之后，很多nearby balls发生改变，重新连接nearby balls
-        connectNearBallsGlobal();
-        StartCoroutine(CreatorBall.Instance.connectAllBallsToMeshes());
-		dropingDown = false;
 
 		// 下面这几步是为了让新产生的球不再有以前没有出现过的颜色
         GetColorsInGame();
@@ -457,11 +419,6 @@ public class mainscript : MonoBehaviour {
 		return false;
 	}
 	
-	void playPop(){
-	//	if(!Camera.main.GetComponent<mainscript>().noSound) SoundBase.Instance.audio.PlayOneShot(SoundBase.Instance.Pops);
-			//AudioSource.PlayClipAtPoint(pops, transform.position);
-	}
-	
     // DropBalls, 注意和DestroyBalls并不相同，后者是让球爆炸，这个是让球落下
 	public void DropBalls(ArrayList ballsToDrop)
     {
@@ -486,8 +443,8 @@ public class mainscript : MonoBehaviour {
         // 该方法用来查找是否有其它ball与之相连，形成三个或以上的ball，如果有则将其销毁
         Ball checkBall = checkBallGO.GetComponent<Ball>();
 
-        ArrayList ballsToDelete = new ArrayList ();
-        ballsToDelete.Add (checkBallGO);
+        ArrayList ballsToDelete = new ArrayList();
+        ballsToDelete.Add(checkBallGO);
         checkBall.checkNextNearestColor(ballsToDelete);
         mainscript.Instance.countOfPreparedToDestroy = ballsToDelete.Count;
 
@@ -497,15 +454,13 @@ public class mainscript : MonoBehaviour {
             // 在这里调用coroutine将其销毁
             DestroyBalls(ballsToDelete, 0.00001f);
 
-            platformController.ballRemovedFromPlatform();
+            platformController.BallRemovedFromPlatform();
         }
         if (ballsToDelete.Count < 3)
         {
             Camera.main.GetComponent<mainscript> ().bounceCounter++;
             mainscript.Instance.ComboCount = 0;
         }
-
-        Camera.main.GetComponent<mainscript> ().dropingDown = false;
     }
 
     void DestroyBalls(ArrayList balls, float speed = 0.1f)
@@ -517,7 +472,7 @@ public class mainscript : MonoBehaviour {
         foreach (GameObject ballGO in balls)
         {
             Ball ball = ballGO.GetComponent<Ball>();
-            ball.DisconnectFromCurrentGrid();   // 从meshes里删除引用
+            ball.grid.DisonnectBall();
             ballGO.layer = LayerMask.NameToLayer("ExplodedBall");   // 从ball layer移除，防止之后connect nearball时候再连上
             ballGO.GetComponent<CircleCollider2D>().enabled = false;    //删掉CircleCollider，防止再碰撞检测
 
@@ -534,8 +489,6 @@ public class mainscript : MonoBehaviour {
                 mainscript.Instance.perfect.SetActive(true);
         }
         mainscript.Instance.PopupScore(scoreCounter, transform.position);
-        // 在balls被destroyed后，需要重新计算每个球的nearby balls，以便后边计算falling balls
-        mainscript.Instance.connectNearBallsGlobal();
         mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
     }
 }

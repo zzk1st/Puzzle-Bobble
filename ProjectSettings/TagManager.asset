@@ -4,7 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Mesh
+  - Grid
   - FxTemporaire
   - orange
   - red
@@ -28,6 +28,7 @@ TagManager:
   - light
   - black_hole
   - dir_indicator
+  - Mesh
   layers:
   - Default
   - TransparentFX
@@ -39,7 +40,7 @@ TagManager:
   - 
   - gui
   - FixedBall
-  - Mesh
+  - Grid
   - Obstacles
   - Pot
   - FallingBall
