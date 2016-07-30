@@ -109,13 +109,13 @@ public class AnimationManager : MonoBehaviour
     IEnumerator MenuCompleteScoring()
     {
         Text scores = transform.Find( "Image" ).Find( "Scores" ).GetComponent<Text>();
-        for( int i = 0; i <= mainscript.Score; i += 500 )
+        for( int i = 0; i <= ScoreManager.Score; i += 500 )
         {
             scores.text = "" + i;
             // SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.scoring );
             yield return new WaitForSeconds( 0.00001f );
         }
-        scores.text = "" + mainscript.Score;
+        scores.text = "" + ScoreManager.Score;
     }
 
 

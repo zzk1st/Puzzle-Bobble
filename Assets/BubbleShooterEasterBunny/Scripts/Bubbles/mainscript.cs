@@ -36,14 +36,8 @@ public class mainscript : MonoBehaviour {
 	public Vector2[][] meshArray;
 	int offset;
 	public GameObject checkBall;
-    private static int score;
     private float curFixedBallLocalMinY; // 当前所有fixed balls的最小y值，用来测试关卡是否过线
 
-    public static int Score
-    {
-        get { return mainscript.score; }
-        set { mainscript.score = value; }
-    }
 	public static int stage = 1;
 	const int STAGE_1 = 0;
 	const int STAGE_2 = 300;
@@ -142,8 +136,6 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-    public GameObject popupScore;
-
     private int TargetCounter;
 
     public int TargetCounter1
@@ -202,7 +194,7 @@ public class mainscript : MonoBehaviour {
         bottomBorder = GameObject.Find("BottomBorder");
 
         //RandomizeWaitTime();
-        score = 0;
+        ScoreManager.Score = 0;
         if (PlayerPrefs.GetInt("noSound") == 1) noSound = true;
     }
 
@@ -230,17 +222,6 @@ public class mainscript : MonoBehaviour {
                 yield return new WaitForSeconds( 3 );
                 arrows.SetActive( false );
         }
-    }
-
-    public void PopupScore(int value, Vector3 pos)
-    {
-        Score += value;
-        Transform parent = GameObject.Find( "Scores" ).transform;
-        GameObject poptxt = Instantiate( popupScore, pos, Quaternion.identity ) as GameObject;
-        poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
-        poptxt.transform.SetParent( parent );
-        poptxt.transform.localScale = Vector3.one;
-        Destroy( poptxt, 1 );
     }
 
 	public void SwitchLianaBoost(){
@@ -292,39 +273,13 @@ public class mainscript : MonoBehaviour {
 
 
         //计算进度条应显示当前分数占最高级别（三星）的百分之多少
-        ProgressBarScript.Instance.UpdateDisplay((float)score / LevelData.stars[2]);
+        ProgressBarScript.Instance.UpdateDisplay((float)ScoreManager.Score / LevelData.stars[2]);
 
         //更新星星个数
         if (stars < 3)
-            stars += score / LevelData.stars[stars];
+            stars += ScoreManager.Score / LevelData.stars[stars];
         for (int i = 0; i < stars; ++i)
             starsObject[i].SetActive(true);
-
-        /*if ( score >= LevelData.stars[0] && stars <= 0 )
-        {
-            stars = 1;
-        }
-        if ( score >= LevelData.stars[1] && stars <= 1 )
-        {
-            stars = 2;
-        }
-        if ( score >= LevelData.stars[2] && stars <= 2 )
-        {
-            stars = 3;
-        }*/
-
-        /*if ( score >= LevelData.stars[0] )
-        {
-            starsObject[0].SetActive( true );
-        }
-        if ( score >= LevelData.stars[1] )
-        {
-            starsObject[1].SetActive( true );
-        }
-        if ( score >= LevelData.stars[2] )
-        {
-            starsObject[2].SetActive( true );
-        }*/
         
 	}
 
@@ -488,7 +443,7 @@ public class mainscript : MonoBehaviour {
             if (balls.Count > 10 && Random.Range(0, 10) > 5)
                 mainscript.Instance.perfect.SetActive(true);
         }
-        mainscript.Instance.PopupScore(scoreCounter, transform.position);
+        ScoreManager.Instance.PopupScore(scoreCounter, transform.position);
         mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
     }
 }
