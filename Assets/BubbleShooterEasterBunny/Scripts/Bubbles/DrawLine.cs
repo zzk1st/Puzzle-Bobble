@@ -103,6 +103,7 @@ public class DrawLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         if (Input.GetMouseButtonDown(0))
         {
             draw = true;
@@ -194,5 +195,6 @@ public class DrawLine : MonoBehaviour
             HidePoints();
         }
 
+*/
     }
 }
