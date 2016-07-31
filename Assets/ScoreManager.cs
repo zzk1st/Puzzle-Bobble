@@ -37,9 +37,11 @@ public class ScoreManager : MonoBehaviour {
 
 	}
 
-    int ComboScore(int numBalls)
+    public int UpdateComboScore(int numBalls)
     {
-        return numBalls * comboFactor * 10;
+        int val = numBalls * comboFactor * 10;
+        currentScore += val;
+        return val;
     }
     
     int Fib(int n)
@@ -51,19 +53,22 @@ public class ScoreManager : MonoBehaviour {
         return Fib(n - 1) + Fib(n - 2);
     }
 
-    int FallingScore(int numBalls)
+    public int UpdateFallingScore(int numBalls)
     {
-        return Fib(numBalls) * 10;
+        int val = numBalls * numBalls * 10;
+        currentScore += val;
+        return val;
     }
 
-    int PlayedTimeScore(int playedTime)
+    public int UpdatePlayedTimeScore(int playedTime)
     {
-        return (int)(timeScoreLowerBound + (fastestTime / playedTime) * (timeScoreUpperBound - timeScoreLowerBound));
+        int val = (int)(timeScoreLowerBound + (fastestTime / playedTime) * (timeScoreUpperBound - timeScoreLowerBound));
+        currentScore += val;
+        return val;
     }
 
-    public void PopupScore(int value, Vector3 pos)
+    public void PopupComboScore(int value, Vector3 pos)
     {
-        currentScore += value;
         Transform parent = GameObject.Find("Scores").transform;
         GameObject poptxt = Instantiate(popupScore, pos, Quaternion.identity) as GameObject;
         poptxt.transform.GetComponentInChildren<Text>().text = "" + value;

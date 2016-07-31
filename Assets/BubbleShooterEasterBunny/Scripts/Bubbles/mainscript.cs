@@ -378,20 +378,26 @@ public class mainscript : MonoBehaviour {
 	public void DropBalls(ArrayList ballsToDrop)
     {
 		Camera.main.GetComponent<mainscript>().bounceCounter = 0;
-		int scoreCounter = 0;
-		int rate = 0;
+
+        // 这里的score累加似乎没用 先注释了
+		/*int scoreCounter = 0;
+		int rate = 0;*/
 
         foreach(GameObject ball in ballsToDrop) {
-			if(scoreCounter > 3){
+			/*if(scoreCounter > 3){
 				rate +=3;
 				scoreCounter += rate;
 			}
-			scoreCounter ++;
+			scoreCounter ++;*/
 
 			// 让没接上的ball都掉落
             ball.GetComponent<Ball>().StartFall();
 		}
-	}
+        // 调用ScoreManager里针对掉落球的分数更新函数
+        int val = ScoreManager.Instance.UpdateFallingScore(ballsToDrop.Count);
+
+        //ScoreManager.Instance.PopupComboScore(val, transform.position);
+    }
 
     public void checkNearestColorAndDelete(GameObject checkBallGO)
     {
@@ -421,8 +427,6 @@ public class mainscript : MonoBehaviour {
     void DestroyBalls(ArrayList balls, float speed = 0.1f)
     {
         Camera.main.GetComponent<mainscript> ().bounceCounter = 0;
-        int scoreCounter = 0;
-        int rate = 0;
         int soundPool = 0;
         foreach (GameObject ballGO in balls)
         {
@@ -435,15 +439,11 @@ public class mainscript : MonoBehaviour {
             ball.Explode();
 
             soundPool++;
-            if (scoreCounter > 3) {
-                rate += 10;
-                scoreCounter += rate;
-            }
-            scoreCounter += 10;
-            if (balls.Count > 10 && Random.Range(0, 10) > 5)
-                mainscript.Instance.perfect.SetActive(true);
         }
-        ScoreManager.Instance.PopupScore(scoreCounter, transform.position);
+        //调用ScoreManager里爆炸球的分数更新函数
+        int val = ScoreManager.Instance.UpdateComboScore(balls.Count);
+
+        ScoreManager.Instance.PopupComboScore(val, transform.position);
         mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
     }
 }
