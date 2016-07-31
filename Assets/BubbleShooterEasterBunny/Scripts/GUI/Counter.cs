@@ -16,7 +16,7 @@ public class Counter : MonoBehaviour {
 	void Update () {
         if( name == "Scores" || name == "Score" )
         {
-            label.text = "" + mainscript.Score;
+            label.text = "" + ScoreManager.Score;
         }
         if( name == "Level" )
         {

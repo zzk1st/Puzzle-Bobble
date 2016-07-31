@@ -8015,6 +8015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d8a05735ce8294085fd45d888496b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupScore: {fileID: 100000, guid: 045b1a17bc5268b419f9a7fa7af3c2ba, type: 2}
 --- !u!4 &980524004
 Transform:
   m_ObjectHideFlags: 0

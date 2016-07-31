@@ -1,22 +1,39 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class ScoreManager : MonoBehaviour {
 
+    public static ScoreManager Instance;
+
     private static int numLevels = 666;
-    private int[] highScores = new int[numLevels];
-    private int[] fastestTime = new int[numLevels];
-    private int currentLevel = 0;
-    private long currentScore = 0;
-    private int timeScoreLowerBound = 1000;
-    private int timeScoreUpperBound = 100000;
-    public int comboFactor = 1;
-    public int playedTime = 0;
+    private static int highScore = 0;
+    private static float fastestTime = 0;
+    private static int currentLevel = 0;
+    private static int currentScore = 0;
+    private static int timeScoreLowerBound = 1000;
+    private static int timeScoreUpperBound = 100000;
+    public static int comboFactor = 1;
+    public static int playedTime = 0;
+    public GameObject popupScore;
+
+    public static int Score
+    {
+        get { return ScoreManager.currentScore; }
+        set { ScoreManager.currentScore = value; }
+    }
 
 	// Use this for initialization
 	void Start () {
-	    // 初始化各种分数参数
-        // 调入当前关卡currentLevel和当前分数(应该是0)
+        Instance = this;
+        // 初始化各种分数参数
+        currentLevel = PlayerPrefs.GetInt("OpenLevel");
+        string scoreName = "HighScore" + currentLevel.ToString();
+        if (PlayerPrefs.HasKey(scoreName))
+            highScore = PlayerPrefs.GetInt(scoreName);
+        string timeName = "Time" + currentLevel.ToString();
+        if (PlayerPrefs.HasKey(timeName))
+            fastestTime = PlayerPrefs.GetFloat(timeName);
 
 	}
 
@@ -41,12 +58,22 @@ public class ScoreManager : MonoBehaviour {
 
     int PlayedTimeScore(int playedTime)
     {
-        return (int)(timeScoreLowerBound + ((float)fastestTime[currentLevel] / playedTime) * (timeScoreUpperBound - timeScoreLowerBound));
+        return (int)(timeScoreLowerBound + (fastestTime / playedTime) * (timeScoreUpperBound - timeScoreLowerBound));
     }
-	
-	// Update is called once per frame
-	void Update () {
-        // 更新分数
+
+    public void PopupScore(int value, Vector3 pos)
+    {
+        currentScore += value;
+        Transform parent = GameObject.Find("Scores").transform;
+        GameObject poptxt = Instantiate(popupScore, pos, Quaternion.identity) as GameObject;
+        poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
+        poptxt.transform.SetParent(parent);
+        poptxt.transform.localScale = Vector3.one;
+        Destroy(poptxt, 1);
+    }
+
+    // Update is called once per frame
+    void Update () {
 	    // 显示分数
 	}
 }
