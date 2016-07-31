@@ -98,27 +98,16 @@ MonoBehaviour:
   boosts:
   - {fileID: 21300000, guid: f462ea89e9892e84d9bc35ef559a8095, type: 3}
   - {fileID: 21300000, guid: 7c12fc33ea5c19f4999085809829f965, type: 3}
-  forceVect: {x: 0, y: 0, z: 0}
   flying: 0
   startTime: 0
   mesh: {fileID: 0}
-  meshArray: []
-  row: 0
-  str: 
   targetPosition: {x: 0, y: 0, z: 0}
   dropFadeTime: 0.5
-  ballsNode: {fileID: 0}
-  bottomBoarderY: 0
-  isPaused: 0
   swish: {fileID: 0}
   pops: {fileID: 0}
   join: {fileID: 0}
-  rayTarget: 0
-  rabbit: {fileID: 0}
-  touchedTop: 0
-  animStarted: 0
-  ballAnimForce: 0.15
-  ballAnimSpeed: 5
+  explosionPrefab: {fileID: 100004, guid: acb381b49b4c930408b9c5c77c54f600, type: 2}
+  fireTrailPrefab: {fileID: 100004, guid: 8d630e3da9ae7674d95c236d1daf8b79, type: 2}
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -130,11 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8ff7449bda01c14e9fed3536b655055, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tempPosition: {x: 0, y: 0, z: 0}
-  targetPrepare: {x: 0, y: 0, z: 0}
-  isPaused: 0
   startBounce: 0
-  startTime: 0
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1

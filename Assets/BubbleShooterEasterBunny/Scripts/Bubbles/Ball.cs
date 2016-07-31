@@ -51,6 +51,10 @@ public class Ball : MonoBehaviour
     private float ballAnimForce = 0.15f;    // 播放碰撞动画时，给每个球施加的力，力越大位移越大
     private float ballAnimSpeed = 5f;       // 播放碰撞动画的速度，数越大播放越快
 
+    public GameObject explosionPrefab;
+    public GameObject fireTrailPrefab;
+
+    private GameObject fireTrail;
 
     // Use this for initialization
     void Start ()
@@ -85,6 +89,9 @@ public class Ball : MonoBehaviour
                 Vector2 direction = pos - transform.position;
                 GetComponent<Rigidbody2D>().AddForce(direction.normalized * LaunchForce, ForceMode2D.Force);
 
+                // 生成火球轨迹的prefab
+                fireTrail = (GameObject)Instantiate(fireTrailPrefab, gameObject.transform.position, Quaternion.identity);
+                fireTrail.transform.parent = transform;
                 state = BallState.Flying;
             }
         }
@@ -317,6 +324,7 @@ public class Ball : MonoBehaviour
     void StopBall(bool pulltoMesh = true, Transform otherBall = null)
     {
         state = BallState.Fixed;
+
         transform.parent = ballsNode.transform;
         gameObject.layer = LayerMask.NameToLayer("FixedBall");
         this.enabled = false;
@@ -330,6 +338,8 @@ public class Ball : MonoBehaviour
         CircleCollider2D cc = GetComponent<CircleCollider2D>();
         cc.offset = Vector2.zero;
         cc.isTrigger = true;
+
+        Destroy(fireTrail, 0.5f);
 
         mainscript.Instance.gridManager.ConnectBallToGrid(gameObject);
         mainscript.Instance.platformController.UpdateLocalMinYFromSingleBall(this);
@@ -378,10 +388,8 @@ public class Ball : MonoBehaviour
         // 播放完膨胀的动画之后让球不再显示
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
 
-        //      yield return new WaitForSeconds(0.01f );
-        GameObject prefab = Resources.Load ("Particles/BubbleExplosion") as GameObject;
+        GameObject explosion = (GameObject)Instantiate (explosionPrefab, gameObject.transform.position, Quaternion.identity);
 
-        GameObject explosion = (GameObject)Instantiate (prefab, gameObject.transform.position + Vector3.back * 20f, Quaternion.identity);
         if (mesh != null)
             explosion.transform.parent = mesh.transform;
 
