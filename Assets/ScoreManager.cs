@@ -6,14 +6,14 @@ public class ScoreManager : MonoBehaviour {
 
     public static ScoreManager Instance;
 
-    private static int numLevels = 666;
     private static int highScore = 0;
     private static float fastestTime = 0;
     private static int currentLevel = 0;
     private static int currentScore = 0;
     private static int timeScoreLowerBound = 1000;
     private static int timeScoreUpperBound = 100000;
-    public static int comboFactor = 1;
+    private static int comboCount = 1;
+    private static int doubleScore = 1;
     public static int playedTime = 0;
     public GameObject popupScore;
 
@@ -23,8 +23,32 @@ public class ScoreManager : MonoBehaviour {
         set { ScoreManager.currentScore = value; }
     }
 
-	// Use this for initialization
-	void Start () {
+    public int ComboCount
+    {
+        get { return comboCount; }
+        set
+        {
+            comboCount = value;
+            if (value > 0)
+            {
+                SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[Mathf.Clamp(value - 1, 0, 5)]);
+                if (value >= 6)
+                {
+                    SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[5]);
+                    //FireEffect.SetActive(true);
+                    doubleScore = 2;
+                }
+            }
+            else
+            {
+                //FireEffect.SetActive(false);
+                doubleScore = 1;
+            }
+        }
+    }
+
+    // Use this for initialization
+    void Start () {
         Instance = this;
         // 初始化各种分数参数
         currentLevel = PlayerPrefs.GetInt("OpenLevel");
@@ -39,18 +63,9 @@ public class ScoreManager : MonoBehaviour {
 
     public int UpdateComboScore(int numBalls)
     {
-        int val = numBalls * comboFactor * 10;
+        int val = numBalls * comboCount * doubleScore * 10;
         currentScore += val;
         return val;
-    }
-    
-    int Fib(int n)
-    {
-        if (n <= 0)
-            return 0;
-        if (n == 1)
-            return 1;
-        return Fib(n - 1) + Fib(n - 2);
     }
 
     public int UpdateFallingScore(int numBalls)
@@ -67,8 +82,10 @@ public class ScoreManager : MonoBehaviour {
         return val;
     }
 
+    // 在Combo时候跳出来的text
     public void PopupComboScore(int value, Vector3 pos)
     {
+        //TODO: 不知为啥现在出来的text是缺颜色的(黑色)
         Transform parent = GameObject.Find("Scores").transform;
         GameObject poptxt = Instantiate(popupScore, pos, Quaternion.identity) as GameObject;
         poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
@@ -79,6 +96,6 @@ public class ScoreManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-	    // 显示分数
+	    // 可以当分数或者某些条件满足的时候放一些特效在此处
 	}
 }

@@ -187,8 +187,17 @@ public class Ball : MonoBehaviour
             ballList.Clear();
             return true;
         } /// don't destroy
-
-        ballList.Add(gameObject);
+        /*int targetHash = gameObject.GetHashCode();
+        bool hasSeen = false;
+        foreach (GameObject ball in ballList)
+        {
+            if (ball.GetHashCode() == targetHash)
+            {
+                hasSeen = true;
+            }
+        }
+        if (!hasSeen)*/
+            ballList.Add(gameObject);
         List<GameObject> nearbyBalls = grid.GetAdjacentBalls();
         foreach (GameObject nearbyBall in nearbyBalls)
         {

@@ -110,32 +110,6 @@ public class mainscript : MonoBehaviour {
 
     public static Dictionary<int, BallColor> colorsDict = new Dictionary<int, BallColor>();
 
-    private int _ComboCount;
-
-    public int ComboCount
-    {
-        get { return _ComboCount; }
-        set 
-        { 
-            _ComboCount = value;
-            if( value > 0 )
-            {
-                SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[Mathf.Clamp(value-1, 0 , 5)]);
-                if( value >= 6 )
-                {
-                    SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[5]);
-                    FireEffect.SetActive( true );
-                    doubleScore = 2;
-                }
-            }
-            else
-            {
-                FireEffect.SetActive( false );
-                doubleScore = 1;
-            }
-        }
-    }
-
     private int TargetCounter;
 
     public int TargetCounter1
@@ -277,7 +251,7 @@ public class mainscript : MonoBehaviour {
 
         //更新星星个数
         if (stars < 3)
-            stars += ScoreManager.Score / LevelData.stars[stars];
+            stars += Mathf.Min(1, ScoreManager.Score / LevelData.stars[stars]);
         for (int i = 0; i < stars; ++i)
             starsObject[i].SetActive(true);
         
@@ -304,7 +278,7 @@ public class mainscript : MonoBehaviour {
         ArrayList ballsToDrop = new ArrayList();
 		foreach(GameObject obj in fixedBalls)
         {
-            if (obj.layer == LayerMask.NameToLayer("FixedBall"))
+            if (obj.layer == LayerMask.NameToLayer("FixedBall") && !findInArray(ballsToDrop, obj))
             {
                 if (!findInArray(mainscript.Instance.controlArray, obj.gameObject))
                 {
@@ -411,7 +385,7 @@ public class mainscript : MonoBehaviour {
 
         if (ballsToDelete.Count >= 3)
         {
-            mainscript.Instance.ComboCount++;
+            ScoreManager.Instance.ComboCount++;
             // 在这里调用coroutine将其销毁
             DestroyBalls(ballsToDelete, 0.00001f);
 
@@ -420,7 +394,7 @@ public class mainscript : MonoBehaviour {
         if (ballsToDelete.Count < 3)
         {
             Camera.main.GetComponent<mainscript> ().bounceCounter++;
-            mainscript.Instance.ComboCount = 0;
+            ScoreManager.Instance.ComboCount = 0;
         }
     }
 
