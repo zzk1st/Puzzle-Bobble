@@ -214,7 +214,7 @@ public class Ball : MonoBehaviour
 
     }
 
-    void pullToMesh(Transform otherBall = null)
+    void pullToMesh()
     {
 
         Hashtable animTable = mainscript.Instance.animTable;
@@ -309,7 +309,7 @@ public class Ball : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.name.Contains ("ball") && flying)
+        if (other.gameObject.name.Contains ("ball"))
         {
             //当一个ball作为发射ball的时候，ball script是enabled的
             //一旦它碰到了其它ball（stopBall设成true），那么这个ball script就会被disable
@@ -317,20 +317,16 @@ public class Ball : MonoBehaviour
             // 注意script被disable之后，其变量仍然可用，函数依然可调用，只是callback不起作用了
             if (!other.gameObject.GetComponent<Ball>().enabled)
             {
-                StopBall(true, other.transform);
-            }
-        } 
-        else if (other.gameObject.name == "TopBorder" && flying)
-        {
-            if (LevelData.mode == ModeGame.Vertical || LevelData.mode == ModeGame.Animals)
-            {
-                transform.position = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
                 StopBall();
             }
+        } 
+        else if (other.gameObject.name == "TopBorder")
+        {
+            StopBall();
         }
     }
 
-    void StopBall(bool pulltoMesh = true, Transform otherBall = null)
+    void StopBall()
     {
         state = BallState.Fixed;
 
@@ -357,7 +353,7 @@ public class Ball : MonoBehaviour
 
         iTween.MoveTo(gameObject, iTween.Hash("position", grid.pos, "speed", speedBeforeColl.magnitude));
 
-        pullToMesh(otherBall);
+        pullToMesh();
     }
 
     public void SplashDestroy ()

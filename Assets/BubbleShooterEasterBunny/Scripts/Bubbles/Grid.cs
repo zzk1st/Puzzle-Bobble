@@ -105,12 +105,26 @@ public class Grid : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        Gizmos.DrawWireCube(transform.position, transform.localScale);
+        Vector3 scale = transform.localScale;
+        scale -= new Vector3(0.1f, 0.1f, 0.1f);
+
+        if (attachedBall != null)
+        {
+            Gizmos.color = Color.green;
+        }
+        else
+        {
+            Gizmos.color = Color.gray;
+        }
+
+        Gizmos.DrawWireCube(transform.position, scale);
     }
 
     void OnDrawGizmosSelected()
     {
+        Vector3 scale = transform.localScale;
+        scale -= new Vector3(0.1f, 0.1f, 0.1f);
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position, transform.localScale);
+        Gizmos.DrawWireCube(transform.position, scale);
     }
 }
