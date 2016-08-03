@@ -29,6 +29,7 @@ TagManager:
   - black_hole
   - dir_indicator
   - Mesh
+  - Shadow
   layers:
   - Default
   - TransparentFX
@@ -50,7 +51,7 @@ TagManager:
   - NewBall
   - ParticleLayer
   - ExplodedBall
-  - 
+  - Shadow
   - 
   - 
   - 

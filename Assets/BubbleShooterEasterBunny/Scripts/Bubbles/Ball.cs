@@ -76,7 +76,6 @@ public class Ball : MonoBehaviour
             Vector3 pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
             if (pos.y > bottomBoarderY && !mainscript.StopControl)
             {
-                rabbit.Play ("rabbit_move");
                 SoundBase.Instance.GetComponent<AudioSource> ().PlayOneShot (SoundBase.Instance.swish [0]);
                 GetComponent<CircleCollider2D> ().enabled = true;
 
@@ -390,8 +389,9 @@ public class Ball : MonoBehaviour
             // WaitForEndOfFrame的作用是等到渲染全部完成但没放到屏幕之前
             yield return new WaitForEndOfFrame();
         }
-        // 播放完膨胀的动画之后让球不再显示
+        // 播放完膨胀的动画之后让球及其阴影都不再显示
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 
         GameObject explosion = (GameObject)Instantiate (explosionPrefab, gameObject.transform.position, Quaternion.identity);
 
