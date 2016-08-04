@@ -5,34 +5,42 @@ using InitScriptName;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
+public enum BallColor
+{
+    blue = 1,
+    green,
+    red,
+    violet,
+    yellow,
+    random,
+    chicken
+}
+
 public class Ball : MonoBehaviour
 {
-    public enum BallState {
+    public enum BallState
+    {
         Waiting,
         ReadyToShoot,
         Flying,
         Fixed,
         Exploded,
         Dropped
-    };
+    }
+
+    public Sprite[] colorSprites;
+    public BallColor color;
 
     public Grid grid;
 
     public BallState state;
 
     public float LaunchForce;
-    public Sprite[] sprites;
-    public Sprite[] boosts;
 
     //	 public OTSprite sprite;                    // This star's sprite class
     Vector3 forceVect;
     public bool flying;
     public float startTime;
-    public GameObject mesh;         //表示new ball发生碰撞后被attach到的mesh
-    Vector2[] meshArray;
-    float row;
-    string str;
-    public Vector3 targetPosition;
     public float dropFadeTime;
 
     //	private OTSpriteBatch spriteBatch = null;
@@ -42,8 +50,6 @@ public class Ball : MonoBehaviour
     public AudioClip swish;
     public AudioClip pops;
     public AudioClip join;
-    bool rayTarget;
-    Animation rabbit;
     private static int fireworks;
     private bool touchedTop;
     private bool animStarted;
@@ -51,18 +57,27 @@ public class Ball : MonoBehaviour
     private float ballAnimForce = 0.15f;    // 播放碰撞动画时，给每个球施加的力，力越大位移越大
     private float ballAnimSpeed = 5f;       // 播放碰撞动画的速度，数越大播放越快
 
-    public GameObject explosionPrefab;
-    public GameObject fireTrailPrefab;
-
     private GameObject fireTrail;
 
     // Use this for initialization
     void Start ()
     {
-        rabbit = GameObject.Find ("Rabbit").gameObject.GetComponent<Animation>();
         ballsNode = GameObject.Find("-Ball");
         isPaused = mainscript.Instance.isPaused;
         bottomBoarderY = GameObject.Find("BottomBorder").transform.position.y; //获取生死线的Y坐标
+    }
+
+    public void SetColor(BallColor color)
+    {
+        this.color = color;
+        foreach (Sprite item in colorSprites)
+        {
+            if( item.name == "ball_sprite_" + color )
+            {
+                GetComponent<SpriteRenderer>().sprite = item;
+                gameObject.tag = "" + color;
+            }
+        }
     }
 
     public void Fire()
@@ -76,7 +91,6 @@ public class Ball : MonoBehaviour
             Vector3 pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
             if (pos.y > bottomBoarderY && !mainscript.StopControl)
             {
-                SoundBase.Instance.GetComponent<AudioSource> ().PlayOneShot (SoundBase.Instance.swish [0]);
                 GetComponent<CircleCollider2D> ().enabled = true;
 
                 flying = true;
@@ -88,9 +102,12 @@ public class Ball : MonoBehaviour
                 Vector2 direction = pos - transform.position;
                 GetComponent<Rigidbody2D>().AddForce(direction.normalized * LaunchForce, ForceMode2D.Force);
 
-                // 生成火球轨迹的prefab
-                fireTrail = (GameObject)Instantiate(fireTrailPrefab, gameObject.transform.position, Quaternion.identity);
+                // 生成球轨迹的prefab, 同时播放声音
+                BallFX ballFX = mainscript.Instance.ballFXManager.ballFXs[color];
+                fireTrail = (GameObject)Instantiate(ballFX.fireTrailPrefab, gameObject.transform.position, Quaternion.identity);
                 fireTrail.transform.parent = transform;
+                SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(ballFX.fireAudio);
+
                 state = BallState.Flying;
             }
         }
@@ -393,10 +410,11 @@ public class Ball : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
         transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 
-        GameObject explosion = (GameObject)Instantiate (explosionPrefab, gameObject.transform.position, Quaternion.identity);
-
-        if (mesh != null)
-            explosion.transform.parent = mesh.transform;
+        BallFX ballFX = mainscript.Instance.ballFXManager.ballFXs[color];
+        GameObject explosion = (GameObject)Instantiate (ballFX.explosionPrefab, gameObject.transform.position, Quaternion.identity);
+        if (grid != null)
+            explosion.transform.parent = grid.gameObject.transform;
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(ballFX.explosionAudio);
 
         Destroy (gameObject, 1);
 

@@ -16,15 +16,6 @@ public class Grid : MonoBehaviour
         get { return attachedBall; }
         set
         {
-            if( value != null )
-            {
-                if( value.GetComponent<Ball>() != null )
-                {
-                    value.GetComponent<Ball>().mesh = gameObject;
-                }
-
-            }
-
             attachedBall = value;
         }
     }

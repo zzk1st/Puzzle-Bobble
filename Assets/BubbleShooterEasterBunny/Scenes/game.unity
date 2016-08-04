@@ -3586,7 +3586,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 12
 --- !u!1 &448950884
 GameObject:
   m_ObjectHideFlags: 0
@@ -8981,6 +8981,72 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!1 &1498494393
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1498494395}
+  - 114: {fileID: 1498494394}
+  m_Layer: 0
+  m_Name: BallFXManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1498494394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1498494393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3492c18a5a3c40399da1f3ed7a006cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ballFXArray:
+  - color: 1
+    fireTrailPrefab: {fileID: 100004, guid: 1c5f7a38c96385d45b5a18aeffd230d5, type: 2}
+    fireAudio: {fileID: 8300000, guid: ffea3014993ae4bba97bfc415d34a9d2, type: 3}
+    explosionPrefab: {fileID: 100002, guid: f44902774d068844da61485de6c06d39, type: 2}
+    explosionAudio: {fileID: 8300000, guid: d6879f2c99f2241b3b858991847d836c, type: 3}
+  - color: 2
+    fireTrailPrefab: {fileID: 100004, guid: 85904928ec0c0c64192f67ab7429ca66, type: 2}
+    fireAudio: {fileID: 8300000, guid: ffea3014993ae4bba97bfc415d34a9d2, type: 3}
+    explosionPrefab: {fileID: 100004, guid: 35665ccb8d7722943b81209cbd7e9103, type: 2}
+    explosionAudio: {fileID: 8300000, guid: edde58e57997843d69f411b789cfc51a, type: 3}
+  - color: 3
+    fireTrailPrefab: {fileID: 100004, guid: 8d630e3da9ae7674d95c236d1daf8b79, type: 2}
+    fireAudio: {fileID: 8300000, guid: ffea3014993ae4bba97bfc415d34a9d2, type: 3}
+    explosionPrefab: {fileID: 100004, guid: acb381b49b4c930408b9c5c77c54f600, type: 2}
+    explosionAudio: {fileID: 8300000, guid: 2d73e2f1f2bf6440eb1c60a1f73d863f, type: 3}
+  - color: 4
+    fireTrailPrefab: {fileID: 100004, guid: 018c2b3ccd77c674b8e1086c44f2bbc7, type: 2}
+    fireAudio: {fileID: 8300000, guid: ffea3014993ae4bba97bfc415d34a9d2, type: 3}
+    explosionPrefab: {fileID: 100000, guid: 636a73512a30db04a9bd6209cfff82e6, type: 2}
+    explosionAudio: {fileID: 8300000, guid: 2d73e2f1f2bf6440eb1c60a1f73d863f, type: 3}
+  - color: 5
+    fireTrailPrefab: {fileID: 100004, guid: 5527884480e785d479fc476691d0fd14, type: 2}
+    fireAudio: {fileID: 8300000, guid: ffea3014993ae4bba97bfc415d34a9d2, type: 3}
+    explosionPrefab: {fileID: 100000, guid: 0d142f301e46cb44f8b703d429f489db, type: 2}
+    explosionAudio: {fileID: 8300000, guid: 2d73e2f1f2bf6440eb1c60a1f73d863f, type: 3}
+--- !u!4 &1498494395
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1498494393}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.24, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 18
 --- !u!1 &1500986334
 GameObject:
   m_ObjectHideFlags: 0

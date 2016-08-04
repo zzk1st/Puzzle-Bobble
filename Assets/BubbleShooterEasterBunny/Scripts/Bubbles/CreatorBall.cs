@@ -313,7 +313,7 @@ public class CreatorBall : MonoBehaviour
         b = Instantiate( ball, transform.position, transform.rotation ) as GameObject;
         b.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
         b.GetComponent<CircleCollider2D>().radius = BallColliderRadius;
-        b.GetComponent<ColorBallScript>().SetColor( color );
+        b.GetComponent<Ball>().SetColor(color);
 
         b.tag = "" + color;
 
@@ -343,103 +343,4 @@ public class CreatorBall : MonoBehaviour
 
         return b.gameObject;
     }
-
-    void CreateEmptyBall( Vector3 vec )
-    {
-        GameObject b2 = Instantiate( ball, transform.position, transform.rotation ) as GameObject;
-        b2.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
-        // b.transform.Rotate( new Vector3( 0f, 180f, 0f ) );
-        b2.GetComponent<ColorBallScript>().SetColor( 11 );
-        b2.transform.parent = Meshes.transform;
-        b2.tag = "empty";
-        b2.GetComponent<Ball>().enabled = false;
-        b2.gameObject.layer = 9;
-        b2.GetComponent<Animation>().Play( "cat_idle" );
-        b2.GetComponent<SpriteRenderer>().sortingOrder = 20;
-        b2.GetComponent<CircleCollider2D>().offset = Vector2.zero;
-        b2.GetComponent<CircleCollider2D>().radius = BallColliderRadius;
-
-    }
-
- 
-    int setColorFrame( string sTag )
-    {
-        int frame = 0;
-        //		if(Camera.main.GetComponent<mainscript>().hd){
-        if( sTag == "Orange" ) frame = 7;
-        else if( sTag == "Red" ) frame = 3;
-        else if( sTag == "Yellow" ) frame = 1;
-        else if( sTag == "Rainbow" ) frame = 4;
-        else if( sTag == "Pearl" ) frame = 6;
-        else if( sTag == "Blue" ) frame = 11;
-        else if( sTag == "DarkBlue" ) frame = 8;
-        else if( sTag == "Green" ) frame = 10;
-        else if( sTag == "Pink" ) frame = 5;
-        else if( sTag == "Violet" ) frame = 2;
-        else if( sTag == "Brown" ) frame = 9;
-        else if( sTag == "Gray" ) frame = 12;
-        return frame;
-    }
-
-    int setColorFrameBug( string sTag )
-    {
-        int frame = 0;
-        if( sTag == "Orange" ) frame = 5;
-        else if( sTag == "Red" ) frame = 3;
-        else if( sTag == "Yellow" ) frame = 1;
-        else if( sTag == "Rainbow" ) frame = 4;
-        else if( sTag == "Pearl" ) frame = 10;
-        else if( sTag == "Blue" ) frame = 10;
-        else if( sTag == "DarkBlue" ) frame = 8;
-        else if( sTag == "Green" ) frame = 7;
-        else if( sTag == "Pink" ) frame = 4;
-        else if( sTag == "Violet" ) frame = 2;
-        else if( sTag == "Brown" ) frame = 9;
-        else if( sTag == "Gray" ) frame = 6;
-        return frame;
-    }
-
-    public string getRandomColorTag()
-    {
-        int color = 0;
-        string sTag = "";
-        if( mainscript.stage < 6 )
-            color = UnityEngine.Random.Range( 0, 4 + mainscript.stage - 1 );
-        else
-            color = UnityEngine.Random.Range( 0, 4 + 6 );
-
-        if( color == 0 ) sTag = "Orange";
-        else if( color == 1 ) sTag = "Red";
-        else if( color == 2 ) sTag = "Yellow";
-        else if( color == 3 ) sTag = "Rainbow";
-        else if( color == 4 ) sTag = "Blue";
-        else if( color == 5 ) sTag = "Green";
-        else if( color == 6 ) sTag = "Pink";
-        else if( color == 7 ) sTag = "Violet";
-        else if( color == 8 ) sTag = "Brown";
-        else if( color == 9 ) sTag = "Gray";
-        return sTag;
-    }
-
-    /*
-    public void AddMesh()
-    {
-        GameObject Meshes = GameObject.Find( "-Grids" );
-        float offset = 0;
-        int j = lastRow + 1;
-        for( int i = 0; i < columns; i++ )
-        {
-            if( j % 2 == 0 ) offset = 0; else offset = offsetStep;
-            GameObject b = Instantiate( thePrefab, transform.position, transform.rotation ) as GameObject;
-            Vector3 v = new Vector3( transform.position.x + i * b.transform.localScale.x + offset, transform.position.y - j * b.transform.localScale.y, transform.position.z );
-            b.transform.parent = Meshes.transform;
-            b.transform.position = v;
-            GameObject[] fixedBalls = GameObject.FindGameObjectsWithTag( "Mesh" );
-            b.name = b.name + fixedBalls.Length.ToString();
-            squares.Add( b );
-        }
-        lastRow = j;
-
-    }
-    */
 }

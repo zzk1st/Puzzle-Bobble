@@ -103,6 +103,12 @@ public class mainscript : MonoBehaviour {
     {
         get { return _gridManager; }
     }
+
+    private BallFXManager _ballFXManager;
+    public BallFXManager ballFXManager
+    {
+        get { return _ballFXManager; }
+    }
     
     public int TotalTargets;
 
@@ -165,6 +171,7 @@ public class mainscript : MonoBehaviour {
         _ballShooter = GameObject.Find("BallShooter").GetComponent<BallShooter>();
         _platformController = meshes.GetComponent<PlatformController>();
         _gridManager = meshes.GetComponent<GridManager>();
+        _ballFXManager = GameObject.Find("BallFXManager").GetComponent<BallFXManager>();
         bottomBorder = GameObject.Find("BottomBorder");
 
         //RandomizeWaitTime();
