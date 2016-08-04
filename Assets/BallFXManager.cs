@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class BallFX
@@ -7,23 +8,27 @@ public class BallFX
     [SerializeField]
     public BallColor color;
     [SerializeField]
-    public GameObject particlePrefab;
+    public GameObject fireTrailPrefab;
     [SerializeField]
-    public AudioClip audio;
+    public AudioClip fireAudio;
+    [SerializeField]
+    public GameObject explosionPrefab;
+    [SerializeField]
+    public AudioClip explosionAudio;
 }
 
 public class BallFXManager : MonoBehaviour {
 
     [SerializeField]
     private BallFX[] ballFXArray;
-    public Hashtable ballFXs;
+    public Dictionary<BallColor, BallFX> ballFXs = new Dictionary<BallColor, BallFX>();
 
 	// Use this for initialization
 	void Start ()
     {
         foreach(BallFX ballFX in ballFXArray)
         {
-            ballFXs.Add(ballFX.color, ballFX);
+            ballFXs[ballFX.color] = ballFX;
         }
 	}
 }

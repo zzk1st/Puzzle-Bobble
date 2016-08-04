@@ -9008,6 +9008,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3492c18a5a3c40399da1f3ed7a006cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ballFXArray:
+  - color: 1
+    fireTrailPrefab: {fileID: 100004, guid: 1c5f7a38c96385d45b5a18aeffd230d5, type: 2}
+    fireAudio: {fileID: 8300000, guid: ffea3014993ae4bba97bfc415d34a9d2, type: 3}
+    explosionPrefab: {fileID: 100002, guid: f44902774d068844da61485de6c06d39, type: 2}
+    explosionAudio: {fileID: 8300000, guid: d6879f2c99f2241b3b858991847d836c, type: 3}
+  - color: 2
+    fireTrailPrefab: {fileID: 100004, guid: 85904928ec0c0c64192f67ab7429ca66, type: 2}
+    fireAudio: {fileID: 8300000, guid: ffea3014993ae4bba97bfc415d34a9d2, type: 3}
+    explosionPrefab: {fileID: 100004, guid: 35665ccb8d7722943b81209cbd7e9103, type: 2}
+    explosionAudio: {fileID: 8300000, guid: edde58e57997843d69f411b789cfc51a, type: 3}
+  - color: 3
+    fireTrailPrefab: {fileID: 100004, guid: 8d630e3da9ae7674d95c236d1daf8b79, type: 2}
+    fireAudio: {fileID: 8300000, guid: ffea3014993ae4bba97bfc415d34a9d2, type: 3}
+    explosionPrefab: {fileID: 100004, guid: acb381b49b4c930408b9c5c77c54f600, type: 2}
+    explosionAudio: {fileID: 8300000, guid: 2d73e2f1f2bf6440eb1c60a1f73d863f, type: 3}
+  - color: 4
+    fireTrailPrefab: {fileID: 100004, guid: 018c2b3ccd77c674b8e1086c44f2bbc7, type: 2}
+    fireAudio: {fileID: 8300000, guid: ffea3014993ae4bba97bfc415d34a9d2, type: 3}
+    explosionPrefab: {fileID: 100000, guid: 636a73512a30db04a9bd6209cfff82e6, type: 2}
+    explosionAudio: {fileID: 8300000, guid: 2d73e2f1f2bf6440eb1c60a1f73d863f, type: 3}
+  - color: 5
+    fireTrailPrefab: {fileID: 100004, guid: 5527884480e785d479fc476691d0fd14, type: 2}
+    fireAudio: {fileID: 8300000, guid: ffea3014993ae4bba97bfc415d34a9d2, type: 3}
+    explosionPrefab: {fileID: 100000, guid: 0d142f301e46cb44f8b703d429f489db, type: 2}
+    explosionAudio: {fileID: 8300000, guid: 2d73e2f1f2bf6440eb1c60a1f73d863f, type: 3}
 --- !u!4 &1498494395
 Transform:
   m_ObjectHideFlags: 0

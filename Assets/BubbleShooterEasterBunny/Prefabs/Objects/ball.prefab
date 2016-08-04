@@ -9,7 +9,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 400000}
   - 114: {fileID: 11400000}
-  - 114: {fileID: 11400004}
   - 212: {fileID: 21200000}
   - 114: {fileID: 11400002}
   - 111: {fileID: 11100000}
@@ -108,29 +107,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874c74a952017a44e9030e4a79ea43aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colorSprites:
+  - {fileID: 21300002, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
+  - {fileID: 21300004, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
+  - {fileID: 21300000, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
+  - {fileID: 21300006, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
+  - {fileID: 21300008, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
+  - {fileID: 21300006, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
+  color: 0
   grid: {fileID: 0}
   state: 0
   LaunchForce: 500
-  sprites:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  boosts:
-  - {fileID: 21300000, guid: f462ea89e9892e84d9bc35ef559a8095, type: 3}
-  - {fileID: 21300000, guid: 7c12fc33ea5c19f4999085809829f965, type: 3}
   flying: 0
   startTime: 0
-  mesh: {fileID: 0}
-  targetPosition: {x: 0, y: 0, z: 0}
   dropFadeTime: 0.5
   swish: {fileID: 0}
   pops: {fileID: 0}
@@ -148,28 +137,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8ff7449bda01c14e9fed3536b655055, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startBounce: 0
---- !u!114 &11400004
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 324f04a34f3ae554594d340eeb6b932d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 21300002, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
-  - {fileID: 21300004, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
-  - {fileID: 21300000, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
-  - {fileID: 21300006, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
-  - {fileID: 21300008, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
-  - {fileID: 21300006, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
-  - {fileID: 21300000, guid: 19ca967f222c60b4f8b0507c89abadcc, type: 3}
-  - {fileID: 21300000, guid: 2c287bacbf8a03a419eea29290b502e7, type: 3}
-  mainColor: 0
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1
