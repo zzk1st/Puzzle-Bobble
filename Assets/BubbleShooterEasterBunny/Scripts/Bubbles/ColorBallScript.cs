@@ -25,7 +25,7 @@ public class ColorBallScript : MonoBehaviour {
         mainColor = color;
         foreach (Sprite item in sprites)
         {
-            if( item.name == "ball-" + color )
+            if( item.name == "ball_sprite_" + color )
             {
                 GetComponent<SpriteRenderer>().sprite = item;
                 SetSettings( color );

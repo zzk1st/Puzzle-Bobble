@@ -56,24 +56,27 @@ public class GridManager : MonoBehaviour {
 
     private Grid FindClosestGridFromBall(GameObject ball)
     {
+        float curMinDistance = 9999f;
+        Grid resultGrid = null;
+
         int gridLayer = LayerMask.NameToLayer("Grid");
         Collider2D[] colls = Physics2D.OverlapCircleAll(ball.transform.position, CreatorBall.Instance.BallRealRadius, 1 << gridLayer);
-        SortedDictionary<float, Grid> grids = new SortedDictionary<float, Grid>();
+
         foreach(Collider2D coll in colls)
         {
             Grid grid = coll.gameObject.GetComponent<Grid>();
-            grids.Add(Vector2.Distance(grid.pos, ball.transform.position), grid);
-        }
-
-        foreach(Grid grid in grids.Values)
-        {
             if (grid.AttachedBall == null)
             {
-                return grid;
+                float gridDistance = Vector2.Distance(grid.pos, ball.transform.position);
+                if ( gridDistance < curMinDistance)
+                {
+                    curMinDistance = gridDistance;
+                    resultGrid = grid;
+                }
             }
         }
 
-        throw new System.AccessViolationException("碰撞检测到的全部grid都已经被attach了ball！");
+        return resultGrid;
     }
 
     public void ConnectBallToGrid(GameObject ball)
