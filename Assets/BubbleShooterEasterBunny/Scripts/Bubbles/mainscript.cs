@@ -375,7 +375,7 @@ public class mainscript : MonoBehaviour {
         // 调用ScoreManager里针对掉落球的分数更新函数
         int val = ScoreManager.Instance.UpdateFallingScore(ballsToDrop.Count);
 
-        ScoreManager.Instance.PopupFallingScore(val, transform.position+(new Vector3(10,0,0)));
+        ScoreManager.Instance.PopupFallingScore(val, transform.position+(new Vector3(1,0,0)));
     }
 
     public void checkNearestColorAndDelete(GameObject checkBallGO)
