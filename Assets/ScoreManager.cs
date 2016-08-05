@@ -16,6 +16,8 @@ public class ScoreManager : MonoBehaviour {
     private static int doubleScore = 1;
     public static int playedTime = 0;
     public GameObject popupScore;
+    public GameObject fallingScore;
+    public GameObject perfect;
 
     public static int Score
     {
@@ -85,13 +87,23 @@ public class ScoreManager : MonoBehaviour {
     // 在Combo时候跳出来的text
     public void PopupComboScore(int value, Vector3 pos)
     {
-        //TODO: 不知为啥现在出来的text是缺颜色的(黑色)
         Transform parent = GameObject.Find("Scores").transform;
         GameObject poptxt = Instantiate(popupScore, pos, Quaternion.identity) as GameObject;
         poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
         poptxt.transform.SetParent(parent);
         poptxt.transform.localScale = Vector3.one;
         Destroy(poptxt, 1);
+    }
+
+    public void PopupFallingScore(int value, Vector3 pos)
+    {
+        Transform parent = GameObject.Find("Scores").transform;
+        GameObject poptxt = Instantiate(fallingScore, pos, Quaternion.identity) as GameObject;
+        poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
+        poptxt.transform.SetParent(parent);
+        poptxt.transform.localScale = Vector3.one;
+        Destroy(poptxt, 1);
+        perfect.SetActive(true);
     }
 
     // Update is called once per frame

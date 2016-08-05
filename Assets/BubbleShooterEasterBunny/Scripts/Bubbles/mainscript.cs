@@ -129,8 +129,6 @@ public class mainscript : MonoBehaviour {
     public GameObject[] starsObject;
     public int stars = 0;
 
-    public GameObject perfect;
-
     public GameObject[] boosts;
     public GameObject[] locksBoosts;
 
@@ -377,7 +375,7 @@ public class mainscript : MonoBehaviour {
         // 调用ScoreManager里针对掉落球的分数更新函数
         int val = ScoreManager.Instance.UpdateFallingScore(ballsToDrop.Count);
 
-        //ScoreManager.Instance.PopupComboScore(val, transform.position);
+        ScoreManager.Instance.PopupFallingScore(val, transform.position+(new Vector3(10,0,0)));
     }
 
     public void checkNearestColorAndDelete(GameObject checkBallGO)
