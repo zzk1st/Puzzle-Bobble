@@ -12,9 +12,6 @@ public class BallShooter : MonoBehaviour {
     public GameObject boxCatapult;
     public GameObject boxCartridge;
 
-    //spriteRenderer used to hold the ball direction indicator sprite
-    SpriteRenderer spriteRenderer;
-
     GameObject catapultBall;
     GameObject cartridgeBall;
     float bottomBoarderY;  //低于此线就不能发射球
@@ -27,7 +24,6 @@ public class BallShooter : MonoBehaviour {
         bottomBoarderY = GameObject.Find("BottomBorder").transform.position.y;
         creatorBall = GameObject.Find("Creator").GetComponent<CreatorBall>();
         currentES = UnityEngine.EventSystems.EventSystem.current;
-        spriteRenderer = GameObject.Find("dir_indicator").GetComponent<SpriteRenderer>();
     }
 
     public void Initialize()

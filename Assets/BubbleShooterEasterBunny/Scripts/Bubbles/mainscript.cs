@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using InitScriptName;
-
+using System.Linq;
 
 [RequireComponent(typeof(AudioSource))]
 public class mainscript : MonoBehaviour {
     public int currentLevel;
+    public int minConsecutiveNumberCount;
 
 	public static mainscript Instance;
 	GameObject ball;
@@ -48,7 +49,7 @@ public class mainscript : MonoBehaviour {
 	const int STAGE_7 = 5500;
 	const int STAGE_8 = 6900;
 	const int STAGE_9 = 8500;
-	public ArrayList controlArray = new ArrayList();
+    public List<GameObject> controlArray = new List<GameObject>();
 	public bool isPaused;
 	public bool noSound;
 	public bool gameOver;
@@ -221,7 +222,26 @@ public class mainscript : MonoBehaviour {
         if (checkBall != null && GameManager.Instance.GameStatus == GameStatus.Playing)
         {
             // 找到同色的ball并将其销毁
-            checkNearestColorAndDelete(checkBall);
+            List<GameObject> ballsToDelete = new List<GameObject>();
+            ballsToDelete.AddRange(checkNearbySameColorBalls(checkBall));
+            ballsToDelete.AddRange(checkNearbyConsecutiveNumberBalls(checkBall));
+            // 去掉重复元素
+            ballsToDelete = ballsToDelete.Distinct().ToList();
+
+            if (ballsToDelete.Count >= 3)
+            {
+                ScoreManager.Instance.ComboCount++;
+                // 在这里调用coroutine将其销毁
+                DestroyBalls(ballsToDelete, 0.00001f);
+
+                platformController.BallRemovedFromPlatform();
+            }
+            if (ballsToDelete.Count < 3)
+            {
+                Camera.main.GetComponent<mainscript> ().bounceCounter++;
+                ScoreManager.Instance.ComboCount = 0;
+            }
+
             StartCoroutine(DestroyAloneBalls());
 
             checkBall = null;
@@ -280,14 +300,14 @@ public class mainscript : MonoBehaviour {
 		GameObject[] fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];			// detect alone balls
         mainscript.Instance.controlArray.Clear();
 
-        ArrayList ballsToDrop = new ArrayList();
+        List<GameObject> ballsToDrop = new List<GameObject>();
 		foreach(GameObject obj in fixedBalls)
         {
             if (obj.layer == LayerMask.NameToLayer("FixedBall") && !findInArray(ballsToDrop, obj))
             {
                 if (!findInArray(mainscript.Instance.controlArray, obj.gameObject))
                 {
-					ArrayList b = new ArrayList();
+                    List<GameObject> b = new List<GameObject>();
 					// 详见checkNearestBall的注释
 					obj.GetComponent<Ball>().checkNearestBall(b);
 					if(b.Count >0 )
@@ -344,7 +364,7 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-	public bool findInArray(ArrayList b, GameObject destObj)
+    public bool findInArray(List<GameObject> b, GameObject destObj)
     {
 		foreach(GameObject obj in b) {
 			
@@ -354,7 +374,7 @@ public class mainscript : MonoBehaviour {
 	}
 	
     // DropBalls, 注意和DestroyBalls并不相同，后者是让球爆炸，这个是让球落下
-	public void DropBalls(ArrayList ballsToDrop)
+    public void DropBalls(List<GameObject> ballsToDrop)
     {
 		Camera.main.GetComponent<mainscript>().bounceCounter = 0;
 
@@ -378,32 +398,68 @@ public class mainscript : MonoBehaviour {
         ScoreManager.Instance.PopupFallingScore(val, transform.position+(new Vector3(1,0,0)));
     }
 
-    public void checkNearestColorAndDelete(GameObject checkBallGO)
+    List<GameObject> checkNearbyConsecutiveNumberBalls(GameObject checkBallGO)
+    {
+        Ball checkBall = checkBallGO.GetComponent<Ball>();
+        List<GameObject> ballsToDelete = new List<GameObject>();
+        List<GameObject> longestIncreasePath = new List<GameObject>();
+        List<GameObject> longestDecreasePath = new List<GameObject>();
+
+        foreach(GameObject adjacentBallGO in checkBallGO.GetComponent<Ball>().grid.GetAdjacentBalls())
+        {
+            Ball adjacentBall = adjacentBallGO.GetComponent<Ball>();
+            if (adjacentBall.number == checkBall.number + 1)
+            {
+                // 搜寻最长的增加路径
+                List<GameObject> currentPath = new List<GameObject>();
+                adjacentBall.searchNumberPath(ref longestIncreasePath, ref currentPath, true);
+            }
+            else if (adjacentBall.number == checkBall.number - 1)
+            {
+                // 搜寻最长的减少路径
+                List<GameObject> currentPath = new List<GameObject>();
+                adjacentBall.searchNumberPath(ref longestDecreasePath, ref currentPath, false);
+            }
+        }
+
+        //Debug.Log("Decrease List: " + ballListNames(longestDecreasePath));
+        //Debug.Log("Increase List: " + ballListNames(longestIncreasePath));
+
+        if (longestIncreasePath.Count + longestDecreasePath.Count >= minConsecutiveNumberCount - 1)
+        {
+            ballsToDelete.Add(checkBallGO);
+            ballsToDelete.AddRange(longestDecreasePath);
+            ballsToDelete.AddRange(longestIncreasePath);
+        }
+
+        return ballsToDelete;
+    }
+
+    string ballListNames(List<GameObject> balls)
+    {
+        string a = null;
+        foreach(GameObject ball in balls)
+        {
+            a += ball.GetComponent<Ball>().number.ToString() + " ";
+        }
+
+        return a;
+    }
+
+    List<GameObject> checkNearbySameColorBalls(GameObject checkBallGO)
     {
         // 该方法用来查找是否有其它ball与之相连，形成三个或以上的ball，如果有则将其销毁
         Ball checkBall = checkBallGO.GetComponent<Ball>();
 
-        ArrayList ballsToDelete = new ArrayList();
+        List<GameObject> ballsToDelete = new List<GameObject>();
         ballsToDelete.Add(checkBallGO);
         checkBall.checkNextNearestColor(ballsToDelete);
         mainscript.Instance.countOfPreparedToDestroy = ballsToDelete.Count;
 
-        if (ballsToDelete.Count >= 3)
-        {
-            ScoreManager.Instance.ComboCount++;
-            // 在这里调用coroutine将其销毁
-            DestroyBalls(ballsToDelete, 0.00001f);
-
-            platformController.BallRemovedFromPlatform();
-        }
-        if (ballsToDelete.Count < 3)
-        {
-            Camera.main.GetComponent<mainscript> ().bounceCounter++;
-            ScoreManager.Instance.ComboCount = 0;
-        }
+        return ballsToDelete;
     }
 
-    void DestroyBalls(ArrayList balls, float speed = 0.1f)
+    void DestroyBalls(List<GameObject> balls, float speed = 0.1f)
     {
         Camera.main.GetComponent<mainscript> ().bounceCounter = 0;
         int soundPool = 0;
@@ -423,7 +479,9 @@ public class mainscript : MonoBehaviour {
         int val = ScoreManager.Instance.UpdateComboScore(balls.Count);
 
         ScoreManager.Instance.PopupComboScore(val, transform.position);
-        mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
+
+        platformController.UpdateLocalMinYFromAllFixedBalls();
+        platformController.BallRemovedFromPlatform();
     }
 }
 
