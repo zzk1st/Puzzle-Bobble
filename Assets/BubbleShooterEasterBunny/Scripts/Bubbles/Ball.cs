@@ -30,6 +30,16 @@ public class Ball : MonoBehaviour
 
     public Sprite[] colorSprites;
     public BallColor color;
+    private int _number;
+    public int number
+    {
+        get { return _number; }
+        set
+        {
+            _number = value;
+            gameObject.GetComponentInChildren<TextMesh>().text = _number.ToString();
+        }
+    }
 
     public Grid grid;
 
@@ -122,7 +132,7 @@ public class Ball : MonoBehaviour
         return false;
     }
 
-    public GameObject findInArrayGameObject(ArrayList b, GameObject destObj)
+    public GameObject findInArrayGameObject(List<GameObject> b, GameObject destObj)
     {
         foreach (GameObject obj in b) {
 
@@ -133,7 +143,7 @@ public class Ball : MonoBehaviour
     }
 
 
-    public bool findInArray(ArrayList b, GameObject destObj)
+    public bool findInArray(List<GameObject> b, GameObject destObj)
     {
         foreach (GameObject obj in b) {
 
@@ -143,7 +153,7 @@ public class Ball : MonoBehaviour
         return false;
     }
 
-    public ArrayList addFrom(ArrayList b, ArrayList b2)
+    public List<GameObject> addFrom(List<GameObject> b, List<GameObject> b2)
     {
         foreach (GameObject obj in b) {
             if (!findInArray (b2, obj)) {
@@ -153,7 +163,7 @@ public class Ball : MonoBehaviour
         return b2;
     }
 
-    public void checkNextNearestColor(ArrayList results)
+    public void checkNextNearestColor(List<GameObject> results)
     {
         foreach (GameObject nearbyBall in grid.GetAdjacentBalls())
         {
@@ -163,6 +173,33 @@ public class Ball : MonoBehaviour
                 nearbyBall.GetComponent<Ball>().checkNextNearestColor(results);
             }
         }
+    }
+
+    public void searchNumberPath(ref List<GameObject> longestPath, ref List<GameObject> currentPath, bool increasePath)
+    {
+        currentPath.Add(gameObject);
+        bool isEndPoint = true;
+
+        foreach(GameObject adjacentBallGO in grid.GetAdjacentBalls())
+        {
+            Ball adjacentBall = adjacentBallGO.GetComponent<Ball>();
+            if ((increasePath && adjacentBall.number == number + 1) || (!increasePath && adjacentBall.number == number - 1))
+            {
+                isEndPoint = false;
+
+                adjacentBall.searchNumberPath(ref longestPath, ref currentPath, increasePath);
+            }
+        }
+
+        if (isEndPoint)
+        {
+            if (longestPath.Count < currentPath.Count)
+            {
+                longestPath = new List<GameObject>(currentPath);
+            }
+        }
+
+        currentPath.Remove(gameObject);
     }
 
     public void StartFall()
@@ -186,7 +223,7 @@ public class Ball : MonoBehaviour
         Destroy(gameObject, dropFadeTime);
     }
 
-    public bool checkNearestBall(ArrayList ballList)
+    public bool checkNearestBall(List<GameObject> ballList)
     {
         // 算法：维护一个数组，将所有有嫌疑的ball都放到数组里，然后递归调用该方法
         //      一旦出现一个在边界中或者已在controlArray中的ball，表明目前怀疑组都是clean的，清除当前b array全部球

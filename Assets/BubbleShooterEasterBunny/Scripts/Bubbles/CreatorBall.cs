@@ -263,11 +263,6 @@ public class CreatorBall : MonoBehaviour
             GameManager.Instance.PreTutorial();
     }
 
-    public void MoveLevelDown()
-    {
-        StartCoroutine( MoveUpDownCor( true ) );
-    }
-
     private bool BubbleBelowLine()
     {
         throw new System.NotImplementedException();
@@ -314,11 +309,14 @@ public class CreatorBall : MonoBehaviour
         b.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
         b.GetComponent<CircleCollider2D>().radius = BallColliderRadius;
         b.GetComponent<Ball>().SetColor(color);
+        b.GetComponent<Ball>().number = UnityEngine.Random.Range(1, 6);
 
         b.tag = "" + color;
 
         GameObject[] fixedBalls = GameObject.FindObjectsOfType( typeof( GameObject ) ) as GameObject[];
         b.name = b.name + fixedBalls.Length.ToString();
+
+
         // Rigidbody2D在createBall里程序化的被加入
         if( newball )
         {
