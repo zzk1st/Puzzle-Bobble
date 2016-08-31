@@ -33,9 +33,7 @@ public class CreatorBall : MonoBehaviour
         ball = ball_hd;
         thePrefab.transform.localScale = new Vector3( 0.67f, 0.58f, 1 );
         Meshes = GameObject.Find( "-Ball" );
-        // LevelData.LoadDataFromXML( mainscript.Instance.currentLevel );
         LoadLevel();
-        //LevelData.LoadDataFromLocal(mainscript.Instance.currentLevel);
         if( LevelData.mode == ModeGame.Vertical || LevelData.mode == ModeGame.Animals )
             MoveLevelUp();
         else
@@ -77,9 +75,8 @@ public class CreatorBall : MonoBehaviour
     void ProcessGameDataFromString(string mapText)
     {
         string[] lines = mapText.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-        LevelData.colorsDict.Clear();
+        LevelData.allColors.Clear();
         int mapLine = 0;
-        int key = 0;
         foreach (string line in lines)
         {
             if (line.StartsWith("MODE "))
@@ -99,7 +96,7 @@ public class CreatorBall : MonoBehaviour
                 string blocksString = line.Replace("LIMIT", string.Empty).Trim();
                 string[] sizes = blocksString.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
                 //limitType = (LIMIT)int.Parse(sizes[0]);
-                // 注意：sizes[1]本来是用于限制每关球数量，我们取消了
+                // TODO: 把限制球的数量加回来
             }
             else if (line.StartsWith("COLOR LIMIT "))
             {
@@ -122,11 +119,10 @@ public class CreatorBall : MonoBehaviour
                 for (int i = 0; i < st.Length; i++)
                 {
                     int value =  int.Parse(st[i][0].ToString());
-                    if (!LevelData.colorsDict.ContainsValue((BallColor)value) && value > 0 && value < (int)BallColor.random)
+                    int ballColorCount = Enum.GetNames(typeof(BallColor)).Length;
+                    if (!LevelData.allColors.Contains((LevelData.ItemType)value) && value > 0 && value <= ballColorCount)
                     {
-                        LevelData.colorsDict.Add(key, (BallColor)value);
-                        key++;
-
+                        LevelData.allColors.Add((LevelData.ItemType)value);
                     }
 
                     LevelData.map[mapLine * maxCols + i] = int.Parse(st[i][0].ToString());
@@ -135,34 +131,16 @@ public class CreatorBall : MonoBehaviour
             }
         }
         //random colors
-        if (LevelData.colorsDict.Count == 0)
+        if (LevelData.allColors.Count == 0)
         {
-            //add constant colors 
-            LevelData.colorsDict.Add(0, BallColor.yellow);
-            LevelData.colorsDict.Add(1, BallColor.red);
-
-            //add random colors
-            List<BallColor> randomList = new List<BallColor>();
-            randomList.Add(BallColor.blue);
-            randomList.Add(BallColor.green);
-            //if (LevelData.mode != ModeGame.Rounded)
-                randomList.Add(BallColor.violet);
-            for (int i = 0; i < LevelData.colors - 2; i++)
+            for (int i = 1; i <= LevelData.colors; ++i)
             {
-                BallColor randCol = BallColor.yellow;
-                while (LevelData.colorsDict.ContainsValue(randCol))
-                {
-                    randCol = randomList[UnityEngine.Random.Range(0, randomList.Count)];
-                }
-                LevelData.colorsDict.Add(2 + i, randCol);
-
+                LevelData.allColors.Add((LevelData.ItemType) i);
             }
-
         }
-
     }
 
-    public void LoadMap( int[] pMap )
+    public void LoadMap(int[] pMap)
     {
         map = pMap;
         //int key = -1;
@@ -176,7 +154,11 @@ public class CreatorBall : MonoBehaviour
                 {
                     roww = i;
                     if (LevelData.mode == ModeGame.Rounded) roww = i +4;
-                    createBall(mainscript.Instance.gridManager.GetGrid(roww, j).transform.position, (BallColor)mapValue, false, i );
+                    LevelData.ItemType type = (LevelData.ItemType)mapValue;
+                    if (type != LevelData.ItemType.empty)
+                    {
+                        createBall(mainscript.Instance.gridManager.GetGrid(roww, j).transform.position, (LevelData.ItemType)mapValue, false);
+                    }
                 }
                 else if( mapValue == 0 && LevelData.mode == ModeGame.Vertical && i == 0 )
                 {
@@ -279,43 +261,33 @@ public class CreatorBall : MonoBehaviour
         }
     }
 
-    public GameObject createBall( Vector3 vec, BallColor color = BallColor.random, bool newball = false, int row = 1 )
+    public GameObject createBall(Vector3 vec, LevelData.ItemType itemType = LevelData.ItemType.random, bool newball = false)
     {
         GameObject b = null;
-        List<BallColor> colors = new List<BallColor>();
 
-        for( int i = 1; i < System.Enum.GetValues( typeof( BallColor ) ).Length; i++ )
-        {
-            colors.Add( (BallColor)i );
-        }
+        if( itemType == LevelData.ItemType.random)
+            itemType = (LevelData.ItemType)LevelData.allColors[UnityEngine.Random.Range(1, LevelData.allColors.Count)];
 
-        if( color == BallColor.random )
-            color = (BallColor)LevelData.colorsDict[UnityEngine.Random.Range( 0, LevelData.colorsDict.Count )];
-		if( newball && mainscript.colorsDict.Count > 0 )
+		if( newball && mainscript.curStageColors.Count > 0 )
         {
             if( GameManager.Instance.GameStatus == GameStatus.Playing )
             {
                 mainscript.Instance.GetColorsInGame();
-                color = (BallColor)mainscript.colorsDict[UnityEngine.Random.Range( 0, mainscript.colorsDict.Count )];
+                itemType = (LevelData.ItemType)mainscript.curStageColors[UnityEngine.Random.Range(1, mainscript.curStageColors.Count)];
             }
             else
-                color = (BallColor)LevelData.colorsDict[UnityEngine.Random.Range( 0, LevelData.colorsDict.Count )];
+                itemType = (LevelData.ItemType)LevelData.allColors[UnityEngine.Random.Range(1, LevelData.allColors.Count)];
 
         }
-
-
 
         b = Instantiate( ball, transform.position, transform.rotation ) as GameObject;
         b.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
         b.GetComponent<CircleCollider2D>().radius = BallColliderRadius;
-        b.GetComponent<Ball>().SetColor(color);
+        b.GetComponent<Ball>().SetTypeAndColor(itemType);
         b.GetComponent<Ball>().number = UnityEngine.Random.Range(1, 6);
-
-        b.tag = "" + color;
 
         GameObject[] fixedBalls = GameObject.FindObjectsOfType( typeof( GameObject ) ) as GameObject[];
         b.name = b.name + fixedBalls.Length.ToString();
-
 
         // Rigidbody2D在createBall里程序化的被加入
         if( newball )

@@ -11,9 +11,13 @@ public enum BallColor
     green,
     red,
     violet,
-    yellow,
-    random,
-    chicken
+    yellow
+}
+
+public enum ItemType
+{
+    NormalColorBall = 1,
+    Animal
 }
 
 public class Ball : MonoBehaviour
@@ -28,8 +32,15 @@ public class Ball : MonoBehaviour
         Dropped
     }
 
+    private ItemType _itemType;
+    public ItemType itemType
+    {
+        get { return _itemType; }    
+    }
+
     public Sprite[] colorSprites;
     public BallColor color;
+
     private int _number;
     public int number
     {
@@ -37,7 +48,8 @@ public class Ball : MonoBehaviour
         set
         {
             _number = value;
-            gameObject.GetComponentInChildren<TextMesh>().text = _number.ToString();
+            // 数字模式，不开启
+            //gameObject.GetComponentInChildren<TextMesh>().text = _number.ToString();
         }
     }
 
@@ -77,15 +89,24 @@ public class Ball : MonoBehaviour
         bottomBoarderY = GameObject.Find("BottomBorder").transform.position.y; //获取生死线的Y坐标
     }
 
-    public void SetColor(BallColor color)
+    public void SetTypeAndColor(LevelData.ItemType itemType)
     {
-        this.color = color;
+        if (itemType == LevelData.ItemType.chicken)
+        {
+            _itemType = ItemType.Animal;
+        }
+        else
+        {
+            
+        }
+
+        this.color = (BallColor) itemType;
+        gameObject.tag = "" + color;
         foreach (Sprite item in colorSprites)
         {
             if( item.name == "ball_sprite_" + color )
             {
                 GetComponent<SpriteRenderer>().sprite = item;
-                gameObject.tag = "" + color;
             }
         }
     }

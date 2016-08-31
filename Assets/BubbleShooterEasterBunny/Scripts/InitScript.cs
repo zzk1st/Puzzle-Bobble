@@ -11,11 +11,6 @@ public enum BoostType
     ColorBallBoost,
     FireBallBoost
 }
-public enum Target
-{
-    Top = 0,
-    Chicken
-}
 
 namespace InitScriptName
 {

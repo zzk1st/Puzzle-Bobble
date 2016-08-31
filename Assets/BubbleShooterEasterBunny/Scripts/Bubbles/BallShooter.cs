@@ -28,7 +28,7 @@ public class BallShooter : MonoBehaviour {
 
     public void Initialize()
     {
-        cartridgeBall = creatorBall.createBall(boxCartridge.transform.position, BallColor.random, true);
+        cartridgeBall = creatorBall.createBall(boxCartridge.transform.position, LevelData.ItemType.random, true);
         cartridgeBall.GetComponent<Ball>().state = Ball.BallState.Waiting;
         Reload();
     }
@@ -78,7 +78,7 @@ public class BallShooter : MonoBehaviour {
             //spriteRenderer.color = col;
             
 
-            cartridgeBall = creatorBall.createBall(boxCartridge.transform.position, BallColor.random, true);
+            cartridgeBall = creatorBall.createBall(boxCartridge.transform.position, LevelData.ItemType.random, true);
             cartridgeBall.GetComponent<Ball>().state = Ball.BallState.Waiting;
         }
     }

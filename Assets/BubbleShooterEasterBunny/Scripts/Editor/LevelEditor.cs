@@ -9,7 +9,7 @@ public class LevelEditor : EditorWindow
     private static LevelEditor window;
     private int maxRows;
     private int maxCols = 11;
-    public static BallColor[] levelSquares = new BallColor[81];
+    public static LevelData.ItemType[] levelSquares = new LevelData.ItemType[81];
     private Texture[] ballTex;
     int levelNumber = 1;
     private Vector2 scrollViewVector;
@@ -21,7 +21,7 @@ public class LevelEditor : EditorWindow
     private int star2;
     private int star3;
     private string fileName = "1.txt";
-    private BallColor brush;
+    private LevelData.ItemType brush;
     private int selected;
 
     [MenuItem("Window/Level editor")]
@@ -58,7 +58,7 @@ public class LevelEditor : EditorWindow
 
     void Initialize()
     {
-        levelSquares = new BallColor[maxCols * maxRows];
+        levelSquares = new LevelData.ItemType[maxCols * maxRows];
         for (int i = 0; i < levelSquares.Length; i++)
         {
             levelSquares[i] = 0;
@@ -358,18 +358,18 @@ public class LevelEditor : EditorWindow
         GUILayout.BeginVertical();
         GUILayout.BeginHorizontal();
 
-        for (int i = 1; i <= System.Enum.GetValues(typeof(BallColor)).Length; i++)
+        for (int i = 1; i <= System.Enum.GetValues(typeof(LevelData.ItemType)).Length; i++)
         {
-            if ((BallColor)i != 0)
+            if ((LevelData.ItemType)i != 0)
             {
                 if (GUILayout.Button(ballTex[i - 1], new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
                 {
-                    if ((BallColor)i != BallColor.chicken)
-                        brush = (BallColor)i;
+                    if ((LevelData.ItemType)i != LevelData.ItemType.chicken)
+                        brush = (LevelData.ItemType)i;
                     else
                     {
                         target = Target.Chicken;
-                        levelSquares[5 * maxCols + 5] = BallColor.chicken;
+                        levelSquares[5 * maxCols + 5] = LevelData.ItemType.chicken;
                         SaveLevel();
                     }
                 }
@@ -416,31 +416,31 @@ public class LevelEditor : EditorWindow
                 }
                 else if (levelSquares[row * maxCols + col] != 0)
                 {
-                    if (levelSquares[row * maxCols + col] == BallColor.blue)
+                    if (levelSquares[row * maxCols + col] == LevelData.ItemType.blue)
                     {
                         imageButton = ballTex[0];
                     }
-                    else if (levelSquares[row * maxCols + col] == BallColor.green)
+                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.green)
                     {
                         imageButton = ballTex[1];
                     }
-                    else if (levelSquares[row * maxCols + col] == BallColor.red)
+                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.red)
                     {
                         imageButton = ballTex[2];
                     }
-                    else if (levelSquares[row * maxCols + col] == BallColor.violet)
+                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.violet)
                     {
                         imageButton = ballTex[3];
                     }
-                    else if (levelSquares[row * maxCols + col] == BallColor.yellow)
+                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.yellow)
                     {
                         imageButton = ballTex[4];
                     }
-                    else if (levelSquares[row * maxCols + col] == BallColor.random)
+                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.random)
                     {
                         imageButton = ballTex[5];
                     }
-                    else if (levelSquares[row * maxCols + col] == BallColor.chicken)
+                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.chicken)
                     {
                         imageButton = ballTex[6];
                     }
@@ -472,9 +472,9 @@ public class LevelEditor : EditorWindow
     {
         bool chickenExist = false;
         levelSquares[row * maxCols + col] = brush;
-        foreach (BallColor item in levelSquares)
+        foreach (LevelData.ItemType item in levelSquares)
         {
-            if (item == BallColor.chicken)
+            if (item == LevelData.ItemType.chicken)
                 chickenExist = true;
         }
         if (chickenExist) target = Target.Chicken;
@@ -607,7 +607,7 @@ public class LevelEditor : EditorWindow
                 string[] st = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < st.Length; i++)
                 {
-                    levelSquares[mapLine * maxCols + i] = (BallColor)int.Parse(st[i][0].ToString());
+                    levelSquares[mapLine * maxCols + i] = (LevelData.ItemType)int.Parse(st[i][0].ToString());
                 }
                 mapLine++;
             }

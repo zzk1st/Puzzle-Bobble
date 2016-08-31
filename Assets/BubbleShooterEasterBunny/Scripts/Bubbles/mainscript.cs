@@ -23,7 +23,6 @@ public class mainscript : MonoBehaviour {
 	GameObject FadeLD;
 	GameObject FadeHD;
 	GameObject AppearLevel;
-	Target target;
 	Vector2 worldPos;
 	Vector2 startPos;
 	float startTime;
@@ -115,7 +114,7 @@ public class mainscript : MonoBehaviour {
 
     public int countOfPreparedToDestroy;
 
-    public static Dictionary<int, BallColor> colorsDict = new Dictionary<int, BallColor>();
+    public static List<BallColor> curStageColors = new List<BallColor>();
 
     private int TargetCounter;
 
@@ -159,9 +158,6 @@ public class mainscript : MonoBehaviour {
 			//SwitchLianaBoost();
 			//arcadeMode = true;
 		}
-
-
-		StartCoroutine(CheckColors());
 	}
 
     void Start()
@@ -177,16 +173,6 @@ public class mainscript : MonoBehaviour {
         ScoreManager.Score = 0;
         if (PlayerPrefs.GetInt("noSound") == 1) noSound = true;
     }
-
-	IEnumerator CheckColors ()
-	{
-		while(true){
-		GetColorsInGame();
-		yield return new WaitForEndOfFrame();
-		SetColorsForNewBall();
-		}
-
-	}
 
     IEnumerator ShowArrows()
     {
@@ -224,7 +210,8 @@ public class mainscript : MonoBehaviour {
             // 找到同色的ball并将其销毁
             List<GameObject> ballsToDelete = new List<GameObject>();
             ballsToDelete.AddRange(checkNearbySameColorBalls(checkBall));
-            ballsToDelete.AddRange(checkNearbyConsecutiveNumberBalls(checkBall));
+            // 数字模式，不开启
+            //ballsToDelete.AddRange(checkNearbyConsecutiveNumberBalls(checkBall));
             // 去掉重复元素
             ballsToDelete = ballsToDelete.Distinct().ToList();
 
@@ -297,11 +284,12 @@ public class mainscript : MonoBehaviour {
 
 	public IEnumerator DestroyAloneBalls()
     {
-		GameObject[] fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];			// detect alone balls
+        // TODO: 需要一个fixedBalls来跟踪所有的fixedballs
+        GameObject[] allGameObjects = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];			// detect alone balls
         mainscript.Instance.controlArray.Clear();
 
         List<GameObject> ballsToDrop = new List<GameObject>();
-		foreach(GameObject obj in fixedBalls)
+		foreach(GameObject obj in allGameObjects)
         {
             if (obj.layer == LayerMask.NameToLayer("FixedBall") && !findInArray(ballsToDrop, obj))
             {
@@ -327,6 +315,7 @@ public class mainscript : MonoBehaviour {
         }
 
 		// 下面这几步是为了让新产生的球不再有以前没有出现过的颜色
+        // TODO: 重新写下面两个方法
         GetColorsInGame();
         SetColorsForNewBall();
 	}
@@ -350,16 +339,18 @@ public class mainscript : MonoBehaviour {
 
     public void GetColorsInGame()
     {
-        int i = 0;
-        colorsDict.Clear();
-        foreach( Transform item in Balls )
+        GameObject[] allGameObjects = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
+
+        foreach(GameObject obj in allGameObjects)
         {
-            if( item.tag == "chicken" || item.tag == "empty" || item.tag == "Ball" ) continue;
-            BallColor col = (BallColor)System.Enum.Parse( typeof( BallColor ), item.tag );
-            if( !colorsDict.ContainsValue( col ) && (int)col <= (int) BallColor.random)
+            if (obj.layer == LayerMask.NameToLayer("FixedBall"))
             {
-                colorsDict.Add(i, col );
-                i++;
+                Ball ball = obj.GetComponent<Ball>();
+                if (ball != null)
+                {
+                    if (!curStageColors.Contains(ball.color))
+                        curStageColors.Add(ball.color);
+                }
             }
         }
     }
