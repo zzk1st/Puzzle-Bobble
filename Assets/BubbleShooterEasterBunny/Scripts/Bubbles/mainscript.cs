@@ -12,72 +12,19 @@ public class mainscript : MonoBehaviour {
 
 	public static mainscript Instance;
 	GameObject ball;
-	GameObject PauseDialogLD;
-	GameObject OverDialogLD;
-	GameObject PauseDialogHD;
-	GameObject OverDialogHD;
-	GameObject UI_LD;
-	GameObject UI_HD;
-	GameObject PauseDialog;
-	GameObject OverDialog;
-	GameObject FadeLD;
-	GameObject FadeHD;
-	GameObject AppearLevel;
-	Vector2 worldPos;
-	Vector2 startPos;
-	float startTime;
-	bool setTarget;
-	float mTouchOffsetX;
-	float mTouchOffsetY;
-	float xOffset;
-	float yOffset;
 	public int bounceCounter = 0;
-	GameObject[] fixedBalls;
-	public Vector2[][] meshArray;
-	int offset;
 	public GameObject checkBall;
-    private float curFixedBallLocalMinY; // 当前所有fixed balls的最小y值，用来测试关卡是否过线
 
-	public static int stage = 1;
-	const int STAGE_1 = 0;
-	const int STAGE_2 = 300;
-	const int STAGE_3 = 750;
-	const int STAGE_4 = 1400;
-	const int STAGE_5 = 2850;
-	const int STAGE_6 = 4100;
-	const int STAGE_7 = 5500;
-	const int STAGE_8 = 6900;
-	const int STAGE_9 = 8500;
     public List<GameObject> controlArray = new List<GameObject>();
 	public bool isPaused;
 	public bool noSound;
 	public bool gameOver;
-	public bool arcadeMode;
-	public float topBorder;
-	public float leftBorder;
-	public float rightBorder;
-	public bool hd;
-	public GameObject Fade;
-	public int highScore;
-	public AudioClip pops;
-	public AudioClip click;
-	public AudioClip levelBells;
-	float appearLevelTime;
 	public GameObject ElectricLiana;
-	public GameObject BonusLiana;
-	public GameObject BonusScore;
 	public static bool ElectricBoost;
-	bool BonusLianaCounter;
-	bool gameOverShown;
 	public static bool StopControl;
-	public GameObject finger;
-
-	public GameObject BoostChanging;
 
     public GameObject TopBorder;
-    public Transform Balls;
     public Hashtable animTable = new Hashtable();
-    public GameObject FireEffect;
     private BallShooter _ballShooter;
     //private ScoreManager _scoreManager;
     public BallShooter ballShooter
@@ -139,7 +86,11 @@ public class mainscript : MonoBehaviour {
     private int limit;
     private int colorLimit;
     private GameObject bottomBorder;
-    private GameObject meshes;
+    public GameObject gridsNode;
+    public GameObject gameItemsNode;
+
+    public float BallColliderRadius;
+    public float BallRealRadius;
 
     //	public int[][] meshMatrix = new int[15][17];
     // Use this for initialization
@@ -150,7 +101,6 @@ public class mainscript : MonoBehaviour {
         if( InitScript.Instance == null ) gameObject.AddComponent<InitScript>();
 
         currentLevel = PlayerPrefs.GetInt( "OpenLevel", 1 );
-		stage = 1;
 		mainscript.StopControl = false;
         animTable.Clear();
 //		arcadeMode = InitScript.Arcade;
@@ -162,10 +112,12 @@ public class mainscript : MonoBehaviour {
 
     void Start()
     {
-        meshes = GameObject.Find("-Grids");
+        gridsNode = GameObject.Find("-Grids");
+        gameItemsNode = GameObject.Find("-GameItems");
+
         _ballShooter = GameObject.Find("BallShooter").GetComponent<BallShooter>();
-        _platformController = meshes.GetComponent<PlatformController>();
-        _gridManager = meshes.GetComponent<GridManager>();
+        _platformController = gridsNode.GetComponent<PlatformController>();
+        _gridManager = gridsNode.GetComponent<GridManager>();
         _ballFXManager = GameObject.Find("BallFXManager").GetComponent<BallFXManager>();
         bottomBorder = GameObject.Find("BottomBorder");
 
@@ -225,7 +177,7 @@ public class mainscript : MonoBehaviour {
             }
             if (ballsToDelete.Count < 3)
             {
-                Camera.main.GetComponent<mainscript> ().bounceCounter++;
+                mainscript.Instance.bounceCounter++;
                 ScoreManager.Instance.ComboCount = 0;
             }
 
@@ -367,7 +319,7 @@ public class mainscript : MonoBehaviour {
     // DropBalls, 注意和DestroyBalls并不相同，后者是让球爆炸，这个是让球落下
     public void DropBalls(List<GameObject> ballsToDrop)
     {
-		Camera.main.GetComponent<mainscript>().bounceCounter = 0;
+        mainscript.Instance.bounceCounter = 0;
 
         // 这里的score累加似乎没用 先注释了
 		/*int scoreCounter = 0;
@@ -452,7 +404,7 @@ public class mainscript : MonoBehaviour {
 
     void DestroyBalls(List<GameObject> balls, float speed = 0.1f)
     {
-        Camera.main.GetComponent<mainscript> ().bounceCounter = 0;
+        mainscript.Instance.bounceCounter = 0;
         int soundPool = 0;
         foreach (GameObject ballGO in balls)
         {

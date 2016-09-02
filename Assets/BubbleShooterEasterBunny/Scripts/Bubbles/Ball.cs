@@ -65,7 +65,6 @@ public class Ball : MonoBehaviour
     public float dropFadeTime;
 
     //	private OTSpriteBatch spriteBatch = null;
-    GameObject ballsNode;      // 所有ball的parent
     float bottomBoarderY;  //低于此线就不能发射球
     bool isPaused;
     public AudioClip swish;
@@ -85,7 +84,6 @@ public class Ball : MonoBehaviour
     {
         // 初始化references
         _gameItem = gameObject.GetComponent<GameItem>();
-        ballsNode = GameObject.Find("-Ball");
     }
 
     // Use this for initialization
@@ -97,7 +95,7 @@ public class Ball : MonoBehaviour
 
     public void SetTypeAndColor(LevelData.ItemType itemType)
     {
-        if (itemType == LevelData.ItemType.chicken)
+        if (itemType == LevelData.ItemType.Animal)
         {
             _gameItem.itemType = GameItem.ItemType.Animal;
         }
@@ -257,7 +255,7 @@ public class Ball : MonoBehaviour
         //      否则，继续递归调用
         if (grid.Row == 0)
         {
-            mainscript.Instance.controlArray = addFrom(ballList, Camera.main.GetComponent<mainscript> ().controlArray);
+            mainscript.Instance.controlArray = addFrom(ballList, mainscript.Instance.controlArray);
             ballList.Clear();
             return true;    /// don't destroy
         }
@@ -410,7 +408,7 @@ public class Ball : MonoBehaviour
     {
         state = BallState.Fixed;
 
-        transform.parent = ballsNode.transform;
+        transform.parent = mainscript.Instance.gameItemsNode.transform;
         gameObject.layer = LayerMask.NameToLayer("FixedBall");
         this.enabled = false;
 

@@ -32,7 +32,7 @@ public class LevelData
         violet,
         yellow,
         random,
-        chicken
+        Animal
     }
 
     public static LevelData Instance;

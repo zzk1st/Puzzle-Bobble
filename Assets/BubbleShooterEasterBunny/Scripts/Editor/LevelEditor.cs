@@ -364,12 +364,12 @@ public class LevelEditor : EditorWindow
             {
                 if (GUILayout.Button(ballTex[i - 1], new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
                 {
-                    if ((LevelData.ItemType)i != LevelData.ItemType.chicken)
+                    if ((LevelData.ItemType)i != LevelData.ItemType.Animal)
                         brush = (LevelData.ItemType)i;
                     else
                     {
                         target = Target.Chicken;
-                        levelSquares[5 * maxCols + 5] = LevelData.ItemType.chicken;
+                        levelSquares[5 * maxCols + 5] = LevelData.ItemType.Animal;
                         SaveLevel();
                     }
                 }
@@ -440,7 +440,7 @@ public class LevelEditor : EditorWindow
                     {
                         imageButton = ballTex[5];
                     }
-                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.chicken)
+                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.Animal)
                     {
                         imageButton = ballTex[6];
                     }
@@ -474,7 +474,7 @@ public class LevelEditor : EditorWindow
         levelSquares[row * maxCols + col] = brush;
         foreach (LevelData.ItemType item in levelSquares)
         {
-            if (item == LevelData.ItemType.chicken)
+            if (item == LevelData.ItemType.Animal)
                 chickenExist = true;
         }
         if (chickenExist) target = Target.Chicken;

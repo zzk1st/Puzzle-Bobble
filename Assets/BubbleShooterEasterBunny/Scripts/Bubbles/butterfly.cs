@@ -12,7 +12,8 @@ public class butterfly : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		isPaused = Camera.main.GetComponent<mainscript>().isPaused;
-		arcadeMode = Camera.main.GetComponent<mainscript>().arcadeMode;
+		//arcadeMode = Camera.main.GetComponent<mainscript>().arcadeMode;
+        arcadeMode = true;
 		if(revertButterFly == 1){
 			transform.position = new Vector3(3, Random.Range(-2, 5),-20f);
 			flyTo(new Vector3(transform.position.x-18, transform.position.y, transform.localScale.z));

@@ -17,7 +17,6 @@ public class GridManager : MonoBehaviour {
     {
         rowCount = rows;
         colCount = cols;
-        // mesh没有用六边形，而只用了长方形，这样判断起来效率更高
         GameObject gridsNode = GameObject.Find( "-Grids" );
         float offset = 0;
         for( int j = 0; j < rowCount + 1; j++ )
@@ -60,7 +59,7 @@ public class GridManager : MonoBehaviour {
         Grid resultGrid = null;
 
         int gridLayer = LayerMask.NameToLayer("Grid");
-        Collider2D[] colls = Physics2D.OverlapCircleAll(gameItem.transform.position, CreatorBall.Instance.BallRealRadius, 1 << gridLayer);
+        Collider2D[] colls = Physics2D.OverlapCircleAll(gameItem.transform.position, mainscript.Instance.BallRealRadius, 1 << gridLayer);
 
         foreach(Collider2D coll in colls)
         {
@@ -129,11 +128,4 @@ public class GridManager : MonoBehaviour {
     {
         return grids[row * colCount + col];
     }
-
-	// Use this for initialization
-	void Start()
-    {
-	
-	}
-	
 }

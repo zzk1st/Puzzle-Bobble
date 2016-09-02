@@ -115,8 +115,8 @@ public class GameManager : MonoBehaviour
                                    
         }
        // StartCoroutine( PushRestBalls() );
-        Transform b = GameObject.Find( "-Ball" ).transform;
-        Ball[] balls = GameObject.Find( "-Ball" ).GetComponentsInChildren<Ball>();
+        Transform b = mainscript.Instance.gameItemsNode.transform;
+        Ball[] balls = mainscript.Instance.gameItemsNode.GetComponentsInChildren<Ball>();
         foreach( Ball item in balls )
         {
             item.StartFall();
