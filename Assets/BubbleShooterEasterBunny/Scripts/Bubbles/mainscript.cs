@@ -396,7 +396,7 @@ public class mainscript : MonoBehaviour {
         List<GameObject> longestIncreasePath = new List<GameObject>();
         List<GameObject> longestDecreasePath = new List<GameObject>();
 
-        foreach(GameObject adjacentBallGO in checkBallGO.GetComponent<Ball>().grid.GetAdjacentBalls())
+        foreach(GameObject adjacentBallGO in checkBallGO.GetComponent<Ball>().grid.GetAdjacentGameItems())
         {
             Ball adjacentBall = adjacentBallGO.GetComponent<Ball>();
             if (adjacentBall.number == checkBall.number + 1)
@@ -457,7 +457,7 @@ public class mainscript : MonoBehaviour {
         foreach (GameObject ballGO in balls)
         {
             Ball ball = ballGO.GetComponent<Ball>();
-            ball.grid.DisonnectBall();
+            ball.grid.DisonnectGameItem();
             ballGO.layer = LayerMask.NameToLayer("ExplodedBall");   // 从ball layer移除，防止之后connect nearball时候再连上
             ballGO.GetComponent<CircleCollider2D>().enabled = false;    //删掉CircleCollider，防止再碰撞检测
 

@@ -44,8 +44,8 @@ public class GridManager : MonoBehaviour {
                 newGrid.GetComponent<Grid>().Col = i;
 
                 //Debug.Log(String.Format("row={0}, col={1}, LocalPosition={2}, WorldPosition={3}", j, i, b.transform.localPosition, b.transform.position));
-                GameObject[] fixedBalls = GameObject.FindGameObjectsWithTag( "Grid" );
-                newGrid.name = newGrid.name + fixedBalls.Length.ToString();
+                GameObject[] existingGrids = GameObject.FindGameObjectsWithTag( "Grid" );
+                newGrid.name = newGrid.name + existingGrids.Length.ToString();
                 grids.Add(newGrid);
             }
         }
@@ -54,20 +54,20 @@ public class GridManager : MonoBehaviour {
         ConnectAllAdjacentGrids();
     }
 
-    private Grid FindClosestGridFromBall(GameObject ball)
+    private Grid FindClosestGridFromGameItem(GameObject gameItem)
     {
         float curMinDistance = 9999f;
         Grid resultGrid = null;
 
         int gridLayer = LayerMask.NameToLayer("Grid");
-        Collider2D[] colls = Physics2D.OverlapCircleAll(ball.transform.position, CreatorBall.Instance.BallRealRadius, 1 << gridLayer);
+        Collider2D[] colls = Physics2D.OverlapCircleAll(gameItem.transform.position, CreatorBall.Instance.BallRealRadius, 1 << gridLayer);
 
         foreach(Collider2D coll in colls)
         {
             Grid grid = coll.gameObject.GetComponent<Grid>();
-            if (grid.AttachedBall == null)
+            if (grid.AttachedGameItem == null)
             {
-                float gridDistance = Vector2.Distance(grid.pos, ball.transform.position);
+                float gridDistance = Vector2.Distance(grid.pos, gameItem.transform.position);
                 if ( gridDistance < curMinDistance)
                 {
                     curMinDistance = gridDistance;
@@ -79,19 +79,19 @@ public class GridManager : MonoBehaviour {
         return resultGrid;
     }
 
-    public void ConnectBallToGrid(GameObject ball)
+    public void ConnectGameItemToGrid(GameObject gameItem)
     {
         EnableGridColliders();
 
-        Grid closestGrid = FindClosestGridFromBall(ball);
-        closestGrid.GetComponent<Grid>().ConnectBall(ball);
+        Grid closestGrid = FindClosestGridFromGameItem(gameItem);
+        closestGrid.GetComponent<Grid>().ConnectGameItem(gameItem);
 
         DisableGridColliders();
     }
 
-    public void DisconnectBallToGrid(GameObject ball)
+    public void DisconnectGameItemToGrid(GameObject gameItem)
     {
-        ball.GetComponent<Ball>().grid.DisonnectBall();
+        gameItem.GetComponent<GameItem>().grid.DisonnectGameItem();
     }
 
     private void ConnectAllAdjacentGrids()
@@ -120,9 +120,9 @@ public class GridManager : MonoBehaviour {
         }
     }
 
-    public List<GameObject> GetAdjacentBalls(GameObject ball)
+    public List<GameObject> GetAdjacentGameItems(GameObject gameItem)
     {
-        return ball.GetComponent<Ball>().grid.GetAdjacentBalls();
+        return gameItem.GetComponent<GameItem>().grid.GetAdjacentGameItems();
     }
 
     public GameObject GetGrid(int row, int col)

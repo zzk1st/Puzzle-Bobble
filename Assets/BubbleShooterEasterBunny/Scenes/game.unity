@@ -2795,7 +2795,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: m_RootOrder
-      value: 16
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8200000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: panLevelCustomCurve.m_RotationOrder
@@ -3512,7 +3512,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 402878, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: m_RootOrder
-      value: 14
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
@@ -8393,7 +8393,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 484928, guid: 7d028e4fec77cab4e926e4b65414b360, type: 2}
       propertyPath: m_RootOrder
-      value: 15
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 8280496, guid: 7d028e4fec77cab4e926e4b65414b360, type: 2}
       propertyPath: m_audioClip
@@ -11476,7 +11476,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22477102, guid: 12244117eb5901f4fac41d4006a6f471, type: 2}
       propertyPath: m_RootOrder
-      value: 19
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 22477102, guid: 12244117eb5901f4fac41d4006a6f471, type: 2}
       propertyPath: m_AnchoredPosition.x

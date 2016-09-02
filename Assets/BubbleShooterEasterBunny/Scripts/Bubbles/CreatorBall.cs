@@ -282,6 +282,8 @@ public class CreatorBall : MonoBehaviour
 
         b = Instantiate( ball, transform.position, transform.rotation ) as GameObject;
         b.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
+        b.GetComponent<Ball>().Initialize();
+
         b.GetComponent<CircleCollider2D>().radius = BallColliderRadius;
         b.GetComponent<Ball>().SetTypeAndColor(itemType);
         b.GetComponent<Ball>().number = UnityEngine.Random.Range(1, 6);
@@ -307,7 +309,7 @@ public class CreatorBall : MonoBehaviour
             b.transform.parent = Meshes.transform;
             b.GetComponent<Ball>().enabled = false;
             b.GetComponent<CircleCollider2D>().offset = Vector2.zero;
-            mainscript.Instance.gridManager.ConnectBallToGrid(b);
+            mainscript.Instance.gridManager.ConnectGameItemToGrid(b);
             mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
         }
 

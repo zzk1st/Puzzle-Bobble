@@ -32,11 +32,7 @@ public class Ball : MonoBehaviour
         Dropped
     }
 
-    private ItemType _itemType;
-    public ItemType itemType
-    {
-        get { return _itemType; }    
-    }
+    private GameItem _gameItem;
 
     public Sprite[] colorSprites;
     public BallColor color;
@@ -53,7 +49,10 @@ public class Ball : MonoBehaviour
         }
     }
 
-    public Grid grid;
+    public Grid grid
+    {
+        get { return _gameItem.grid; }
+    }
 
     public BallState state;
 
@@ -81,10 +80,17 @@ public class Ball : MonoBehaviour
 
     private GameObject fireTrail;
 
+    // 初始化方法，在instantiate后手动调用
+    public void Initialize()
+    {
+        // 初始化references
+        _gameItem = gameObject.GetComponent<GameItem>();
+        ballsNode = GameObject.Find("-Ball");
+    }
+
     // Use this for initialization
     void Start ()
     {
-        ballsNode = GameObject.Find("-Ball");
         isPaused = mainscript.Instance.isPaused;
         bottomBoarderY = GameObject.Find("BottomBorder").transform.position.y; //获取生死线的Y坐标
     }
@@ -93,7 +99,7 @@ public class Ball : MonoBehaviour
     {
         if (itemType == LevelData.ItemType.chicken)
         {
-            _itemType = ItemType.Animal;
+            _gameItem.itemType = GameItem.ItemType.Animal;
         }
         else
         {
@@ -186,7 +192,7 @@ public class Ball : MonoBehaviour
 
     public void checkNextNearestColor(List<GameObject> results)
     {
-        foreach (GameObject nearbyBall in grid.GetAdjacentBalls())
+        foreach (GameObject nearbyBall in grid.GetAdjacentGameItems())
         {
             if (nearbyBall.tag == tag && !findInArray(results, nearbyBall))
             {
@@ -201,7 +207,7 @@ public class Ball : MonoBehaviour
         currentPath.Add(gameObject);
         bool isEndPoint = true;
 
-        foreach(GameObject adjacentBallGO in grid.GetAdjacentBalls())
+        foreach(GameObject adjacentBallGO in grid.GetAdjacentGameItems())
         {
             Ball adjacentBall = adjacentBallGO.GetComponent<Ball>();
             if ((increasePath && adjacentBall.number == number + 1) || (!increasePath && adjacentBall.number == number - 1))
@@ -272,7 +278,7 @@ public class Ball : MonoBehaviour
         }
         if (!hasSeen)*/
             ballList.Add(gameObject);
-        List<GameObject> nearbyBalls = grid.GetAdjacentBalls();
+        List<GameObject> nearbyBalls = grid.GetAdjacentGameItems();
         foreach (GameObject nearbyBall in nearbyBalls)
         {
             if (nearbyBall.gameObject.layer == LayerMask.NameToLayer("FixedBall"))
@@ -303,7 +309,7 @@ public class Ball : MonoBehaviour
     public void PlayHitAnim(Vector3 newBallPos, Hashtable animTable)
     {
         // 对该球周围的所有球（该球自己除外），调用每个球的PlayHitAnimCorStart
-        List<GameObject> fixedBalls = mainscript.Instance.gridManager.GetAdjacentBalls(gameObject);
+        List<GameObject> fixedBalls = mainscript.Instance.gridManager.GetAdjacentGameItems(gameObject);
         foreach (GameObject ball in fixedBalls) {
             if (!animTable.ContainsKey (ball) && ball != gameObject && animTable.Count < 20)
                 ball.GetComponent<Ball> ().PlayHitAnimCorStart(newBallPos, animTable);
@@ -383,7 +389,7 @@ public class Ball : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.name.Contains ("ball"))
+        if (other.gameObject.name.Contains("ball"))
         {
             //当一个ball作为发射ball的时候，ball script是enabled的
             //一旦它碰到了其它ball（stopBall设成true），那么这个ball script就会被disable
@@ -420,7 +426,7 @@ public class Ball : MonoBehaviour
 
         Destroy(fireTrail, 0.5f);
 
-        mainscript.Instance.gridManager.ConnectBallToGrid(gameObject);
+        mainscript.Instance.gridManager.ConnectGameItemToGrid(gameObject);
         mainscript.Instance.platformController.UpdateLocalMinYFromSingleBall(this);
 
         mainscript.Instance.checkBall = gameObject;

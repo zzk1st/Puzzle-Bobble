@@ -8,6 +8,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400000}
+  - 114: {fileID: 11499602}
   - 114: {fileID: 11400000}
   - 212: {fileID: 21200000}
   - 114: {fileID: 11400002}
@@ -115,7 +116,6 @@ MonoBehaviour:
   - {fileID: 21300008, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
   - {fileID: 21300006, guid: 4d699bc60a3bb4eb0982b653a942db62, type: 3}
   color: 0
-  grid: {fileID: 0}
   state: 0
   LaunchForce: 500
   flying: 0
@@ -135,6 +135,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8ff7449bda01c14e9fed3536b655055, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11499602
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d10fc90fedd5456cbb768a6507f62ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemType: 0
+  grid: {fileID: 0}
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

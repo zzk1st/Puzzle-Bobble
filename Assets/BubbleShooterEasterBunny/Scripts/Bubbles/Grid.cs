@@ -5,30 +5,30 @@ using System.Collections.Generic;
 public class Grid : MonoBehaviour
 {
     [SerializeField]
-    private GameObject attachedBall;
+    private GameObject attachedGameItem;
     private List<Grid> adjacentGrids = new List<Grid>();
     public int Row;
     public int Col;
 
-    // 该属性表示一个grid连着的ball
-    public GameObject AttachedBall
+    // 该属性表示一个grid连着的gameItem
+    public GameObject AttachedGameItem
     {
-        get { return attachedBall; }
+        get { return attachedGameItem; }
         set
         {
-            attachedBall = value;
+            attachedGameItem = value;
         }
     }
 
-    public List<GameObject> GetAdjacentBalls()
+    public List<GameObject> GetAdjacentGameItems()
     {
         List<GameObject> result = new List<GameObject>();
 
         foreach(Grid grid in adjacentGrids)
         {
-            if (grid.attachedBall != null)
+            if (grid.attachedGameItem != null)
             {
-                result.Add(grid.attachedBall);
+                result.Add(grid.attachedGameItem);
             }
         }
 
@@ -50,34 +50,31 @@ public class Grid : MonoBehaviour
         get { return gameObject.transform.localPosition; }
     }
 
-    //public GameObject boxFirst;     // 即将发射的ball的box
-    //public GameObject boxSecond;    // 等待的ball的box
-
     // Use this for initialization
     void Start()
     {
     }
 
-    public void ConnectBall(GameObject ball)
+    public void ConnectGameItem(GameObject gameItem)
     {
-        if (attachedBall != null)
+        if (attachedGameItem != null)
         {
             throw new System.AccessViolationException("尝试链接一个已经链接的grid!");
         }
 
-        attachedBall = ball;
-        ball.GetComponent<Ball>().grid = this;
+        attachedGameItem = gameItem;
+        gameItem.GetComponent<GameItem>().grid = this;
     }
 
-    public void DisonnectBall()
+    public void DisonnectGameItem()
     {
-        if (attachedBall.GetComponent<Ball>().grid != this)
+        if (attachedGameItem.GetComponent<GameItem>().grid != this)
         {
             throw new System.AccessViolationException("Disconnect grid不是本grid！");
         }
 
-        attachedBall.GetComponent<Ball>().grid = null;
-        attachedBall = null;
+        attachedGameItem.GetComponent<GameItem>().grid = null;
+        attachedGameItem = null;
     }
 
     public void connectAdjacentGrids()
@@ -99,7 +96,7 @@ public class Grid : MonoBehaviour
         Vector3 scale = transform.localScale;
         scale -= new Vector3(0.1f, 0.1f, 0.1f);
 
-        if (attachedBall != null)
+        if (attachedGameItem != null)
         {
             Gizmos.color = Color.green;
         }
