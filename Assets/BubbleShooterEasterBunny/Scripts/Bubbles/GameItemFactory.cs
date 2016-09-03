@@ -12,7 +12,7 @@ public class GameItemFactory : MonoBehaviour {
         Instance = this;
     }
 
-    public GameObject createGameItemFromMap(Vector3 vec, LevelData.ItemType itemType)
+    public GameObject CreateGameItemFromMap(Vector3 vec, LevelData.ItemType itemType)
     {
         GameObject result = null;
 
@@ -26,10 +26,10 @@ public class GameItemFactory : MonoBehaviour {
         case LevelData.ItemType.violet:
         case LevelData.ItemType.yellow:
         case LevelData.ItemType.random:
-            result = createFixedBall(vec, itemType);
+            result = CreateFixedBall(vec, itemType);
             break;
         case LevelData.ItemType.Animal:
-            result = createAnimal(vec, itemType);
+            result = CreateAnimal(vec, itemType);
             break;
         default:
             Debug.Log("ERROR: unknown itemType, itemType=" + itemType);
@@ -39,7 +39,7 @@ public class GameItemFactory : MonoBehaviour {
         return result;
     }
 
-    public GameObject createNewBall(Vector3 vec, LevelData.ItemType itemType = LevelData.ItemType.random)
+    public GameObject CreateNewBall(Vector3 vec, LevelData.ItemType itemType = LevelData.ItemType.random)
     {
         GameObject ball = null;
 
@@ -73,7 +73,7 @@ public class GameItemFactory : MonoBehaviour {
         return ball;
     }
 
-    public GameObject createFixedBall(Vector3 vec, LevelData.ItemType itemType = LevelData.ItemType.random)
+    public GameObject CreateFixedBall(Vector3 vec, LevelData.ItemType itemType = LevelData.ItemType.random)
     {
         GameObject ball = null;
 
@@ -96,16 +96,16 @@ public class GameItemFactory : MonoBehaviour {
         GameObject[] fixedBalls = GameObject.FindObjectsOfType( typeof( GameObject ) ) as GameObject[];
         ball.name = ball.name + fixedBalls.Length.ToString();
 
-        ball.GetComponent<GameItem>().connectToGrid();
+        ball.GetComponent<GameItem>().ConnectToGrid();
 
         return ball;
     }
 
-    public GameObject createAnimal(Vector3 vec, LevelData.ItemType itemType)
+    public GameObject CreateAnimal(Vector3 vec, LevelData.ItemType itemType)
     {
         GameObject animal = Instantiate(animalPrefab, transform.position, transform.rotation) as GameObject;
         animal.transform.position = vec;
-        animal.GetComponent<GameItem>().connectToGrid();
+        animal.GetComponent<GameItem>().ConnectToGrid();
         return animal;
     }
 }

@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
         //    GameObject.Find( "CanvasPots" ).transform.Find( "Black" ).gameObject.SetActive( true );
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.winSound );
          yield return new WaitForSeconds( 1f );
-        if( mainscript.Instance.levelData.gameMode == GameMode.Vertical )
+        if( mainscript.Instance.levelData.gameMode == StageMoveMode.Vertical )
          {
            //  SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.swish[0] );
            //  GameObject.Find( "Canvas" ).transform.Find( "PreComplete" ).gameObject.SetActive( true );

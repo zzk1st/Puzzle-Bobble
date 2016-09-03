@@ -155,7 +155,7 @@ public class Ball : MonoBehaviour
         return false;
     }
 
-    public GameObject findInArrayGameObject(List<GameObject> b, GameObject destObj)
+    public GameObject FindInArrayGameObject(List<GameObject> b, GameObject destObj)
     {
         foreach (GameObject obj in b) {
 
@@ -166,7 +166,7 @@ public class Ball : MonoBehaviour
     }
 
 
-    public bool findInArray(List<GameObject> b, GameObject destObj)
+    public bool FindInArray(List<GameObject> b, GameObject destObj)
     {
         foreach (GameObject obj in b) {
 
@@ -176,29 +176,29 @@ public class Ball : MonoBehaviour
         return false;
     }
 
-    public List<GameObject> addFrom(List<GameObject> b, List<GameObject> b2)
+    public List<GameObject> AddFrom(List<GameObject> b, List<GameObject> b2)
     {
         foreach (GameObject obj in b) {
-            if (!findInArray (b2, obj)) {
+            if (!FindInArray (b2, obj)) {
                 b2.Add (obj);
             }
         }
         return b2;
     }
 
-    public void checkNextNearestColor(List<GameObject> results)
+    public void CheckNextNearestColor(List<GameObject> results)
     {
         foreach (GameObject nearbyBall in grid.GetAdjacentGameItems())
         {
-            if (nearbyBall.tag == tag && !findInArray(results, nearbyBall))
+            if (nearbyBall.tag == tag && !FindInArray(results, nearbyBall))
             {
                 results.Add(nearbyBall);
-                nearbyBall.GetComponent<Ball>().checkNextNearestColor(results);
+                nearbyBall.GetComponent<Ball>().CheckNextNearestColor(results);
             }
         }
     }
 
-    public void searchNumberPath(ref List<GameObject> longestPath, ref List<GameObject> currentPath, bool increasePath)
+    public void SearchNumberPath(ref List<GameObject> longestPath, ref List<GameObject> currentPath, bool increasePath)
     {
         currentPath.Add(gameObject);
         bool isEndPoint = true;
@@ -210,7 +210,7 @@ public class Ball : MonoBehaviour
             {
                 isEndPoint = false;
 
-                adjacentBall.searchNumberPath(ref longestPath, ref currentPath, increasePath);
+                adjacentBall.SearchNumberPath(ref longestPath, ref currentPath, increasePath);
             }
         }
 
@@ -229,7 +229,7 @@ public class Ball : MonoBehaviour
     {
         enabled = false;
         state = BallState.Dropped;
-        transform.SetParent(null);
+        _gameItem.DisconnectFromGrid();
 
         // 从ball layer移除，防止之后连接nearby balls
         gameObject.layer = LayerMask.NameToLayer("FallingBall");
@@ -246,42 +246,7 @@ public class Ball : MonoBehaviour
         Destroy(gameObject, dropFadeTime);
     }
 
-    public bool checkNearestBall(List<GameObject> ballList)
-    {
-        // 算法：维护一个数组，将所有有嫌疑的ball都放到数组里，然后递归调用该方法
-        //      一旦出现一个在边界中或者已在controlArray中的ball，表明目前怀疑组都是clean的，清除当前b array全部球
-        //      否则，继续递归调用
-        if (grid.Row == 0)
-        {
-            mainscript.Instance.controlGrids = addFrom(ballList, mainscript.Instance.controlGrids);
-            ballList.Clear();
-            return true;    /// don't destroy
-        }
-
-        if (findInArray(mainscript.Instance.controlGrids, gameObject))
-        {
-            ballList.Clear();
-            return true;
-        }
-
-        ballList.Add(gameObject);
-        List<GameObject> nearbyBalls = grid.GetAdjacentGameItems();
-        foreach (GameObject nearbyBall in nearbyBalls)
-        {
-            if (nearbyBall.gameObject.layer == LayerMask.NameToLayer("FixedBall"))
-            {
-                if (!findInArray(ballList, nearbyBall.gameObject))
-                {
-                    if (nearbyBall.GetComponent<Ball>().checkNearestBall(ballList))
-                        return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    void pullToMesh()
+    void PullToMesh()
     {
         Hashtable animTable = mainscript.Instance.animTable;
         animTable.Clear();
@@ -402,8 +367,7 @@ public class Ball : MonoBehaviour
     {
         state = BallState.Fixed;
         this.enabled = false;
-        _gameItem.connectToGrid();
-        mainscript.Instance.platformController.UpdateLocalMinYFromSingleBall(_gameItem);
+        _gameItem.ConnectToGrid();
 
         mainscript.Instance.checkBall = gameObject;
 
@@ -416,9 +380,10 @@ public class Ball : MonoBehaviour
         cc.isTrigger = true;
 
         Destroy(fireTrail, 0.5f);
-        iTween.MoveTo(gameObject, iTween.Hash("position", grid.pos, "speed", speedBeforeColl.magnitude));
+        //iTween.MoveTo(gameObject, iTween.Hash("position", grid.pos, "speed", speedBeforeColl.magnitude));
+        transform.position = grid.pos;
 
-        pullToMesh();
+        PullToMesh();
     }
 
     public void SplashDestroy ()

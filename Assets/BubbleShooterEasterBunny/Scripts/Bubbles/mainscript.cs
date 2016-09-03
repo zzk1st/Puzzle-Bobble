@@ -8,7 +8,7 @@ using System.Linq;
 [RequireComponent(typeof(AudioSource))]
 public class mainscript : MonoBehaviour {
     public int currentLevel;
-    public GameMode currentGameMode;
+    public StageMoveMode currentGameMode;
     public LevelData levelData = new LevelData();
     public int minConsecutiveNumberCount;
 
@@ -165,7 +165,7 @@ public class mainscript : MonoBehaviour {
         {
             // 找到同色的ball并将其销毁
             List<GameObject> ballsToDelete = new List<GameObject>();
-            ballsToDelete.AddRange(checkNearbySameColorBalls(checkBall));
+            ballsToDelete.AddRange(CheckNearbySameColorBalls(checkBall));
             // 数字模式，不开启
             //ballsToDelete.AddRange(checkNearbyConsecutiveNumberBalls(checkBall));
             // 去掉重复元素
@@ -176,8 +176,6 @@ public class mainscript : MonoBehaviour {
                 ScoreManager.Instance.ComboCount++;
                 // 在这里调用coroutine将其销毁
                 DestroyBalls(ballsToDelete, 0.00001f);
-
-                platformController.BallRemovedFromPlatform();
             }
             if (ballsToDelete.Count < 3)
             {
@@ -186,7 +184,6 @@ public class mainscript : MonoBehaviour {
             }
 
             StartCoroutine(DestroyDetachedGameItems());
-
             checkBall = null;
         }
     }
@@ -208,7 +205,7 @@ public class mainscript : MonoBehaviour {
 
         ConnectAndDestroyBalls();
 
-        if ( levelData.gameMode == GameMode.Vertical && TargetCounter >= 6 && GameManager.Instance.GameStatus == GameStatus.Playing )
+        if ( levelData.gameMode == StageMoveMode.Vertical && TargetCounter >= 6 && GameManager.Instance.GameStatus == GameStatus.Playing )
         {
             GameManager.Instance.Win();
         }
@@ -240,14 +237,13 @@ public class mainscript : MonoBehaviour {
 
     public IEnumerator DestroyDetachedGameItems()
     {
-        List<GameObject> gameItemsToDrop = gridManager.findDetachedGameItems();
+        List<GameObject> gameItemsToDrop = gridManager.FindDetachedGameItems();
         yield return new WaitForEndOfFrame();
 
         // 删掉ball，并调用StartFall让ball掉落
         if (gameItemsToDrop.Count > 0)
         {
             DropGameItems(gameItemsToDrop);
-            platformController.BallRemovedFromPlatform();
         }
 
         // 下面这几步是为了让新产生的球不再有以前没有出现过的颜色
@@ -255,49 +251,6 @@ public class mainscript : MonoBehaviour {
         GetColorsInGame();
         SetColorsForNewBall();
     }
-
-    /*
-	public IEnumerator DestroyDetachedGameItems()
-    {
-        // TODO: 需要一个fixedBalls来跟踪所有的fixedballs
-        GameObject[] allGameObjects = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];			// detect alone balls
-        mainscript.Instance.controlArray.Clear();
-
-        List<GameObject> ballsToDrop = new List<GameObject>();
-		foreach(GameObject obj in allGameObjects)
-        {
-            if (obj.layer == LayerMask.NameToLayer("FixedBall") && !findInArray(ballsToDrop, obj))
-            {
-                if (obj.GetComponent<GameItem>().itemType == GameItem.ItemType.Ball)
-                {
-                    if (!findInArray(mainscript.Instance.controlArray, obj.gameObject))
-                    {
-                        List<GameObject> b = new List<GameObject>();
-                        // 详见checkNearestBall的注释
-                        obj.GetComponent<Ball>().checkNearestBall(b);
-                        if(b.Count >0 )
-                        {
-                            ballsToDrop.AddRange(b);
-                        }
-                    }
-                }
-			}	
-		}
-
-        yield return new WaitForEndOfFrame();
-        // 删掉ball，并调用StartFall让ball掉落
-        if (ballsToDrop.Count > 0)
-        {
-            DropBalls(ballsToDrop);
-            platformController.BallRemovedFromPlatform();
-        }
-
-		// 下面这几步是为了让新产生的球不再有以前没有出现过的颜色
-        // TODO: 重新写下面两个方法
-        GetColorsInGame();
-        SetColorsForNewBall();
-	}
-    */
 
     public void SetColorsForNewBall()
     {
@@ -334,7 +287,7 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-    public bool findInArray(List<GameObject> b, GameObject destObj)
+    public bool FindInArray(List<GameObject> b, GameObject destObj)
     {
 		foreach(GameObject obj in b) {
 			
@@ -368,7 +321,7 @@ public class mainscript : MonoBehaviour {
         ScoreManager.Instance.PopupFallingScore(val, transform.position+(new Vector3(1,0,0)));
     }
 
-    List<GameObject> checkNearbyConsecutiveNumberBalls(GameObject checkBallGO)
+    List<GameObject> CheckNearbyConsecutiveNumberBalls(GameObject checkBallGO)
     {
         Ball checkBall = checkBallGO.GetComponent<Ball>();
         List<GameObject> ballsToDelete = new List<GameObject>();
@@ -382,13 +335,13 @@ public class mainscript : MonoBehaviour {
             {
                 // 搜寻最长的增加路径
                 List<GameObject> currentPath = new List<GameObject>();
-                adjacentBall.searchNumberPath(ref longestIncreasePath, ref currentPath, true);
+                adjacentBall.SearchNumberPath(ref longestIncreasePath, ref currentPath, true);
             }
             else if (adjacentBall.number == checkBall.number - 1)
             {
                 // 搜寻最长的减少路径
                 List<GameObject> currentPath = new List<GameObject>();
-                adjacentBall.searchNumberPath(ref longestDecreasePath, ref currentPath, false);
+                adjacentBall.SearchNumberPath(ref longestDecreasePath, ref currentPath, false);
             }
         }
 
@@ -405,7 +358,7 @@ public class mainscript : MonoBehaviour {
         return ballsToDelete;
     }
 
-    string ballListNames(List<GameObject> balls)
+    string BallListNames(List<GameObject> balls)
     {
         string a = null;
         foreach(GameObject ball in balls)
@@ -416,14 +369,14 @@ public class mainscript : MonoBehaviour {
         return a;
     }
 
-    List<GameObject> checkNearbySameColorBalls(GameObject checkBallGO)
+    List<GameObject> CheckNearbySameColorBalls(GameObject checkBallGO)
     {
         // 该方法用来查找是否有其它ball与之相连，形成三个或以上的ball，如果有则将其销毁
         Ball checkBall = checkBallGO.GetComponent<Ball>();
 
         List<GameObject> ballsToDelete = new List<GameObject>();
         ballsToDelete.Add(checkBallGO);
-        checkBall.checkNextNearestColor(ballsToDelete);
+        checkBall.CheckNextNearestColor(ballsToDelete);
         mainscript.Instance.countOfPreparedToDestroy = ballsToDelete.Count;
 
         return ballsToDelete;
@@ -436,7 +389,7 @@ public class mainscript : MonoBehaviour {
         foreach (GameObject ballGO in balls)
         {
             GameItem ballGameItem = ballGO.GetComponent<GameItem>();
-            ballGameItem.disconnectFromGrid();
+            ballGameItem.DisconnectFromGrid();
             ballGO.layer = LayerMask.NameToLayer("ExplodedBall");   // 从ball layer移除，防止之后connect nearball时候再连上
             ballGO.GetComponent<CircleCollider2D>().enabled = false;    //删掉CircleCollider，防止再碰撞检测
 
@@ -450,8 +403,6 @@ public class mainscript : MonoBehaviour {
         int val = ScoreManager.Instance.UpdateComboScore(balls.Count);
 
         ScoreManager.Instance.PopupComboScore(val, transform.position);
-
-        platformController.BallRemovedFromPlatform();
     }
 }
 

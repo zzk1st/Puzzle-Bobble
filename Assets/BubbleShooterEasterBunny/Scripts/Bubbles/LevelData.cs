@@ -7,11 +7,11 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 
-public enum GameMode
+// 游戏关卡移动模式，分为垂直和圆形两种
+public enum StageMoveMode
 {
     Vertical=0,
     Rounded,
-    Animals,
 }
 
 public enum Target
@@ -42,7 +42,7 @@ public class LevelData
     public int colCount;
 
     //List of mission in this map
-    public GameMode gameMode = GameMode.Vertical;
+    public StageMoveMode gameMode = StageMoveMode.Vertical;
     private float limitAmount = 40;
 
     public static float LimitAmount
@@ -66,34 +66,6 @@ public class LevelData
         return (Target)gameMode;
     }
 
-    /*
-    public static bool LoadLevel(int currentLevel)
-    {
-        //Read data from text file
-        TextAsset mapText = Resources.Load("Levels/" + currentLevel) as TextAsset;
-        if (mapText == null)
-        {
-            mapText = Resources.Load("Levels/" + currentLevel) as TextAsset;
-        }
-        ProcesDataFromString(mapText.text);
-        return true;
-    }
-
-    static void ProcesDataFromString(string mapText)
-    {
-        string[] lines = mapText.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-        LevelData.allColors.Clear();
-        foreach (string line in lines)
-        {
-            if (line.StartsWith("MODE "))
-            {
-                string modeString = line.Replace("MODE", string.Empty).Trim();
-                LevelData.mode = (GameMode)int.Parse(modeString);
-            }
-        }
-    }
-    */
-
     public bool LoadLevel(int currentLevel)
     {
         //Read data from text file
@@ -116,7 +88,7 @@ public class LevelData
             if (line.StartsWith("MODE "))
             {
                 string modeString = line.Replace("MODE", string.Empty).Trim();
-                gameMode = (GameMode)int.Parse(modeString);
+                gameMode = (StageMoveMode)int.Parse(modeString);
             }
             else if (line.StartsWith("SIZE "))
             {

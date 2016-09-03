@@ -255,7 +255,9 @@ namespace InitScriptName
                 PlayerPrefs.SetInt("OpenLevel", number);
                 PlayerPrefs.Save();
                 openLevel = number;
-                currentTarget = mainscript.Instance.levelData.GetTarget(number);
+                // 临时这么写
+                LevelData levelData = new LevelData();
+                currentTarget = levelData.GetTarget(number);
                 GameObject.Find("Canvas").transform.Find("MenuPlay").gameObject.SetActive(true);
             }
         }

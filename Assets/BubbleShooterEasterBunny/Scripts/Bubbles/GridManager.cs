@@ -130,12 +130,12 @@ public class GridManager : MonoBehaviour {
         return gameItem.GetComponent<GameItem>().grid.GetAdjacentGameItems();
     }
 
-    public GameObject grid(int row, int col)
+    public GameObject Grid(int row, int col)
     {
         return grids[row * colCount + col];
     }
 
-    public List<GameObject> findDetachedGameItems()
+    public List<GameObject> FindDetachedGameItems()
     {
         controlGrids.Clear();
         List<Grid> gridsDetached = new List<Grid>();
@@ -147,7 +147,7 @@ public class GridManager : MonoBehaviour {
                 if (!controlGrids.Contains(grid))
                 {
                     List<Grid> resultGrids = new List<Grid>();
-                    grid.checkNearbyDetachedGrids(resultGrids);
+                    grid.CheckNearbyDetachedGrids(resultGrids);
                     gridsDetached.AddRange(resultGrids);
                 }
             }

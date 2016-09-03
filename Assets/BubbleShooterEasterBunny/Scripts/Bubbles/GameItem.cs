@@ -19,7 +19,7 @@ public class GameItem : MonoBehaviour {
     [HideInInspector]
     public Grid grid;
 
-    public void connectToGrid()
+    public void ConnectToGrid()
     {
         gameObject.transform.parent = mainscript.Instance.gameItemsNode.transform;
         gameObject.layer = LayerMask.NameToLayer("FixedBall");
@@ -27,7 +27,7 @@ public class GameItem : MonoBehaviour {
         mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
     }
 
-    public void disconnectFromGrid()
+    public void DisconnectFromGrid()
     {
         gameObject.transform.parent = transform.root;
         gameObject.layer = LayerMask.NameToLayer("Default");

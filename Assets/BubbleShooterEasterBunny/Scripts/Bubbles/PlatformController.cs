@@ -10,14 +10,10 @@ public class PlatformController : MonoBehaviour
 {
     private GameObject platform;
 
-    public float InitialMoveUpSpeed;
-
-    public float accDropUpperLimit; // 加速下落的上限，platform超过这个就一定会下落
-    public float accDropLowerLimit; // 加速下落的下限，platform超过这个就不会加速下落
-    public float accDropRate; // 每次下落到accDropLowerLimit的百分之多少
-    public float platformBounceForce;
-    public int bounceCountToAccDrop;   // 上弹多少次加速下落一次的计数器
-    public float accDropSpeed;
+    public float moveSpeed;
+    // MinY指整个关卡最低的位置
+    public float lowerMinYLiimt;
+    public float upperMinYLiimt;
 
     // 当前所有fixed balls的最小y值，用来测试关卡是否过线
     private float _curFixedBallLocalMinY;
@@ -32,12 +28,12 @@ public class PlatformController : MonoBehaviour
         }
     }
 
-    private int _bounceCounterForAcc;   // 上弹多少次加速下落一次的计数器
+    private bool curMinYOutOfRange = false;
+    private float targetMinYPos;
 
     void Start()
     {
         platform = GameObject.Find("-Grids");
-        MoveLevelUp();
     }
 
     void OnCollisionEnter2D(Collision2D coll)
@@ -49,53 +45,36 @@ public class PlatformController : MonoBehaviour
                  );
     }
 
-    public void BallRemovedFromPlatform()
+    void Update()
     {
-        // TODO: 在dropball结束之后运行该函数
-        UpdateLocalMinYFromAllFixedBalls();
-        float curY = curPlatformMinY;
-        if (curY > accDropUpperLimit)
+        if (curMinYOutOfRange)
         {
-            _bounceCounterForAcc = 0;
-            AccDrop((curY - accDropUpperLimit) * 1.1f);
-        }
-        else if (curY < accDropLowerLimit)
-        {
-            _bounceCounterForAcc = 0;
-            platform.GetComponent<Rigidbody2D>().AddForce(Vector2.up * platformBounceForce);
-        }
-        else
-        {
-            _bounceCounterForAcc++;
-            if (_bounceCounterForAcc >= bounceCountToAccDrop)
+            if (Mathf.Abs(curPlatformMinY - targetMinYPos) > 0.1f)
             {
-                _bounceCounterForAcc = 0;
-                AccDrop((curY - accDropLowerLimit) * accDropRate);
+                if (curPlatformMinY > targetMinYPos)
+                {
+                    platform.transform.Translate(0f, -moveSpeed * Time.deltaTime, 0f);
+                }
+                else
+                {
+                    platform.transform.Translate(0f, moveSpeed * Time.deltaTime, 0f);
+                }
             }
             else
             {
-                platform.GetComponent<Rigidbody2D>().AddForce(Vector2.up * platformBounceForce);
+                curMinYOutOfRange = false;
+            }
+        }
+        else
+        {
+            if (GameManager.Instance.GameStatus == GameStatus.Demo)
+            {
+                GameManager.Instance.PreTutorial();
             }
         }
     }
 
-    void AccDrop(float dropYDiff)
-    {
-        StartCoroutine(AccDropCor(dropYDiff));
-    }
-
-    IEnumerator AccDropCor(float dropYDiff)
-    {
-        //float targetPlatformDropY = platform.transform.position.y - (curPlatformMinY - accDropLowerLimit) * accDropRate;
-        float targetPlatformDropY = platform.transform.position.y - dropYDiff;
-        while (platform.transform.position.y > targetPlatformDropY)
-        {
-            platform.transform.Translate(0f, -accDropSpeed * Time.deltaTime, 0f);
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-    public void UpdateLocalMinYFromSingleBall(GameItem gameItem)
+    void UpdateLocalMinYFromSingleBall(GameItem gameItem)
     {
         if (gameItem.grid.localPos.y < _curFixedBallLocalMinY)
         {
@@ -115,88 +94,33 @@ public class PlatformController : MonoBehaviour
                 UpdateLocalMinYFromSingleBall(go.GetComponent<GameItem>());
             }
         }
+
+        if (curPlatformMinY > upperMinYLiimt)
+        {
+            targetMinYPos = upperMinYLiimt;
+            curMinYOutOfRange = true;
+        }
+        else if (curPlatformMinY < lowerMinYLiimt)
+        {
+            targetMinYPos = lowerMinYLiimt;
+            curMinYOutOfRange = true;
+        }
+        else
+        {
+            curMinYOutOfRange = false;
+        }
         //Debug.Log(string.Format("MinY recalculated! MinY={0}", curFixedBallLocalMinY));
+    }
+
+    public void StartGameMoveUp()
+    {
+        targetMinYPos = upperMinYLiimt;
+        curMinYOutOfRange = true;
     }
 
     void OnDrawGizmos()
     {
-        Gizmos.DrawLine(new Vector3(-5f, accDropUpperLimit, 0f), new Vector3(5f, accDropUpperLimit, 0f));
-        Gizmos.DrawLine(new Vector3(-5f, accDropLowerLimit, 0f), new Vector3(5f, accDropLowerLimit, 0f));
-    }
-    private void MoveLevelUp()
-    {
-        StartCoroutine( MoveUpDownCor() );
-    }
-
-    IEnumerator MoveUpDownCor( bool inGameCheck = false )
-    {
-        yield return new WaitForSeconds( 0.1f );
-        if( !inGameCheck )
-            GameManager.Instance.Demo();
-
-        List<float> table = new List<float>();
-        // lineY(WorldSpace)，表示整个球的底部应该移到的位置
-        float lineY = -1.3f;//GameObject.Find( "GameOverBorder" ).transform.position.y;
-        Transform bubbles = mainscript.Instance.gameItemsNode.transform;
-        int i = 0;
-        foreach( Transform item in bubbles )
-        {
-            if( !inGameCheck )
-            {
-                if( item.position.y < lineY )
-                {
-                    table.Add( item.position.y );
-                }
-            }
-            else
-            {
-                if( item.position.y > lineY && mainscript.Instance.TopBorder.transform.position.y > 5f )
-                {
-                    table.Add( item.position.y );
-                }
-                else if( item.position.y < lineY + 1f )
-                {
-                    table.Add( item.position.y );
-                }
-            }
-            i++;
-        }
-
-
-        if( table.Count > 0 )
-        {
-            //if( up ) AddMesh();
-
-            // 球的底部和lineY要求的位置差多少（WorldSpace)
-            float targetY = 0;
-            table.Sort();
-            if( !inGameCheck ) targetY = lineY - table[0] + 2.5f;
-            else targetY = lineY - table[0] + 1.5f;
-            GameObject Meshes = GameObject.Find( "-Grids" );
-            Rigidbody2D rb = Meshes.GetComponent<Rigidbody2D>();
-            Vector3 targetPos = Meshes.transform.position + Vector3.up * targetY;
-            float startTime = Time.time;
-            Vector3 startPos = Meshes.transform.position;
-            //float speed = 0.5f;
-            //float distCovered = 0;
-            while (Math.Abs(Meshes.transform.position.y - targetPos.y) > 0.1f)
-            {
-                float realSpeed = InitialMoveUpSpeed * Time.deltaTime;
-                if (targetPos.y > Meshes.transform.position.y)
-                {
-                    rb.MovePosition(new Vector2(rb.position.x, rb.position.y + realSpeed));
-                    //Meshes.transform.Translate(0f, realSpeed, 0f);
-                }
-                else
-                {
-                    rb.MovePosition(new Vector2(rb.position.x, rb.position.y - realSpeed));
-                    //Meshes.transform.Translate(0f, -realSpeed, 0f);
-                }
-                yield return new WaitForEndOfFrame();
-            }
-        }
-
-        if( GameManager.Instance.GameStatus == GameStatus.Demo )
-            GameManager.Instance.PreTutorial();
+        Gizmos.DrawLine(new Vector3(-5f, upperMinYLiimt, 0f), new Vector3(5f, upperMinYLiimt, 0f));
+        Gizmos.DrawLine(new Vector3(-5f, lowerMinYLiimt, 0f), new Vector3(5f, lowerMinYLiimt, 0f));
     }
 }

@@ -18,6 +18,8 @@ public class CreatorBall : MonoBehaviour
 
         mainscript.Instance.levelData.LoadLevel(mainscript.Instance.currentLevel);
         LoadMap();
+        GameManager.Instance.Demo();
+        mainscript.Instance.platformController.StartGameMoveUp();
     }
 
     public void LoadMap()
@@ -37,10 +39,10 @@ public class CreatorBall : MonoBehaviour
                     LevelData.ItemType type = (LevelData.ItemType)mapValue;
                     if (type != LevelData.ItemType.empty)
                     {
-                        GameItemFactory.Instance.createGameItemFromMap(mainscript.Instance.gridManager.grid(row, j).transform.position, (LevelData.ItemType)mapValue);
+                        GameItemFactory.Instance.CreateGameItemFromMap(mainscript.Instance.gridManager.Grid(row, j).transform.position, (LevelData.ItemType)mapValue);
                     }
                 }
-                else if( mapValue == 0 && levelData.gameMode == GameMode.Vertical && i == 0 )
+                else if( mapValue == 0 && levelData.gameMode == StageMoveMode.Vertical && i == 0 )
                 {
                     //Instantiate( Resources.Load( "Prefabs/TargetStar" ), GetSquare( i, j ).transform.position, Quaternion.identity );
                 }
