@@ -306,10 +306,13 @@ public class Ball : MonoBehaviour
     public void PlayHitAnim(Vector3 newBallPos, Hashtable animTable)
     {
         // 对该球周围的所有球（该球自己除外），调用每个球的PlayHitAnimCorStart
-        List<GameObject> fixedBalls = mainscript.Instance.gridManager.GetAdjacentGameItems(gameObject);
-        foreach (GameObject ball in fixedBalls) {
-            if (!animTable.ContainsKey (ball) && ball != gameObject && animTable.Count < 20)
-                ball.GetComponent<Ball> ().PlayHitAnimCorStart(newBallPos, animTable);
+        List<GameObject> adjacentGameItems = mainscript.Instance.gridManager.GetAdjacentGameItems(gameObject);
+        foreach (GameObject gameItem in adjacentGameItems) {
+            if (gameItem.GetComponent<GameItem>().itemType == GameItem.ItemType.Ball)
+            {
+                if (!animTable.ContainsKey (gameItem) && gameItem != gameObject && animTable.Count < 20)
+                    gameItem.GetComponent<Ball>().PlayHitAnimCorStart(newBallPos, animTable);
+            }
         }
     }
 

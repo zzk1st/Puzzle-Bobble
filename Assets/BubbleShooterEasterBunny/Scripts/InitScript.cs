@@ -255,7 +255,7 @@ namespace InitScriptName
                 PlayerPrefs.SetInt("OpenLevel", number);
                 PlayerPrefs.Save();
                 openLevel = number;
-                currentTarget = LevelData.GetTarget(number);
+                currentTarget = mainscript.Instance.levelData.GetTarget(number);
                 GameObject.Find("Canvas").transform.Find("MenuPlay").gameObject.SetActive(true);
             }
         }

@@ -88,7 +88,7 @@ public class AnimationManager : MonoBehaviour
         }
         if( name == "MenuPlay" )
         {
-            InitScript.Instance.currentTarget = LevelData.GetTarget(PlayerPrefs.GetInt( "OpenLevel" ));
+            InitScript.Instance.currentTarget = mainscript.Instance.levelData.GetTarget(PlayerPrefs.GetInt( "OpenLevel" ));
 
         }
 

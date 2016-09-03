@@ -8,6 +8,7 @@ using System.Linq;
 [RequireComponent(typeof(AudioSource))]
 public class mainscript : MonoBehaviour {
     public int currentLevel;
+    public LevelData levelData = new LevelData();
     public int minConsecutiveNumberCount;
 
 	public static mainscript Instance;
@@ -204,7 +205,7 @@ public class mainscript : MonoBehaviour {
 
         ConnectAndDestroyBalls();
 
-        if ( LevelData.mode == ModeGame.Vertical && TargetCounter >= 6 && GameManager.Instance.GameStatus == GameStatus.Playing )
+        if ( LevelData.mode == GameMode.Vertical && TargetCounter >= 6 && GameManager.Instance.GameStatus == GameStatus.Playing )
         {
             GameManager.Instance.Win();
         }
