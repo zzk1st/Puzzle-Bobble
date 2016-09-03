@@ -95,11 +95,11 @@ public class PlatformController : MonoBehaviour
         }
     }
 
-    public void UpdateLocalMinYFromSingleBall(Ball fixedBall)
+    public void UpdateLocalMinYFromSingleBall(GameItem gameItem)
     {
-        if (fixedBall.grid.localPos.y < _curFixedBallLocalMinY)
+        if (gameItem.grid.localPos.y < _curFixedBallLocalMinY)
         {
-            _curFixedBallLocalMinY = fixedBall.grid.localPos.y;
+            _curFixedBallLocalMinY = gameItem.grid.localPos.y;
         }
     }
 
@@ -109,10 +109,10 @@ public class PlatformController : MonoBehaviour
 
         foreach( Transform item in mainscript.Instance.gameItemsNode.transform)
         {
-            GameObject fixedBall = item.gameObject;
-            if (fixedBall.GetComponent<CircleCollider2D>().enabled)
+            GameObject go = item.gameObject;
+            if (go.GetComponent<GameItem>() != null)
             {
-                UpdateLocalMinYFromSingleBall(fixedBall.GetComponent<Ball>());
+                UpdateLocalMinYFromSingleBall(go.GetComponent<GameItem>());
             }
         }
         //Debug.Log(string.Format("MinY recalculated! MinY={0}", curFixedBallLocalMinY));

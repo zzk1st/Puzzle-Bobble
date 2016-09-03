@@ -38,7 +38,7 @@ public class butterfly : MonoBehaviour {
     public void OnTriggerEnter2D(Collider2D owner)
     {
         // check if we collided with a top block and adjust our speed and rotation accordingly
-        if (owner.gameObject.name.IndexOf("ball")==0 && owner.gameObject.GetComponent<Ball>().flying)
+        if (owner.gameObject.name.IndexOf("ball")==0)
         {
 		//	SoundBase.Instance.audio.PlayOneShot(SoundBase.Instance.Pickup);
 		//	Score.Instance.ShowPopup( 50);

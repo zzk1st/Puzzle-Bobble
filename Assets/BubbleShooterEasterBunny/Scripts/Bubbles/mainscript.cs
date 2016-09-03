@@ -245,16 +245,19 @@ public class mainscript : MonoBehaviour {
         {
             if (obj.layer == LayerMask.NameToLayer("FixedBall") && !findInArray(ballsToDrop, obj))
             {
-                if (!findInArray(mainscript.Instance.controlArray, obj.gameObject))
+                if (obj.GetComponent<GameItem>().itemType == GameItem.ItemType.Ball)
                 {
-                    List<GameObject> b = new List<GameObject>();
-					// 详见checkNearestBall的注释
-					obj.GetComponent<Ball>().checkNearestBall(b);
-					if(b.Count >0 )
+                    if (!findInArray(mainscript.Instance.controlArray, obj.gameObject))
                     {
-                        ballsToDrop.AddRange(b);
-					}
-				}
+                        List<GameObject> b = new List<GameObject>();
+                        // 详见checkNearestBall的注释
+                        obj.GetComponent<Ball>().checkNearestBall(b);
+                        if(b.Count >0 )
+                        {
+                            ballsToDrop.AddRange(b);
+                        }
+                    }
+                }
 			}	
 		}
 
@@ -408,12 +411,13 @@ public class mainscript : MonoBehaviour {
         int soundPool = 0;
         foreach (GameObject ballGO in balls)
         {
-            Ball ball = ballGO.GetComponent<Ball>();
-            ball.grid.DisonnectGameItem();
+            GameItem ballGameItem = ballGO.GetComponent<GameItem>();
+            ballGameItem.disconnectFromGrid();
             ballGO.layer = LayerMask.NameToLayer("ExplodedBall");   // 从ball layer移除，防止之后connect nearball时候再连上
             ballGO.GetComponent<CircleCollider2D>().enabled = false;    //删掉CircleCollider，防止再碰撞检测
 
             // 让ball爆炸
+            Ball ball = ballGO.GetComponent<Ball>();
             ball.Explode();
 
             soundPool++;
@@ -423,7 +427,6 @@ public class mainscript : MonoBehaviour {
 
         ScoreManager.Instance.PopupComboScore(val, transform.position);
 
-        platformController.UpdateLocalMinYFromAllFixedBalls();
         platformController.BallRemovedFromPlatform();
     }
 }

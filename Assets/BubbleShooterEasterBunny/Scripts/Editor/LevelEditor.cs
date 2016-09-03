@@ -358,7 +358,7 @@ public class LevelEditor : EditorWindow
         GUILayout.BeginVertical();
         GUILayout.BeginHorizontal();
 
-        for (int i = 1; i <= System.Enum.GetValues(typeof(LevelData.ItemType)).Length; i++)
+        for (int i = 1; i <= System.Enum.GetValues(typeof(LevelData.ItemType)).Length-1; i++)
         {
             if ((LevelData.ItemType)i != 0)
             {
@@ -374,9 +374,8 @@ public class LevelEditor : EditorWindow
                     }
                 }
             }
-
-
         }
+
         if (GUILayout.Button("  ", new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
         {
             brush = 0;

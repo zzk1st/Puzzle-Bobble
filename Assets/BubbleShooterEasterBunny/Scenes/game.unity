@@ -286,11 +286,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4d8150231db9d24db2b542626be297d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ball_hd: {fileID: 100000, guid: 7e53458cd03f1724f9442cb26f3a53a1, type: 2}
-  ball_ld: {fileID: 0}
-  thePrefab: {fileID: 100000, guid: e0240944f3bd27e449975ef82726c682, type: 2}
-  InitialMoveUpSpeed: 8
-  BallRealRadius: 0.33
   squares: []
 --- !u!4 &39308811
 Transform:
@@ -375,6 +370,7 @@ MonoBehaviour:
   gridsNode: {fileID: 665245363}
   gameItemsNode: {fileID: 1817034612}
   BallColliderRadius: 0.3
+  BallRealRadius: 0.33
 --- !u!82 &53033707
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2803,6 +2799,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a8b5d13c364a4f94aeddfdf8d0ee784, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ballPrefab: {fileID: 100000, guid: 7e53458cd03f1724f9442cb26f3a53a1, type: 2}
+  animalPrefab: {fileID: 185498, guid: 681dec1489c6349699a4a694785fe695, type: 2}
 --- !u!1 &151206853
 GameObject:
   m_ObjectHideFlags: 0
@@ -5270,6 +5268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ae8494399d474eb0b7897e433d00ef6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InitialMoveUpSpeed: 8
   accDropUpperLimit: 0.96
   accDropLowerLimit: -1.5
   accDropRate: 0.2

@@ -7,7 +7,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 
-public enum ModeGame
+public enum GameMode
 {
     Vertical=0,
     Rounded,
@@ -40,7 +40,7 @@ public class LevelData
     public static int[] map = new int[11 * 70];
 
     //List of mission in this map
-    public static ModeGame mode = ModeGame.Vertical;
+    public static GameMode mode = GameMode.Vertical;
     private static float limitAmount = 40;
 
     public static float LimitAmount
@@ -85,7 +85,7 @@ public class LevelData
             if (line.StartsWith("MODE "))
             {
                 string modeString = line.Replace("MODE", string.Empty).Trim();
-                LevelData.mode = (ModeGame)int.Parse(modeString);
+                LevelData.mode = (GameMode)int.Parse(modeString);
             }
         }
     }

@@ -60,7 +60,6 @@ public class Ball : MonoBehaviour
 
     //	 public OTSprite sprite;                    // This star's sprite class
     Vector3 forceVect;
-    public bool flying;
     public float startTime;
     public float dropFadeTime;
 
@@ -128,7 +127,6 @@ public class Ball : MonoBehaviour
             {
                 GetComponent<CircleCollider2D> ().enabled = true;
 
-                flying = true;
                 startTime = Time.time;
                 // 取消circle collider的isTrigger, 以便触发ball和border的碰撞检测
                 CircleCollider2D coll = GetComponent<CircleCollider2D>();
@@ -264,7 +262,8 @@ public class Ball : MonoBehaviour
         {
             ballList.Clear();
             return true;
-        } /// don't destroy
+        }
+
         /*int targetHash = gameObject.GetHashCode();
         bool hasSeen = false;
         foreach (GameObject ball in ballList)
@@ -387,48 +386,34 @@ public class Ball : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.name.Contains("ball"))
+        if (other.gameObject.layer != LayerMask.NameToLayer("UI"))
         {
-            //当一个ball作为发射ball的时候，ball script是enabled的
-            //一旦它碰到了其它ball（stopBall设成true），那么这个ball script就会被disable
-            //所以判断一个ball script是不是enabled，就能知道这是不是个固定的ball
-            // 注意script被disable之后，其变量仍然可用，函数依然可调用，只是callback不起作用了
-            if (!other.gameObject.GetComponent<Ball>().enabled)
+            // 只有当当前ball是正在发射的球才调用stopball()
+            if (state == BallState.Flying)
             {
                 StopBall();
             }
-        } 
-        else if (other.gameObject.name == "TopBorder")
-        {
-            StopBall();
         }
     }
 
     void StopBall()
     {
         state = BallState.Fixed;
-
-        transform.parent = mainscript.Instance.gameItemsNode.transform;
-        gameObject.layer = LayerMask.NameToLayer("FixedBall");
         this.enabled = false;
+        _gameItem.connectToGrid();
+        mainscript.Instance.platformController.UpdateLocalMinYFromSingleBall(_gameItem);
 
-        flying = false;
+        mainscript.Instance.checkBall = gameObject;
+
         Vector2 speedBeforeColl = GetComponent<Rigidbody2D>().velocity;
         // 删掉RigidBody2D，彻底让mesh接管运动
         Destroy(GetComponent<Rigidbody2D>());
-
         // 设置circle collider
         CircleCollider2D cc = GetComponent<CircleCollider2D>();
         cc.offset = Vector2.zero;
         cc.isTrigger = true;
 
         Destroy(fireTrail, 0.5f);
-
-        mainscript.Instance.gridManager.ConnectGameItemToGrid(gameObject);
-        mainscript.Instance.platformController.UpdateLocalMinYFromSingleBall(this);
-
-        mainscript.Instance.checkBall = gameObject;
-
         iTween.MoveTo(gameObject, iTween.Hash("position", grid.pos, "speed", speedBeforeColl.magnitude));
 
         pullToMesh();

@@ -73,6 +73,12 @@ public class GridManager : MonoBehaviour {
                     resultGrid = grid;
                 }
             }
+            else
+            {
+                // 碰到其他球是正常的，我们只要找到空的grid就行
+                // 现在问题是可能会填上多个grid，之后遇到相应bug可能要看看是不是因为这个
+                //Debug.Log(string.Format("ERROR: trying to attach a gameItem to a grid that already has a gameItem, newGameItem={0}, attachedGameItem={1}", gameItem.name, grid.AttachedGameItem.name));
+            }
         }
 
         return resultGrid;
