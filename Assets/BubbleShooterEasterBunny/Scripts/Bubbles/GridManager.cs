@@ -11,7 +11,7 @@ public class GridManager : MonoBehaviour {
     // TODO: 这个应该从creator计算？
     private float offsetStep = 0.33f;
     private List<GameObject> grids = new List<GameObject>();
-
+    public List<Grid> controlGrids = new List<Grid>();  // 用来找到没有连到顶部或者动物的grids
 
     public void CreateGrids(int rows, int cols)
     {
@@ -130,8 +130,38 @@ public class GridManager : MonoBehaviour {
         return gameItem.GetComponent<GameItem>().grid.GetAdjacentGameItems();
     }
 
-    public GameObject GetGrid(int row, int col)
+    public GameObject grid(int row, int col)
     {
         return grids[row * colCount + col];
+    }
+
+    public List<GameObject> findDetachedGameItems()
+    {
+        controlGrids.Clear();
+        List<Grid> gridsDetached = new List<Grid>();
+        foreach(GameObject gridGO in grids)
+        {
+            Grid grid = gridGO.GetComponent<Grid>();
+            if (grid.AttachedGameItem != null)
+            {
+                if (!controlGrids.Contains(grid))
+                {
+                    List<Grid> resultGrids = new List<Grid>();
+                    grid.checkNearbyDetachedGrids(resultGrids);
+                    gridsDetached.AddRange(resultGrids);
+                }
+            }
+        }
+
+        List<GameObject> results = new List<GameObject>();
+        foreach(Grid grid in gridsDetached)
+        {
+            if (!results.Contains(grid.AttachedGameItem))
+            {
+                results.Add(grid.AttachedGameItem);
+            }
+        }
+
+        return results;
     }
 }

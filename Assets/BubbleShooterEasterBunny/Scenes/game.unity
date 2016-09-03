@@ -286,7 +286,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4d8150231db9d24db2b542626be297d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  squares: []
 --- !u!4 &39308811
 Transform:
   m_ObjectHideFlags: 0
@@ -342,10 +341,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentLevel: 49
+  currentGameMode: 0
   minConsecutiveNumberCount: 3
   bounceCounter: 0
   checkBall: {fileID: 0}
-  controlArray: []
+  controlGrids: []
   isPaused: 0
   noSound: 0
   gameOver: 0
@@ -371,6 +371,7 @@ MonoBehaviour:
   gameItemsNode: {fileID: 1817034612}
   BallColliderRadius: 0.3
   BallRealRadius: 0.33
+  topBorder: {fileID: 1502360742}
 --- !u!82 &53033707
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5257,6 +5258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridPrefab: {fileID: 100000, guid: e0240944f3bd27e449975ef82726c682, type: 2}
+  controlGrids: []
 --- !u!114 &665245367
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -115,4 +115,61 @@ public class Grid : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(transform.position, scale);
     }
+
+    public List<Grid> addFrom(List<Grid> b, List<Grid> b2)
+    {
+        foreach (Grid obj in b)
+        {
+            if (!b2.Contains(obj))
+            {
+                b2.Add(obj);
+            }
+        }
+
+        return b2;
+    }
+
+    public bool checkNearbyDetachedGrids(List<Grid> grids)
+    {
+        // 算法：维护一个数组，将所有有嫌疑的ball都放到数组里，然后递归调用该方法
+        //      一旦出现一个在边界中或者已在controlArray中的ball，表明目前怀疑组都是clean的，清除当前b array全部球
+        //      否则，继续递归调用
+        List<Grid> controlGrids = mainscript.Instance.gridManager.controlGrids;
+
+        switch(mainscript.Instance.levelData.gameMode)
+        {
+        case GameMode.Vertical:
+            if (Row == 0)
+            {
+                addFrom(grids, controlGrids);
+                grids.Clear();
+                return true;    /// don't destroy
+            }
+
+            break;
+        default:
+            throw new System.AccessViolationException("Unexpected GameMode");
+            break;
+        }
+
+        if (controlGrids.Contains(this))
+        {
+            grids.Clear();
+            return true;
+        }
+
+        grids.Add(this);
+
+        foreach (Grid adjacentGrid in adjacentGrids)
+        {
+            // grid连接的gameitem必须非空才能继续递归
+            if (adjacentGrid.AttachedGameItem != null && !grids.Contains(adjacentGrid))
+            {
+                if (adjacentGrid.checkNearbyDetachedGrids(grids))
+                    return true;
+            }
+        }
+
+        return false;
+    }
 }

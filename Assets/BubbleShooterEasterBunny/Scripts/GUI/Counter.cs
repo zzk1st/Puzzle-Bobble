@@ -24,11 +24,11 @@ public class Counter : MonoBehaviour {
         }
         if( name == "Target" )
         {
-            if(LevelData.mode == GameMode.Vertical)
+            if(mainscript.Instance.levelData.gameMode == GameMode.Vertical)
                 label.text = "" + Mathf.Clamp( mainscript.Instance.TargetCounter1, 0, 6 ) + "/6";
-            else if(LevelData.mode == GameMode.Rounded)
+            else if(mainscript.Instance.levelData.gameMode == GameMode.Rounded)
                 label.text = "" + Mathf.Clamp(mainscript.Instance.TargetCounter1, 0, 1)+ "/1";
-            else if( LevelData.mode == GameMode.Animals )
+            else if( mainscript.Instance.levelData.gameMode == GameMode.Animals )
                 label.text = "" + mainscript.Instance.TargetCounter1 + "/" + mainscript.Instance.TotalTargets;
         }
 
@@ -75,8 +75,8 @@ public class Counter : MonoBehaviour {
         }
         else
         {
-            if( LevelData.mode == GameMode.Vertical ) return "Clear the top";
-            else if( LevelData.mode == GameMode.Rounded ) return "Rescue the chicken";
+            if( mainscript.Instance.levelData.gameMode == GameMode.Vertical ) return "Clear the top";
+            else if( mainscript.Instance.levelData.gameMode == GameMode.Rounded ) return "Rescue the chicken";
 
         }
         return "";

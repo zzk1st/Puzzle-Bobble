@@ -33,14 +33,14 @@ public class CreatorBall : MonoBehaviour
                 if( mapValue > 0  )
                 {
                     row = i;
-                    if (LevelData.mode == GameMode.Rounded) row = i +4;
+                    //if (levelData.gameMode == GameMode.Rounded) row = i +4;
                     LevelData.ItemType type = (LevelData.ItemType)mapValue;
                     if (type != LevelData.ItemType.empty)
                     {
-                        GameItemFactory.Instance.createGameItemFromMap(mainscript.Instance.gridManager.GetGrid(row, j).transform.position, (LevelData.ItemType)mapValue);
+                        GameItemFactory.Instance.createGameItemFromMap(mainscript.Instance.gridManager.grid(row, j).transform.position, (LevelData.ItemType)mapValue);
                     }
                 }
-                else if( mapValue == 0 && LevelData.mode == GameMode.Vertical && i == 0 )
+                else if( mapValue == 0 && levelData.gameMode == GameMode.Vertical && i == 0 )
                 {
                     //Instantiate( Resources.Load( "Prefabs/TargetStar" ), GetSquare( i, j ).transform.position, Quaternion.identity );
                 }

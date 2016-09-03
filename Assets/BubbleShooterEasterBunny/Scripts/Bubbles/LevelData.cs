@@ -42,28 +42,28 @@ public class LevelData
     public int colCount;
 
     //List of mission in this map
-    public static GameMode mode = GameMode.Vertical;
-    private static float limitAmount = 40;
+    public GameMode gameMode = GameMode.Vertical;
+    private float limitAmount = 40;
 
     public static float LimitAmount
     {
-        get { return LevelData.limitAmount; }
+        get { return mainscript.Instance.levelData.limitAmount; }
         set 
         { 
-            LevelData.limitAmount = value;
-            if( value < 0 ) LevelData.limitAmount = 0;
+            mainscript.Instance.levelData.limitAmount = value;
+            if( value < 0 ) mainscript.Instance.levelData.limitAmount = 0;
         }
     }
     private static bool startReadData;
     public static List<ItemType> allColors = new List<ItemType>();
     static int key;
-    public static int colors;
+    public static int colorCount;
     public static int[] stars = new int[3];
 
     public Target GetTarget(int levelNumber)
     {
         LoadLevel(levelNumber);
-        return (Target)LevelData.mode;
+        return (Target)gameMode;
     }
 
     /*
@@ -109,14 +109,14 @@ public class LevelData
     void ProcessGameDataFromString(string mapText)
     {
         string[] lines = mapText.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-        LevelData.allColors.Clear();
+        allColors.Clear();
         int mapLine = 0;
         foreach (string line in lines)
         {
             if (line.StartsWith("MODE "))
             {
                 string modeString = line.Replace("MODE", string.Empty).Trim();
-                LevelData.mode = (GameMode)int.Parse(modeString);
+                gameMode = (GameMode)int.Parse(modeString);
             }
             else if (line.StartsWith("SIZE "))
             {
@@ -135,7 +135,7 @@ public class LevelData
             else if (line.StartsWith("COLOR LIMIT "))
             {
                 string blocksString = line.Replace("COLOR LIMIT", string.Empty).Trim();
-                LevelData.colors = int.Parse(blocksString);
+                colorCount = int.Parse(blocksString);
             }
             else if (line.StartsWith("STARS "))
             {
@@ -143,7 +143,7 @@ public class LevelData
                 string[] blocksNumbers = blocksString.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < 3; ++i)
                 {
-                    LevelData.stars[i] = int.Parse(blocksNumbers[i]);
+                    stars[i] = int.Parse(blocksNumbers[i]);
                 }
             }
             else
@@ -154,9 +154,9 @@ public class LevelData
                 {
                     int value =  int.Parse(st[i][0].ToString());
                     int ballColorCount = Enum.GetNames(typeof(BallColor)).Length;
-                    if (!LevelData.allColors.Contains((LevelData.ItemType)value) && value > 0 && value <= ballColorCount)
+                    if (!allColors.Contains((ItemType)value) && value > 0 && value <= ballColorCount)
                     {
-                        LevelData.allColors.Add((LevelData.ItemType)value);
+                        allColors.Add((ItemType)value);
                     }
 
                     map[mapLine * colCount + i] = int.Parse(st[i][0].ToString());
@@ -166,11 +166,11 @@ public class LevelData
         }
 
         // 根据文件创建该level全部颜色表
-        if (LevelData.allColors.Count == 0)
+        if (allColors.Count == 0)
         {
-            for (int i = 1; i <= LevelData.colors; ++i)
+            for (int i = 1; i <= colorCount; ++i)
             {
-                LevelData.allColors.Add((LevelData.ItemType) i);
+                allColors.Add((ItemType) i);
             }
         }
     }

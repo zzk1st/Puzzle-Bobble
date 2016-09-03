@@ -8,6 +8,7 @@ using System.Linq;
 [RequireComponent(typeof(AudioSource))]
 public class mainscript : MonoBehaviour {
     public int currentLevel;
+    public GameMode currentGameMode;
     public LevelData levelData = new LevelData();
     public int minConsecutiveNumberCount;
 
@@ -16,7 +17,7 @@ public class mainscript : MonoBehaviour {
 	public int bounceCounter = 0;
 	public GameObject checkBall;
 
-    public List<GameObject> controlArray = new List<GameObject>();
+    public List<GameObject> controlGrids = new List<GameObject>();
 	public bool isPaused;
 	public bool noSound;
 	public bool gameOver;
@@ -92,6 +93,8 @@ public class mainscript : MonoBehaviour {
 
     public float BallColliderRadius;
     public float BallRealRadius;
+
+    public GameObject topBorder;
 
     //	public int[][] meshMatrix = new int[15][17];
     // Use this for initialization
@@ -182,7 +185,7 @@ public class mainscript : MonoBehaviour {
                 ScoreManager.Instance.ComboCount = 0;
             }
 
-            StartCoroutine(DestroyAloneBalls());
+            StartCoroutine(DestroyDetachedGameItems());
 
             checkBall = null;
         }
@@ -205,7 +208,7 @@ public class mainscript : MonoBehaviour {
 
         ConnectAndDestroyBalls();
 
-        if ( LevelData.mode == GameMode.Vertical && TargetCounter >= 6 && GameManager.Instance.GameStatus == GameStatus.Playing )
+        if ( levelData.gameMode == GameMode.Vertical && TargetCounter >= 6 && GameManager.Instance.GameStatus == GameStatus.Playing )
         {
             GameManager.Instance.Win();
         }
@@ -235,7 +238,26 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-	public IEnumerator DestroyAloneBalls()
+    public IEnumerator DestroyDetachedGameItems()
+    {
+        List<GameObject> gameItemsToDrop = gridManager.findDetachedGameItems();
+        yield return new WaitForEndOfFrame();
+
+        // 删掉ball，并调用StartFall让ball掉落
+        if (gameItemsToDrop.Count > 0)
+        {
+            DropGameItems(gameItemsToDrop);
+            platformController.BallRemovedFromPlatform();
+        }
+
+        // 下面这几步是为了让新产生的球不再有以前没有出现过的颜色
+        // TODO: 重新写下面两个方法
+        GetColorsInGame();
+        SetColorsForNewBall();
+    }
+
+    /*
+	public IEnumerator DestroyDetachedGameItems()
     {
         // TODO: 需要一个fixedBalls来跟踪所有的fixedballs
         GameObject[] allGameObjects = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];			// detect alone balls
@@ -275,6 +297,7 @@ public class mainscript : MonoBehaviour {
         GetColorsInGame();
         SetColorsForNewBall();
 	}
+    */
 
     public void SetColorsForNewBall()
     {
@@ -321,7 +344,7 @@ public class mainscript : MonoBehaviour {
 	}
 	
     // DropBalls, 注意和DestroyBalls并不相同，后者是让球爆炸，这个是让球落下
-    public void DropBalls(List<GameObject> ballsToDrop)
+    public void DropGameItems(List<GameObject> ballsToDrop)
     {
         mainscript.Instance.bounceCounter = 0;
 

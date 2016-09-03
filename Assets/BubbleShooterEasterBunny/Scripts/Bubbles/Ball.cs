@@ -253,28 +253,18 @@ public class Ball : MonoBehaviour
         //      否则，继续递归调用
         if (grid.Row == 0)
         {
-            mainscript.Instance.controlArray = addFrom(ballList, mainscript.Instance.controlArray);
+            mainscript.Instance.controlGrids = addFrom(ballList, mainscript.Instance.controlGrids);
             ballList.Clear();
             return true;    /// don't destroy
         }
 
-        if (findInArray(mainscript.Instance.controlArray, gameObject))
+        if (findInArray(mainscript.Instance.controlGrids, gameObject))
         {
             ballList.Clear();
             return true;
         }
 
-        /*int targetHash = gameObject.GetHashCode();
-        bool hasSeen = false;
-        foreach (GameObject ball in ballList)
-        {
-            if (ball.GetHashCode() == targetHash)
-            {
-                hasSeen = true;
-            }
-        }
-        if (!hasSeen)*/
-            ballList.Add(gameObject);
+        ballList.Add(gameObject);
         List<GameObject> nearbyBalls = grid.GetAdjacentGameItems();
         foreach (GameObject nearbyBall in nearbyBalls)
         {
@@ -287,13 +277,12 @@ public class Ball : MonoBehaviour
                 }
             }
         }
-        return false;
 
+        return false;
     }
 
     void pullToMesh()
     {
-
         Hashtable animTable = mainscript.Instance.animTable;
         animTable.Clear();
         animTable.Add(gameObject, gameObject);
@@ -389,14 +378,24 @@ public class Ball : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("UI"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Border") && 
+            other.gameObject != mainscript.Instance.topBorder)
         {
-            // 只有当当前ball是正在发射的球才调用stopball()
-            if (state == BallState.Flying)
-            {
-                StopBall();
-            }
+            return;
         }
+
+
+        if (other.gameObject.layer == LayerMask.NameToLayer("UI"))
+        {
+            return;
+        }
+
+        if (state != BallState.Flying)
+        {
+            return;
+        }
+
+        StopBall();
     }
 
     void StopBall()
@@ -477,8 +476,4 @@ public class Ball : MonoBehaviour
             SoundBase.Instance.GetComponent<AudioSource> ().PlayOneShot (SoundBase.Instance.hit);
 
     }
-
-
-
-
 }
