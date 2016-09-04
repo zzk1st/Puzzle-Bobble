@@ -35,14 +35,22 @@ public class LevelData
         Animal
     }
 
-    public static int MaxRows = 70;
-    public static int MaxCols = 11;
-    public int[] map = new int[MaxRows * MaxCols];
+    public static int VerticalModeMaxRows = 71;
+    public static int VerticalModeMaxCols = 11;
+
+    public static int RoundedModeMaxRows = 11;
+    public static int RoundedModeMaxCols = 11;
+
+    // animal在圆形模式下的row和col
+    public static int AnimalRow = RoundedModeMaxRows / 2;
+    public static int AnimalCol = RoundedModeMaxCols / 2;
+
+    public int[] map = new int[VerticalModeMaxRows * VerticalModeMaxCols];
     public int rowCount;
     public int colCount;
 
     //List of mission in this map
-    public StageMoveMode gameMode = StageMoveMode.Vertical;
+    public StageMoveMode stageMoveMode = StageMoveMode.Vertical;
     private float limitAmount = 40;
 
     public static float LimitAmount
@@ -63,7 +71,7 @@ public class LevelData
     public Target GetTarget(int levelNumber)
     {
         LoadLevel(levelNumber);
-        return (Target)gameMode;
+        return (Target)stageMoveMode;
     }
 
     public bool LoadLevel(int currentLevel)
@@ -88,7 +96,7 @@ public class LevelData
             if (line.StartsWith("MODE "))
             {
                 string modeString = line.Replace("MODE", string.Empty).Trim();
-                gameMode = (StageMoveMode)int.Parse(modeString);
+                stageMoveMode = (StageMoveMode)int.Parse(modeString);
             }
             else if (line.StartsWith("SIZE "))
             {

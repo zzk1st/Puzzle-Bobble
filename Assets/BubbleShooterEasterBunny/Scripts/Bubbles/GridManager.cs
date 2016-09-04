@@ -13,19 +13,33 @@ public class GridManager : MonoBehaviour {
     private List<GameObject> grids = new List<GameObject>();
     public List<Grid> controlGrids = new List<Grid>();  // 用来找到没有连到顶部或者动物的grids
 
-    public void CreateGrids(int rows, int cols)
+    public void CreateGrids(int rows, int cols, StageMoveMode stageMoveMode)
     {
         rowCount = rows;
         colCount = cols;
-        GameObject gridsNode = GameObject.Find( "-Grids" );
-        float offset = 0;
-        for( int j = 0; j < rowCount + 1; j++ )
+        float rowOffset, colOffset;
+        if (stageMoveMode == StageMoveMode.Vertical)
         {
-            for( int i = 0; i < colCount; i++ )
+            // 注意2和2f是不一样的！
+            rowOffset = 0f;
+            colOffset = -colCount / 2 * gridPrefab.transform.localScale.x;
+        }
+        else
+        {
+            // 注意2和2f是不一样的！
+            rowOffset = rowCount / 2 * gridPrefab.transform.localScale.y;
+            colOffset = -colCount / 2f * gridPrefab.transform.localScale.x;
+        }
+
+        GameObject gridsNode = GameObject.Find( "-Grids" );
+        float offset = 0f;
+        for( int row = 0; row < rowCount; row++ )
+        {
+            for( int col = 0; col < colCount; col++ )
             {
-                if( j % 2 == 0 )
+                if( row % 2 == 0 )
                 {
-                    offset = 0;
+                    offset = 0f;
                 }
                 else
                 {
@@ -33,17 +47,16 @@ public class GridManager : MonoBehaviour {
                 }
 
                 GameObject newGrid = Instantiate(gridPrefab, transform.position, transform.rotation ) as GameObject;
-                Vector3 v = new Vector3(transform.position.x + i * newGrid.transform.localScale.x + offset - colCount / 2f * newGrid.transform.localScale.x,
-                                        transform.position.y - j * newGrid.transform.localScale.y,
-                                        transform.position.z);
-
                 newGrid.transform.parent = gridsNode.transform;
+                Vector3 v = new Vector3(transform.position.x + col * newGrid.transform.localScale.x + offset + colOffset,
+                                        transform.position.y + (-row) * newGrid.transform.localScale.y + rowOffset,
+                                        transform.position.z);
                 newGrid.transform.localPosition = v;
-                newGrid.GetComponent<Grid>().Row = j;
-                newGrid.GetComponent<Grid>().Col = i;
+                newGrid.GetComponent<Grid>().Row = row;
+                newGrid.GetComponent<Grid>().Col = col;
 
                 //Debug.Log(String.Format("row={0}, col={1}, LocalPosition={2}, WorldPosition={3}", j, i, b.transform.localPosition, b.transform.position));
-                GameObject[] existingGrids = GameObject.FindGameObjectsWithTag( "Grid" );
+                GameObject[] existingGrids = GameObject.FindGameObjectsWithTag("Grid");
                 newGrid.name = newGrid.name + existingGrids.Length.ToString();
                 grids.Add(newGrid);
             }

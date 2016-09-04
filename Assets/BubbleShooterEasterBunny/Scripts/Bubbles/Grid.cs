@@ -136,7 +136,7 @@ public class Grid : MonoBehaviour
         //      否则，继续递归调用
         List<Grid> controlGrids = mainscript.Instance.gridManager.controlGrids;
 
-        switch(mainscript.Instance.levelData.gameMode)
+        switch(mainscript.Instance.levelData.stageMoveMode)
         {
         case StageMoveMode.Vertical:
             if (Row == 0)
@@ -145,11 +145,17 @@ public class Grid : MonoBehaviour
                 grids.Clear();
                 return true;    /// don't destroy
             }
-
+            break;
+        case StageMoveMode.Rounded:
+            if (Row == LevelData.AnimalRow && Col == LevelData.AnimalCol)
+            {
+                AddFrom(grids, controlGrids);
+                grids.Clear();
+                return true;    /// don't destroy
+            }
             break;
         default:
             throw new System.AccessViolationException("Unexpected GameMode");
-            break;
         }
 
         if (controlGrids.Contains(this))

@@ -10,39 +10,45 @@ public class CreatorBall : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        mainscript.Instance.gridManager.CreateGrids(LevelData.MaxRows, LevelData.MaxCols);
+        mainscript.Instance.levelData.LoadLevel(mainscript.Instance.currentLevel);
+        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
+        {
+            mainscript.Instance.gridManager.CreateGrids(LevelData.VerticalModeMaxRows, LevelData.VerticalModeMaxCols, mainscript.Instance.levelData.stageMoveMode);
+        }
+        else
+        {
+            mainscript.Instance.gridManager.CreateGrids(LevelData.RoundedModeMaxRows, LevelData.RoundedModeMaxCols, mainscript.Instance.levelData.stageMoveMode);
+        }
 
         mainscript.Instance.currentLevel = PlayerPrefs.GetInt("OpenLevel");// TargetHolder.level;
         if (mainscript.Instance.currentLevel == 0)
             mainscript.Instance.currentLevel = 1;
-
-        mainscript.Instance.levelData.LoadLevel(mainscript.Instance.currentLevel);
         LoadMap();
+
         GameManager.Instance.Demo();
         mainscript.Instance.platformController.StartGameMoveUp();
+        // TODO: 写一个iniitalizeBorders(), 负责border的初始化创建，注意要创建bottom border
     }
 
     public void LoadMap()
     {
         LevelData levelData = mainscript.Instance.levelData;
-        int row = 0;
 
-        for( int i = 0; i < levelData.rowCount; i++ )
+        for( int row = 0; row < levelData.rowCount; row++ )
         {
-            for( int j = 0; j < levelData.colCount; j++ )
+            for( int col = 0; col < levelData.colCount; col++ )
             {
-                int mapValue = levelData.map[i * levelData.colCount + j];
+                int mapValue = levelData.map[row * levelData.colCount + col];
                 if( mapValue > 0  )
                 {
-                    row = i;
                     //if (levelData.gameMode == GameMode.Rounded) row = i +4;
                     LevelData.ItemType type = (LevelData.ItemType)mapValue;
                     if (type != LevelData.ItemType.empty)
                     {
-                        GameItemFactory.Instance.CreateGameItemFromMap(mainscript.Instance.gridManager.Grid(row, j).transform.position, (LevelData.ItemType)mapValue);
+                        GameItemFactory.Instance.CreateGameItemFromMap(mainscript.Instance.gridManager.Grid(row, col).transform.position, (LevelData.ItemType)mapValue);
                     }
                 }
-                else if( mapValue == 0 && levelData.gameMode == StageMoveMode.Vertical && i == 0 )
+                else if( mapValue == 0 && levelData.stageMoveMode == StageMoveMode.Vertical && row == 0 )
                 {
                     //Instantiate( Resources.Load( "Prefabs/TargetStar" ), GetSquare( i, j ).transform.position, Quaternion.identity );
                 }

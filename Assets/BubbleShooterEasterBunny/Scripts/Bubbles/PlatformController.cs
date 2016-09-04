@@ -8,16 +8,16 @@ using System.Collections.Generic;
 /// </summary>
 public class PlatformController : MonoBehaviour
 {
-    private GameObject platform;
-
     public float moveSpeed;
     // MinY指整个关卡最低的位置
     public float lowerMinYLiimt;
     public float upperMinYLiimt;
 
+    private GameObject platform;
+
     // 当前所有fixed balls的最小y值，用来测试关卡是否过线
     private float _curFixedBallLocalMinY;
-    public float curPlatformMinY
+    private float curPlatformMinY
     {
         get
         {
@@ -47,6 +47,12 @@ public class PlatformController : MonoBehaviour
 
     void Update()
     {
+        // 圆形模式下不进行更新
+        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+        {
+            return;
+        }
+
         if (curMinYOutOfRange)
         {
             if (Mathf.Abs(curPlatformMinY - targetMinYPos) > 0.1f)
@@ -84,6 +90,12 @@ public class PlatformController : MonoBehaviour
 
     public void UpdateLocalMinYFromAllFixedBalls()
     {
+        // 圆形模式下不进行更新
+        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+        {
+            return;
+        }
+
         _curFixedBallLocalMinY = 9999f;
 
         foreach( Transform item in mainscript.Instance.gameItemsNode.transform)
@@ -114,8 +126,24 @@ public class PlatformController : MonoBehaviour
 
     public void StartGameMoveUp()
     {
-        targetMinYPos = upperMinYLiimt;
-        curMinYOutOfRange = true;
+        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+        {
+            platform.transform.position = new Vector3(0f, 0f, 0f);
+            if (GameManager.Instance.GameStatus == GameStatus.Demo)
+            {
+                GameManager.Instance.PreTutorial();
+            }
+        }
+        else
+        {
+            // 这里我们要将topborder移动到grid下，这样border可以和grid一起移动
+            GameObject topBorder = GameObject.Find("TopBorder");
+            topBorder.transform.parent = mainscript.Instance.gridsNode.transform;
+            topBorder.transform.localPosition = new Vector3(0f, 0f, 0f);
+
+            targetMinYPos = upperMinYLiimt;
+            curMinYOutOfRange = true;
+        }
     }
 
     void OnDrawGizmos()

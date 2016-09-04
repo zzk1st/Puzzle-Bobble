@@ -343,10 +343,18 @@ public class Ball : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Border") && 
-            other.gameObject != mainscript.Instance.topBorder)
+        if (other.gameObject.layer == LayerMask.NameToLayer("Border"))
         {
-            return;
+            // 圆形模式下topBorder依然起碰撞作用
+            if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+            {
+                return;
+            }
+                
+            if (other.gameObject != mainscript.Instance.topBorder)
+            {
+                return;
+            }
         }
 
 

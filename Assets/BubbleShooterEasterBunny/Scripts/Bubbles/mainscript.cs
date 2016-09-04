@@ -87,7 +87,6 @@ public class mainscript : MonoBehaviour {
     private LIMIT limitType;
     private int limit;
     private int colorLimit;
-    private GameObject bottomBorder;
     public GameObject gridsNode;
     public GameObject gameItemsNode;
 
@@ -123,7 +122,6 @@ public class mainscript : MonoBehaviour {
         _platformController = gridsNode.GetComponent<PlatformController>();
         _gridManager = gridsNode.GetComponent<GridManager>();
         _ballFXManager = GameObject.Find("BallFXManager").GetComponent<BallFXManager>();
-        bottomBorder = GameObject.Find("BottomBorder");
 
         //RandomizeWaitTime();
         ScoreManager.Score = 0;
@@ -205,7 +203,7 @@ public class mainscript : MonoBehaviour {
 
         ConnectAndDestroyBalls();
 
-        if ( levelData.gameMode == StageMoveMode.Vertical && TargetCounter >= 6 && GameManager.Instance.GameStatus == GameStatus.Playing )
+        if ( levelData.stageMoveMode == StageMoveMode.Vertical && TargetCounter >= 6 && GameManager.Instance.GameStatus == GameStatus.Playing )
         {
             GameManager.Instance.Win();
         }
@@ -226,12 +224,14 @@ public class mainscript : MonoBehaviour {
     {
         if (GameManager.Instance.GameStatus == GameStatus.Playing)
         {
+            /*
             float stageMinYWorldSpace = platformController.curPlatformMinY;
             if (stageMinYWorldSpace < bottomBorder.transform.position.y)
             {
                 // TODO: 如何结束游戏？
                 GameManager.Instance.GameOver();
             }
+            */
         }
     }
 

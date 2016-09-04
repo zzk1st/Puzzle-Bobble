@@ -369,7 +369,7 @@ public class LevelEditor : EditorWindow
                     else
                     {
                         target = Target.Chicken;
-                        levelSquares[5 * maxCols + 5] = LevelData.ItemType.Animal;
+                        levelSquares[LevelData.AnimalRow * maxCols + LevelData.AnimalCol] = LevelData.ItemType.Animal;
                         SaveLevel();
                     }
                 }
