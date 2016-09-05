@@ -125,6 +125,14 @@ public class PlatformController : MonoBehaviour
         //Debug.Log(string.Format("MinY recalculated! MinY={0}", curFixedBallLocalMinY));
     }
 
+    float VectorAngle(Vector2 from, Vector2 to)
+    {
+        float angle;
+        Vector3 cross=Vector3.Cross(from, to);
+        angle = Vector2.Angle(from, to);
+        return cross.z > 0 ? -angle : angle;
+    }
+
     public void Rotate(Vector3 ballPos, Vector3 ballDir)
     {
         // 圆形模式下不进行更新
@@ -133,8 +141,8 @@ public class PlatformController : MonoBehaviour
             return;
         }
 
-        float angle = Vector2.Angle(-ballDir, ballPos - transform.position);
-        if(transform.position.x < ballPos.x) angle *= -1;
+        float angle = VectorAngle(-ballDir, ballPos - transform.position);
+        //if(transform.position.x < ballPos.x) angle *= -1;
         targetRotation = transform.rotation*Quaternion.AngleAxis(angle, Vector3.back);
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.kreakWheel );
     }
