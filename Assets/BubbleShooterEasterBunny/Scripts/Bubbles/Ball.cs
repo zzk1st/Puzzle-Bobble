@@ -246,7 +246,7 @@ public class Ball : MonoBehaviour
         Destroy(gameObject, dropFadeTime);
     }
 
-    void PullToMesh()
+    void PlayHitAnim()
     {
         Hashtable animTable = mainscript.Instance.animTable;
         animTable.Clear();
@@ -379,7 +379,7 @@ public class Ball : MonoBehaviour
 
         mainscript.Instance.checkBall = gameObject;
 
-        Vector2 speedBeforeColl = GetComponent<Rigidbody2D>().velocity;
+        Vector2 ballVelocity = GetComponent<Rigidbody2D>().velocity;
         // 删掉RigidBody2D，彻底让mesh接管运动
         Destroy(GetComponent<Rigidbody2D>());
         // 设置circle collider
@@ -391,7 +391,10 @@ public class Ball : MonoBehaviour
         //iTween.MoveTo(gameObject, iTween.Hash("position", grid.pos, "speed", speedBeforeColl.magnitude));
         transform.position = grid.pos;
 
-        PullToMesh();
+        // 转动圆形关卡
+        mainscript.Instance.platformController.Rotate(transform.position, ballVelocity);
+
+        PlayHitAnim();
     }
 
     public void SplashDestroy ()

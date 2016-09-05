@@ -13,15 +13,13 @@ public class PlatformController : MonoBehaviour
     public float lowerMinYLiimt;
     public float upperMinYLiimt;
 
-    private GameObject platform;
-
     // 当前所有fixed balls的最小y值，用来测试关卡是否过线
     private float _curFixedBallLocalMinY;
     private float curPlatformMinY
     {
         get
         {
-            float platformMinYWorldSpace = platform.transform.position.y 
+            float platformMinYWorldSpace = transform.position.y 
                                            + _curFixedBallLocalMinY
                                            - mainscript.Instance.BallColliderRadius;
             return platformMinYWorldSpace;
@@ -30,10 +28,10 @@ public class PlatformController : MonoBehaviour
 
     private bool curMinYOutOfRange = false;
     private float targetMinYPos;
+    private Quaternion targetRotation;
 
     void Start()
     {
-        platform = GameObject.Find("-Grids");
     }
 
     void OnCollisionEnter2D(Collision2D coll)
@@ -50,32 +48,35 @@ public class PlatformController : MonoBehaviour
         // 圆形模式下不进行更新
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
         {
-            return;
+            if( transform.rotation != targetRotation )
+                transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime );
         }
-
-        if (curMinYOutOfRange)
+        else    // Vertical
         {
-            if (Mathf.Abs(curPlatformMinY - targetMinYPos) > 0.1f)
+            if (curMinYOutOfRange)
             {
-                if (curPlatformMinY > targetMinYPos)
+                if (Mathf.Abs(curPlatformMinY - targetMinYPos) > 0.1f)
                 {
-                    platform.transform.Translate(0f, -moveSpeed * Time.deltaTime, 0f);
+                    if (curPlatformMinY > targetMinYPos)
+                    {
+                        transform.Translate(0f, -moveSpeed * Time.deltaTime, 0f);
+                    }
+                    else
+                    {
+                        transform.Translate(0f, moveSpeed * Time.deltaTime, 0f);
+                    }
                 }
                 else
                 {
-                    platform.transform.Translate(0f, moveSpeed * Time.deltaTime, 0f);
+                    curMinYOutOfRange = false;
                 }
             }
             else
             {
-                curMinYOutOfRange = false;
-            }
-        }
-        else
-        {
-            if (GameManager.Instance.GameStatus == GameStatus.Demo)
-            {
-                GameManager.Instance.PreTutorial();
+                if (GameManager.Instance.GameStatus == GameStatus.Demo)
+                {
+                    GameManager.Instance.PreTutorial();
+                }
             }
         }
     }
@@ -91,7 +92,7 @@ public class PlatformController : MonoBehaviour
     public void UpdateLocalMinYFromAllFixedBalls()
     {
         // 圆形模式下不进行更新
-        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+        if (mainscript.Instance.levelData.stageMoveMode != StageMoveMode.Vertical)
         {
             return;
         }
@@ -124,11 +125,25 @@ public class PlatformController : MonoBehaviour
         //Debug.Log(string.Format("MinY recalculated! MinY={0}", curFixedBallLocalMinY));
     }
 
+    public void Rotate(Vector3 ballPos, Vector3 ballDir)
+    {
+        // 圆形模式下不进行更新
+        if (mainscript.Instance.levelData.stageMoveMode != StageMoveMode.Rounded)
+        {
+            return;
+        }
+
+        float angle = Vector2.Angle(-ballDir, ballPos - transform.position);
+        if(transform.position.x < ballPos.x) angle *= -1;
+        targetRotation = transform.rotation*Quaternion.AngleAxis(angle, Vector3.back);
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.kreakWheel );
+    }
+
     public void StartGameMoveUp()
     {
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
         {
-            platform.transform.position = new Vector3(0f, 0f, 0f);
+            transform.position = new Vector3(0f, 0f, 0f);
             if (GameManager.Instance.GameStatus == GameStatus.Demo)
             {
                 GameManager.Instance.PreTutorial();
