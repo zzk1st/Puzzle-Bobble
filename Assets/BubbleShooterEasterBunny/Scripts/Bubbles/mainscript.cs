@@ -38,8 +38,10 @@ public class mainscript : MonoBehaviour {
 	int offset;
 	public GameObject checkBall;
     private float curFixedBallLocalMinY; // 当前所有fixed balls的最小y值，用来测试关卡是否过线
+    public int potSounds;
+    public int bugSounds;
 
-	public static int stage = 1;
+    public static int stage = 1;
 	const int STAGE_1 = 0;
 	const int STAGE_2 = 300;
 	const int STAGE_3 = 750;
@@ -78,6 +80,7 @@ public class mainscript : MonoBehaviour {
     public GameObject TopBorder;
     public Transform Balls;
     public Hashtable animTable = new Hashtable();
+    public static Vector3 lastBall;     // Last position of ball before it stops
     public GameObject FireEffect;
     private BallShooter _ballShooter;
     //private ScoreManager _scoreManager;

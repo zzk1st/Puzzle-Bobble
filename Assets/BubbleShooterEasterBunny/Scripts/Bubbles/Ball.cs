@@ -69,6 +69,17 @@ public class Ball : MonoBehaviour
 
     private GameObject fireTrail;
 
+    private int hitBug;
+
+    public int HitBug
+    {
+        get { return hitBug; }
+        set
+        {
+            hitBug = value;
+        }
+    }
+
     // Use this for initialization
     void Start ()
     {
@@ -217,10 +228,13 @@ public class Ball : MonoBehaviour
         gameObject.GetComponent<Rigidbody2D>().isKinematic = false;
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
         gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        gameObject.GetComponent<CircleCollider2D>().enabled = true;
+        gameObject.GetComponent<CircleCollider2D>().isTrigger = false;
+        gameObject.GetComponent<CircleCollider2D>().radius = 0.3f;
 
-        iTween.FadeTo(gameObject, 0f, dropFadeTime);
+        //iTween.FadeTo(gameObject, 0f, dropFadeTime);
 
-        Destroy(gameObject, dropFadeTime);
+        //Destroy(gameObject, dropFadeTime);
     }
 
     public bool checkNearestBall(List<GameObject> ballList)
@@ -386,6 +400,8 @@ public class Ball : MonoBehaviour
         transform.parent = ballsNode.transform;
         gameObject.layer = LayerMask.NameToLayer("FixedBall");
         this.enabled = false;
+
+        mainscript.lastBall = gameObject.transform.position;
 
         flying = false;
         Vector2 speedBeforeColl = GetComponent<Rigidbody2D>().velocity;
