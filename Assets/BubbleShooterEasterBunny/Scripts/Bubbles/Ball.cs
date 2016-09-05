@@ -78,6 +78,16 @@ public class Ball : MonoBehaviour
 
     private GameObject fireTrail;
 
+    private int hitBug;
+    public int HitBug
+    {
+        get { return hitBug; }
+        set
+        {
+            hitBug = value;
+        }
+    }
+
     // 初始化方法，在instantiate后手动调用
     public void Initialize()
     {
@@ -241,9 +251,9 @@ public class Ball : MonoBehaviour
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
         gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
 
-        iTween.FadeTo(gameObject, 0f, dropFadeTime);
-
-        Destroy(gameObject, dropFadeTime);
+        gameObject.GetComponent<CircleCollider2D>().enabled = true;
+        gameObject.GetComponent<CircleCollider2D>().isTrigger = false;
+        gameObject.GetComponent<CircleCollider2D>().radius = 0.3f;
     }
 
     void PlayHitAnim()
@@ -373,6 +383,8 @@ public class Ball : MonoBehaviour
 
     void StopBall()
     {
+        mainscript.Instance.lastStopBallPos = gameObject.transform.position;
+
         state = BallState.Fixed;
         this.enabled = false;
         _gameItem.ConnectToGrid();

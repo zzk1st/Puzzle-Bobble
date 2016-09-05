@@ -21,8 +21,8 @@ public class ScoreManager : MonoBehaviour {
 
     public static int Score
     {
-        get { return ScoreManager.currentScore; }
-        set { ScoreManager.currentScore = value; }
+        get { return currentScore; }
+        set { currentScore = value; }
     }
 
     public int ComboCount
@@ -34,10 +34,12 @@ public class ScoreManager : MonoBehaviour {
             if (value > 0)
             {
                 SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[Mathf.Clamp(value - 1, 0, 5)]);
+                BugManager.Instance.CreateBug(mainscript.Instance.lastStopBallPos, value);
                 if (value >= 6)
                 {
                     SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[5]);
                     //FireEffect.SetActive(true);
+                    mainscript.Instance.FireEffect.SetActive(true);
                     doubleScore = 2;
                 }
             }
@@ -45,6 +47,8 @@ public class ScoreManager : MonoBehaviour {
             {
                 //FireEffect.SetActive(false);
                 doubleScore = 1;
+                BugManager.Instance.DestroyBugs();
+                mainscript.Instance.FireEffect.SetActive(false);
             }
         }
     }
@@ -84,6 +88,13 @@ public class ScoreManager : MonoBehaviour {
         return val;
     }
 
+    public int UpdatePotScore(int val)
+    {
+        int score = val * doubleScore;
+        currentScore += score;
+        return score;
+    }
+
     // 在Combo时候跳出来的text
     public void PopupComboScore(int value, Vector3 pos)
     {
@@ -104,6 +115,16 @@ public class ScoreManager : MonoBehaviour {
         poptxt.transform.localScale = Vector3.one;
         Destroy(poptxt, 1);
         perfect.SetActive(true);
+    }
+
+    public void PopupPotScore(double value, Vector3 pos)
+    {
+        Transform parent = GameObject.Find("Scores").transform;
+        GameObject poptxt = Instantiate(popupScore, pos, Quaternion.identity) as GameObject;
+        poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
+        poptxt.transform.SetParent(parent);
+        poptxt.transform.localScale = Vector3.one;
+        Destroy(poptxt, 1);
     }
 
     // Update is called once per frame

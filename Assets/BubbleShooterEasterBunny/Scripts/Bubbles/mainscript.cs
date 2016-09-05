@@ -80,6 +80,7 @@ public class mainscript : MonoBehaviour {
 
     public GameObject[] boosts;
     public GameObject[] locksBoosts;
+    public GameObject FireEffect;
 
     public GameObject arrows;
     private int maxCols;
@@ -95,8 +96,10 @@ public class mainscript : MonoBehaviour {
 
     public GameObject topBorder;
 
-    //	public int[][] meshMatrix = new int[15][17];
-    // Use this for initialization
+    public Vector3 lastStopBallPos;     // Last position of ball before it stops
+
+    public int potSounds;
+    public int bugSounds;
 
     void Awake()
     {
@@ -106,11 +109,6 @@ public class mainscript : MonoBehaviour {
         currentLevel = PlayerPrefs.GetInt( "OpenLevel", 1 );
 		mainscript.StopControl = false;
         animTable.Clear();
-//		arcadeMode = InitScript.Arcade;
-		if(Application.platform == RuntimePlatform.WindowsEditor){
-			//SwitchLianaBoost();
-			//arcadeMode = true;
-		}
 	}
 
     void Start()
