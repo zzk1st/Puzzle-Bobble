@@ -353,7 +353,6 @@ public class Ball : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log(other.gameObject.name);
         if (other.gameObject.layer == LayerMask.NameToLayer("Border"))
         {
             // 圆形模式下topBorder依然起碰撞作用
@@ -391,6 +390,8 @@ public class Ball : MonoBehaviour
     void StopBall()
     {
         mainscript.Instance.lastStopBallPos = gameObject.transform.position;
+
+        GameObject.Find("BallShooter").GetComponent<BallShooter>().isFreezing = false;
 
         state = BallState.Fixed;
         this.enabled = false;
