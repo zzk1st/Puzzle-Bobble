@@ -17,9 +17,13 @@ public class Pot : MonoBehaviour {
         if (col.gameObject.name.Contains("ball"))
         {
             col.gameObject.GetComponent<Ball>().SplashDestroy();
-            col.gameObject.GetComponent<Rigidbody2D>().isKinematic = true;
-            col.gameObject.GetComponent<Collider2D>().enabled = false;
-            PlaySplash(col.contacts[0].point);
+            // 只对掉落的球做加分和碰撞
+            if (col.gameObject.GetComponent<Ball>().state == Ball.BallState.Dropped)
+            {
+                col.gameObject.GetComponent<Rigidbody2D>().isKinematic = true;
+                col.gameObject.GetComponent<Collider2D>().enabled = false;
+                PlaySplash(col.contacts[0].point);
+            }
         }
     }
 

@@ -5,12 +5,14 @@ public class BallShooter : MonoBehaviour {
     public enum BallShooterState {
         ReadyToShoot,
         Reloading,
-        Swapping
+        Swapping,
+        Freezing
     };
 
     public BallShooterState state;
     public GameObject boxCatapult;
     public GameObject boxCartridge;
+    public bool isFreezing;
 
     GameObject catapultBall;
     GameObject cartridgeBall;
@@ -48,9 +50,10 @@ public class BallShooter : MonoBehaviour {
 
     void Fire()
     {
-        if (catapultBall != null)
+        if (catapultBall != null && !isFreezing)
         {
             catapultBall.GetComponent<Ball>().Fire();
+            isFreezing = true;
             catapultBall = null;
             Reload();
         }

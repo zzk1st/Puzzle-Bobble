@@ -111,7 +111,7 @@ public class Ball : MonoBehaviour
             
         }
 
-        this.color = (BallColor) itemType;
+        color = (BallColor) itemType;
         gameObject.tag = "" + color;
         GameObject highlight = transform.GetChild(0).gameObject;
         GameObject bubble = transform.GetChild(1).gameObject;
@@ -380,12 +380,20 @@ public class Ball : MonoBehaviour
             return;
         }
 
+        // Flying的球位置在线以下不碰撞
+        if (other.gameObject.layer == LayerMask.NameToLayer("Pot"))
+        {
+            return;
+        }
+
         StopBall();
     }
 
     void StopBall()
     {
         mainscript.Instance.lastStopBallPos = gameObject.transform.position;
+
+        GameObject.Find("BallShooter").GetComponent<BallShooter>().isFreezing = false;
 
         state = BallState.Fixed;
         this.enabled = false;

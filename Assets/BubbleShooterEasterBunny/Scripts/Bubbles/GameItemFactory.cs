@@ -47,7 +47,7 @@ public class GameItemFactory : MonoBehaviour {
         if (itemType == LevelData.ItemType.random)
         {
             mainscript.Instance.GetColorsInGame();
-            itemType = (LevelData.ItemType)mainscript.curStageColors[UnityEngine.Random.Range(1, mainscript.curStageColors.Count)];
+            itemType = (LevelData.ItemType)mainscript.curStageColors[UnityEngine.Random.Range(0, mainscript.curStageColors.Count)];
         }
 
         ball = Instantiate(ballPrefab, transform.position, transform.rotation) as GameObject;
