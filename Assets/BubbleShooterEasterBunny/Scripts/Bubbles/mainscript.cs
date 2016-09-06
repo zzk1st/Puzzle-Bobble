@@ -328,9 +328,10 @@ public class mainscript : MonoBehaviour {
             ball.GetComponent<Ball>().StartFall();
 		}
         // 调用ScoreManager里针对掉落球的分数更新函数
-        int val = ScoreManager.Instance.UpdateFallingScore(ballsToDrop.Count);
+        // 暂时注释掉因为女巫泡泡里没有掉落得分 (只有掉入pot的加分)
+        //int val = ScoreManager.Instance.UpdateFallingScore(ballsToDrop.Count);
 
-        ScoreManager.Instance.PopupFallingScore(val, transform.position+(new Vector3(1,0,0)));
+        //ScoreManager.Instance.PopupFallingScore(val, transform.position+(new Vector3(1,0,0)));
     }
 
     List<GameObject> CheckNearbyConsecutiveNumberBalls(GameObject checkBallGO)
@@ -411,7 +412,11 @@ public class mainscript : MonoBehaviour {
         //调用ScoreManager里爆炸球的分数更新函数
         int val = ScoreManager.Instance.UpdateComboScore(balls.Count);
 
-        ScoreManager.Instance.PopupComboScore(val, transform.position);
+        foreach (GameObject ballGo in balls)
+        {
+            Vector3 pos = ballGo.transform.position;
+            ScoreManager.Instance.PopupComboScore(val, pos);
+        }
     }
 }
 

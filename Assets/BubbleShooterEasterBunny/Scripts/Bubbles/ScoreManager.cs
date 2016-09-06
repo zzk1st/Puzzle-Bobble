@@ -12,7 +12,7 @@ public class ScoreManager : MonoBehaviour {
     private static int currentScore = 0;
     private static int timeScoreLowerBound = 1000;
     private static int timeScoreUpperBound = 100000;
-    private static int comboCount = 1;
+    private static int comboCount = 0;
     private static int doubleScore = 1;
     public static int playedTime = 0;
     public GameObject popupScore;
@@ -69,9 +69,10 @@ public class ScoreManager : MonoBehaviour {
 
     public int UpdateComboScore(int numBalls)
     {
-        int val = numBalls * comboCount * doubleScore * 10;
+        int singleBallScore = 10 + (comboCount-1) * 5;
+        int val = numBalls * singleBallScore;
         currentScore += val;
-        return val;
+        return singleBallScore;
     }
 
     public int UpdateFallingScore(int numBalls)
