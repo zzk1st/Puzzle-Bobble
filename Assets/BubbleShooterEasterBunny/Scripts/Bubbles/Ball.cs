@@ -76,6 +76,10 @@ public class Ball : MonoBehaviour
     private float ballAnimForce = 0.15f;    // 播放碰撞动画时，给每个球施加的力，力越大位移越大
     private float ballAnimSpeed = 5f;       // 播放碰撞动画的速度，数越大播放越快
 
+    private float ballFallXSpeedRange = 3f;       // 球掉落时候水平速度的随机范围
+    private float ballFallRotationSpeed = 0.0f;
+    private float ballFallRotationSpeedRange = 600f;
+
     private int hitBug;
     public int HitBug
     {
@@ -86,11 +90,17 @@ public class Ball : MonoBehaviour
         }
     }
 
+
+    private GameObject ballHighlightGO;
+    private GameObject ballPicGO;
+
     // 初始化方法，在instantiate后手动调用
     public void Initialize()
     {
         // 初始化references
         _gameItem = gameObject.GetComponent<GameItem>();
+        ballHighlightGO = transform.GetChild(0).gameObject;
+        ballPicGO = transform.GetChild(1).gameObject;
     }
 
     // Use this for initialization
@@ -113,18 +123,16 @@ public class Ball : MonoBehaviour
 
         color = (BallColor) itemType;
         gameObject.tag = "" + color;
-        GameObject highlight = transform.GetChild(0).gameObject;
-        GameObject bubble = transform.GetChild(1).gameObject;
 
         foreach (Sprite item in colorSprites)
         {
             if( item.name == "bubble_" + color )
             {
-                bubble.GetComponent<SpriteRenderer>().sprite = item;
+                ballPicGO.GetComponent<SpriteRenderer>().sprite = item;
             }
             else if (item.name == "bubble_" + color + "_highlight")
             {
-                highlight.GetComponent<SpriteRenderer>().sprite = item;
+                ballHighlightGO.GetComponent<SpriteRenderer>().sprite = item;
             }
         }
 
@@ -156,6 +164,14 @@ public class Ball : MonoBehaviour
 
                 state = BallState.Flying;
             }
+        }
+    }
+
+    void Update()
+    {
+        if (state == BallState.Dropped)
+        {
+            ballPicGO.transform.Rotate(new Vector3(0f, 0f, ballFallRotationSpeed * Time.deltaTime));
         }
     }
 
@@ -240,7 +256,7 @@ public class Ball : MonoBehaviour
 
     public void StartFall()
     {
-        enabled = false;
+        enabled = true;
         state = BallState.Dropped;
         _gameItem.DisconnectFromGrid();
 
@@ -252,11 +268,12 @@ public class Ball : MonoBehaviour
 
         gameObject.GetComponent<Rigidbody2D>().isKinematic = false;
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
-        gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(Random.Range(-ballFallXSpeedRange, ballFallXSpeedRange), 0f);
+        ballFallRotationSpeed = Random.Range(-ballFallRotationSpeedRange, ballFallRotationSpeedRange);
 
         gameObject.GetComponent<CircleCollider2D>().enabled = true;
         gameObject.GetComponent<CircleCollider2D>().isTrigger = false;
-        gameObject.GetComponent<CircleCollider2D>().radius = 0.3f;
+        gameObject.GetComponent<CircleCollider2D>().radius = mainscript.Instance.BallRealRadius; // 这里我们要将ball碰撞半径扩大，增加和蜘蛛碰撞效果
     }
 
     void PlayHitAnim()
