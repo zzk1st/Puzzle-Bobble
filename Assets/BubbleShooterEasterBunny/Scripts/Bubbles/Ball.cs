@@ -113,13 +113,21 @@ public class Ball : MonoBehaviour
 
         this.color = (BallColor) itemType;
         gameObject.tag = "" + color;
+        GameObject highlight = transform.GetChild(0).gameObject;
+        GameObject bubble = transform.GetChild(1).gameObject;
+
         foreach (Sprite item in colorSprites)
         {
-            if( item.name == "ball_sprite_" + color )
+            if( item.name == "bubble_" + color )
             {
-                GetComponent<SpriteRenderer>().sprite = item;
+                bubble.GetComponent<SpriteRenderer>().sprite = item;
+            }
+            else if (item.name == "bubble_" + color + "_highlight")
+            {
+                highlight.GetComponent<SpriteRenderer>().sprite = item;
             }
         }
+
     }
 
     public void Fire()
@@ -436,14 +444,13 @@ public class Ball : MonoBehaviour
             // WaitForEndOfFrame的作用是等到渲染全部完成但没放到屏幕之前
             yield return new WaitForEndOfFrame();
         }
-        // 播放完膨胀的动画之后让球及其阴影都不再显示
-        gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        // 播放完膨胀的动画之后让球及其高光都不再显示
         transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+        transform.GetChild(1).GetComponent<SpriteRenderer>().enabled = false;
 
         // TODO: 播放爆炸的动画和声音，注意：1. 爆炸之后要销毁 2. 爆炸应挂在当前grid下面
 
         Destroy (gameObject, 1);
-
     }
 
     public void ShowFirework ()

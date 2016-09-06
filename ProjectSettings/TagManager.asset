@@ -51,7 +51,7 @@ TagManager:
   - NewBall
   - ParticleLayer
   - ExplodedBall
-  - Shadow
+  - BallHighlight
   - Number
   - 
   - 
