@@ -113,7 +113,7 @@ public class Ball : MonoBehaviour
             
         }
 
-        this.color = (BallColor) itemType;
+        color = (BallColor) itemType;
         gameObject.tag = "" + color;
         foreach (Sprite item in colorSprites)
         {
@@ -353,6 +353,7 @@ public class Ball : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log(other.gameObject.name);
         if (other.gameObject.layer == LayerMask.NameToLayer("Border"))
         {
             // 圆形模式下topBorder依然起碰撞作用
@@ -374,6 +375,12 @@ public class Ball : MonoBehaviour
         }
 
         if (state != BallState.Flying)
+        {
+            return;
+        }
+
+        // Flying的球位置在线以下不碰撞
+        if (other.gameObject.layer == LayerMask.NameToLayer("Pot"))
         {
             return;
         }
