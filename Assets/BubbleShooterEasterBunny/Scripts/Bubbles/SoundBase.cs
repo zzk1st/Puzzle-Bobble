@@ -22,6 +22,12 @@ public class SoundBase : MonoBehaviour {
  	public AudioClip OutOfMoves;
  	public AudioClip Boom;
  	public AudioClip black_hole;
+    public AudioClip ballExplode;
+    public AudioClip ballExplode5Hit;
+    public AudioClip ballExplode9Hit;
+    public AudioClip shoot;
+    public AudioClip hitBall;
+    public AudioClip hitBorder;
 
     ///SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.kreakWheel );
 

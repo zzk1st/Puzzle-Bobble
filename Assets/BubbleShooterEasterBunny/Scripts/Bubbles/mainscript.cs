@@ -53,12 +53,6 @@ public class mainscript : MonoBehaviour {
         get { return _gridManager; }
     }
 
-    private BallFXManager _ballFXManager;
-    public BallFXManager ballFXManager
-    {
-        get { return _ballFXManager; }
-    }
-    
     public int TotalTargets;
 
     public int countOfPreparedToDestroy;
@@ -166,20 +160,41 @@ public class mainscript : MonoBehaviour {
             // 去掉重复元素
             ballsToDelete = ballsToDelete.Distinct().ToList();
 
+
             if (ballsToDelete.Count >= 3)
             {
+                PlayBallExplodeAudio(ballsToDelete.Count);
                 ScoreManager.Instance.ComboCount++;
                 // 在这里调用coroutine将其销毁
                 DestroyBalls(ballsToDelete, 0.00001f);
             }
-            if (ballsToDelete.Count < 3)
+            else
             {
+                // 如果没爆超过3个，说明球只是撞上其他球，播撞球的音效
+                // TODO: 如果撞了topBorder，周围又没有球怎么情况？
+                SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.hitBall);
                 mainscript.Instance.bounceCounter++;
                 ScoreManager.Instance.ComboCount = 0;
             }
 
             StartCoroutine(DestroyDetachedGameItems());
             checkBall = null;
+        }
+    }
+
+    void PlayBallExplodeAudio(int ballCount)
+    {
+        if (ballCount < 5)
+        {
+            SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.ballExplode);
+        }
+        else if (ballCount >= 5 && ballCount < 9)
+        {
+            SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.ballExplode5Hit);
+        }
+        else
+        {
+            SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.ballExplode9Hit);
         }
     }
 
@@ -382,7 +397,6 @@ public class mainscript : MonoBehaviour {
     void DestroyBalls(List<GameObject> balls, float speed = 0.1f)
     {
         mainscript.Instance.bounceCounter = 0;
-        int soundPool = 0;
         foreach (GameObject ballGO in balls)
         {
             GameItem ballGameItem = ballGO.GetComponent<GameItem>();
@@ -393,8 +407,6 @@ public class mainscript : MonoBehaviour {
             // 让ball爆炸
             Ball ball = ballGO.GetComponent<Ball>();
             ball.Explode();
-
-            soundPool++;
         }
         //调用ScoreManager里爆炸球的分数更新函数
         int val = ScoreManager.Instance.UpdateComboScore(balls.Count);

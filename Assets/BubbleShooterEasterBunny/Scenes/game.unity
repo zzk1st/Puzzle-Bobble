@@ -2994,35 +2994,59 @@ Prefab:
     - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: swish.Array.data[0]
       value: 
-      objectReference: {fileID: 8300000, guid: 138c4a9d0cf434971b3e916378848584, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: swish.Array.data[1]
       value: 
-      objectReference: {fileID: 8300000, guid: 138c4a9d0cf434971b3e916378848584, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: combo.Array.data[0]
       value: 
-      objectReference: {fileID: 8300000, guid: a980277bb4d594ac4b64764223aa41ee, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: combo.Array.data[1]
       value: 
-      objectReference: {fileID: 8300000, guid: a980277bb4d594ac4b64764223aa41ee, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: combo.Array.data[2]
       value: 
-      objectReference: {fileID: 8300000, guid: a980277bb4d594ac4b64764223aa41ee, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: combo.Array.data[3]
       value: 
-      objectReference: {fileID: 8300000, guid: a980277bb4d594ac4b64764223aa41ee, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: combo.Array.data[4]
       value: 
-      objectReference: {fileID: 8300000, guid: a980277bb4d594ac4b64764223aa41ee, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: combo.Array.data[5]
       value: 
-      objectReference: {fileID: 8300000, guid: a980277bb4d594ac4b64764223aa41ee, type: 3}
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
+      propertyPath: ballExplode
+      value: 
+      objectReference: {fileID: 8300000, guid: 2c17be0542a59488cb3f966f935d692f, type: 3}
+    - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
+      propertyPath: ballExplode5Hit
+      value: 
+      objectReference: {fileID: 8300000, guid: 36d89090e715e48ccb5d065bbb93b8b7, type: 3}
+    - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
+      propertyPath: ballExplode9Hit
+      value: 
+      objectReference: {fileID: 8300000, guid: 3d9f34629082a444ca4cf05e4b7b18bd, type: 3}
+    - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
+      propertyPath: shoot
+      value: 
+      objectReference: {fileID: 8300000, guid: 092fadcc5729b4747848b341a267d8bc, type: 3}
+    - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
+      propertyPath: hitBorder
+      value: 
+      objectReference: {fileID: 8300000, guid: 6ec7092b00c724f86a3da7cfcb745da8, type: 3}
+    - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
+      propertyPath: hitBall
+      value: 
+      objectReference: {fileID: 8300000, guid: 1424ebbb34ca849b898a09472343410d, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
   m_IsPrefabParent: 0
@@ -6240,6 +6264,7 @@ MonoBehaviour:
   state: 0
   boxCatapult: {fileID: 196147815}
   boxCartridge: {fileID: 2023845491}
+  isFreezing: 0
 --- !u!4 &821578620
 Transform:
   m_ObjectHideFlags: 0

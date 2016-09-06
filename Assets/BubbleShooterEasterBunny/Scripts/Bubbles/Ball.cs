@@ -152,6 +152,7 @@ public class Ball : MonoBehaviour
                 GetComponent<Rigidbody2D>().AddForce(direction.normalized * LaunchForce, ForceMode2D.Force);
 
                 // TODO: 播放发射球的声音
+                SoundBase.Instance.GetComponent<AudioSource> ().PlayOneShot(SoundBase.Instance.shoot);
 
                 state = BallState.Flying;
             }
@@ -357,6 +358,8 @@ public class Ball : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Border"))
         {
+            SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.hitBorder);
+
             // 圆形模式下topBorder依然起碰撞作用
             if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
             {
@@ -368,7 +371,6 @@ public class Ball : MonoBehaviour
                 return;
             }
         }
-
 
         if (other.gameObject.layer == LayerMask.NameToLayer("UI"))
         {
@@ -456,7 +458,7 @@ public class Ball : MonoBehaviour
         transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
         transform.GetChild(1).GetComponent<SpriteRenderer>().enabled = false;
 
-        // TODO: 播放爆炸的动画和声音，注意：1. 爆炸之后要销毁 2. 爆炸应挂在当前grid下面
+        // TODO: 播放爆炸的动画，注意：1. 爆炸之后要销毁 2. 爆炸应挂在当前grid下面
 
         Destroy (gameObject, 1);
     }

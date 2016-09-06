@@ -18,13 +18,11 @@ public class BallShooter : MonoBehaviour {
     GameObject cartridgeBall;
     float bottomBoarderY;  //低于此线就不能发射球
 
-    CreatorBall creatorBall;
     UnityEngine.EventSystems.EventSystem currentES;
 	// Use this for initialization
 	void Start ()
     {
         bottomBoarderY = GameObject.Find("BottomBorder").transform.position.y;
-        creatorBall = GameObject.Find("Creator").GetComponent<CreatorBall>();
         currentES = UnityEngine.EventSystems.EventSystem.current;
     }
 
