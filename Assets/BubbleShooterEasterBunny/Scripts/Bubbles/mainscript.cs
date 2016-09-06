@@ -119,7 +119,6 @@ public class mainscript : MonoBehaviour {
         _ballShooter = GameObject.Find("BallShooter").GetComponent<BallShooter>();
         _platformController = gridsNode.GetComponent<PlatformController>();
         _gridManager = gridsNode.GetComponent<GridManager>();
-        _ballFXManager = GameObject.Find("BallFXManager").GetComponent<BallFXManager>();
 
         //RandomizeWaitTime();
         ScoreManager.Score = 0;

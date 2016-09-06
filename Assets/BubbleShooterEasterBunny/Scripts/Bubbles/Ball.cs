@@ -76,8 +76,6 @@ public class Ball : MonoBehaviour
     private float ballAnimForce = 0.15f;    // 播放碰撞动画时，给每个球施加的力，力越大位移越大
     private float ballAnimSpeed = 5f;       // 播放碰撞动画的速度，数越大播放越快
 
-    private GameObject fireTrail;
-
     private int hitBug;
     public int HitBug
     {
@@ -145,11 +143,7 @@ public class Ball : MonoBehaviour
                 Vector2 direction = pos - transform.position;
                 GetComponent<Rigidbody2D>().AddForce(direction.normalized * LaunchForce, ForceMode2D.Force);
 
-                // 生成球轨迹的prefab, 同时播放声音
-                BallFX ballFX = mainscript.Instance.ballFXManager.ballFXs[color];
-                fireTrail = (GameObject)Instantiate(ballFX.fireTrailPrefab, gameObject.transform.position, Quaternion.identity);
-                fireTrail.transform.parent = transform;
-                SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(ballFX.fireAudio);
+                // TODO: 播放发射球的声音
 
                 state = BallState.Flying;
             }
@@ -399,7 +393,6 @@ public class Ball : MonoBehaviour
         cc.offset = Vector2.zero;
         cc.isTrigger = true;
 
-        Destroy(fireTrail, 0.5f);
         //iTween.MoveTo(gameObject, iTween.Hash("position", grid.pos, "speed", speedBeforeColl.magnitude));
         transform.position = grid.pos;
 
@@ -447,11 +440,7 @@ public class Ball : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
         transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 
-        BallFX ballFX = mainscript.Instance.ballFXManager.ballFXs[color];
-        GameObject explosion = (GameObject)Instantiate (ballFX.explosionPrefab, gameObject.transform.position, Quaternion.identity);
-        if (grid != null)
-            explosion.transform.parent = grid.gameObject.transform;
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(ballFX.explosionAudio);
+        // TODO: 播放爆炸的动画和声音，注意：1. 爆炸之后要销毁 2. 爆炸应挂在当前grid下面
 
         Destroy (gameObject, 1);
 
