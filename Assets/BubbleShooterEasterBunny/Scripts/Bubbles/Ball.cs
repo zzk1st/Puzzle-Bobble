@@ -442,9 +442,9 @@ public class Ball : MonoBehaviour
         Destroy (gameObject);
     }
 
-    public void Explode()
+    public void Explode(float delayedExplodeTime)
     {
-        StartCoroutine(ExplodeCor());
+        StartCoroutine(ExplodeCor(delayedExplodeTime));
     }
 
     public void growUpPlaySound ()
@@ -457,8 +457,11 @@ public class Ball : MonoBehaviour
     }
 
 
-    IEnumerator ExplodeCor()
+    IEnumerator ExplodeCor(float delayedExplodeTime)
     {
+        // 延迟球爆炸
+        yield return new WaitForSeconds(delayedExplodeTime);
+
         float startTime = Time.time;
         float endTime = Time.time + 0.1f;
         Vector3 tempPosition = transform.localScale;

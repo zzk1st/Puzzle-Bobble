@@ -376,6 +376,7 @@ MonoBehaviour:
   lastStopBallPos: {x: 0, y: 0, z: 0}
   potSounds: 0
   bugSounds: 0
+  ballExplosionTimeInterval: 0.07
 --- !u!82 &53033707
 AudioSource:
   m_ObjectHideFlags: 0

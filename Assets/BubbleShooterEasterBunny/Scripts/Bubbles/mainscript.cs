@@ -95,6 +95,8 @@ public class mainscript : MonoBehaviour {
     public int potSounds;
     public int bugSounds;
 
+    public float ballExplosionTimeInterval;
+
     void Awake()
     {
         Instance = this;
@@ -166,7 +168,7 @@ public class mainscript : MonoBehaviour {
                 PlayBallExplodeAudio(ballsToDelete.Count);
                 ScoreManager.Instance.ComboCount++;
                 // 在这里调用coroutine将其销毁
-                DestroyBalls(ballsToDelete, 0.00001f);
+                ExplodeBalls(ballsToDelete);
             }
             else
             {
@@ -395,9 +397,10 @@ public class mainscript : MonoBehaviour {
         return ballsToDelete;
     }
 
-    void DestroyBalls(List<GameObject> balls, float speed = 0.1f)
+    void ExplodeBalls(List<GameObject> balls)
     {
         mainscript.Instance.bounceCounter = 0;
+        float delayedExplodeTime = 0f;
         foreach (GameObject ballGO in balls)
         {
             GameItem ballGameItem = ballGO.GetComponent<GameItem>();
@@ -407,7 +410,8 @@ public class mainscript : MonoBehaviour {
 
             // 让ball爆炸
             Ball ball = ballGO.GetComponent<Ball>();
-            ball.Explode();
+            ball.Explode(delayedExplodeTime);
+            delayedExplodeTime += ballExplosionTimeInterval;
         }
         //调用ScoreManager里爆炸球的分数更新函数
         int val = ScoreManager.Instance.UpdateComboScore(balls.Count);
