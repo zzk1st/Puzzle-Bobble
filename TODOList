@@ -16,7 +16,7 @@ Features:
 (DONE)改变关卡移动方式
 去掉不同球的爆炸效果
 球落入筐里有闪光效果
-蜘蛛被碰到会弹一下
+(DONE)蜘蛛被碰到会弹一下
 修改Double Score为Hot Pots 并增加一段动画
 增加每关球数量的限制
 tutorial（每关开始一个）
