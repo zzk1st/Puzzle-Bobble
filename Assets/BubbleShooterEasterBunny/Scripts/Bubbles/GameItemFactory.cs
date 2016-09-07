@@ -85,7 +85,7 @@ public class GameItemFactory : MonoBehaviour {
         ball.GetComponent<Ball>().Initialize();
 
         // 设置collider, state和其他基本属性
-        ball.GetComponent<CircleCollider2D>().radius = mainscript.Instance.BallColliderRadius;
+        ball.GetComponent<CircleCollider2D>().radius = mainscript.Instance.LineColliderRadius;
         ball.GetComponent<CircleCollider2D>().offset = Vector2.zero;
         ball.GetComponent<Ball>().SetTypeAndColor(itemType);
         ball.GetComponent<Ball>().number = UnityEngine.Random.Range(1, 6);
