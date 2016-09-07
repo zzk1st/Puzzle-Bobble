@@ -435,6 +435,7 @@ public class Ball : MonoBehaviour
         mainscript.Instance.platformController.Rotate(transform.position, ballVelocity);
 
         PlayHitAnim();
+        mainscript.Instance.ballShooter.ChangeRadius(mainscript.Instance.LineColliderRadius);
     }
 
     public void SplashDestroy ()

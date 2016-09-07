@@ -16,6 +16,13 @@ public class mainscript : MonoBehaviour {
 	GameObject ball;
 	public int bounceCounter = 0;
 	public GameObject checkBall;
+    public Color currentBallShooterColor = new Color(1,0,0,1);
+
+    public Color[] BallRGB = new[] { new Color(24 / 255f, 121 / 255f, 1, 1),
+                             new Color(19 / 255f, 161 / 255f, 30 / 255f, 1),
+                             new Color(224 / 255f, 52 / 255f, 0, 1),
+                             new Color(179 / 255f, 0, 222 / 255f, 1),
+                             new Color(188 / 255f, 62 / 255f, 0, 1)};
 
     public List<GameObject> controlGrids = new List<GameObject>();
 	public bool isPaused;
@@ -86,6 +93,7 @@ public class mainscript : MonoBehaviour {
     public GameObject gameItemsNode;
 
     public float BallColliderRadius;
+    public float LineColliderRadius;
     public float BallRealRadius;
 
     public GameObject topBorder;
@@ -115,7 +123,6 @@ public class mainscript : MonoBehaviour {
         _ballShooter = GameObject.Find("BallShooter").GetComponent<BallShooter>();
         _platformController = gridsNode.GetComponent<PlatformController>();
         _gridManager = gridsNode.GetComponent<GridManager>();
-
         //RandomizeWaitTime();
         ScoreManager.Score = 0;
         if (PlayerPrefs.GetInt("noSound") == 1) noSound = true;

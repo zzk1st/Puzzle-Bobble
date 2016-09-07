@@ -12,16 +12,24 @@ public class BallShooter : MonoBehaviour {
     public BallShooterState state;
     public GameObject boxCatapult;
     public GameObject boxCartridge;
+    public GameObject rootBall;
     public bool isFreezing;
 
     GameObject catapultBall;
     GameObject cartridgeBall;
+
+    public GameObject CatapultBall
+    {
+        get { return catapultBall; }
+    }
+
     float bottomBoarderY;  //低于此线就不能发射球
 
     UnityEngine.EventSystems.EventSystem currentES;
 	// Use this for initialization
 	void Start ()
     {
+        rootBall = GameObject.Find("-GameItems");
         bottomBoarderY = GameObject.Find("BottomBorder").transform.position.y;
         currentES = UnityEngine.EventSystems.EventSystem.current;
     }
@@ -48,12 +56,23 @@ public class BallShooter : MonoBehaviour {
 
     void Fire()
     {
+        ChangeRadius(mainscript.Instance.BallColliderRadius);
         if (catapultBall != null && !isFreezing)
         {
             catapultBall.GetComponent<Ball>().Fire();
             isFreezing = true;
             catapultBall = null;
             Reload();
+        }
+    }
+
+    public void ChangeRadius(float r)
+    {
+        if (rootBall == null) return;
+        foreach (Transform ball in rootBall.transform)
+        {
+            if (ball.gameObject.GetComponent<GameItem>().itemType == GameItem.ItemType.Ball)
+                ball.gameObject.GetComponent<CircleCollider2D>().radius = r;
         }
     }
 
@@ -70,17 +89,10 @@ public class BallShooter : MonoBehaviour {
             catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
             catapultBall.GetComponent<bouncer>().BounceToCatapult(boxCatapult.transform.position);
 
-            // Currently Disabled. Find color according to texture.
-            // Alternative way: get color string by catapultBall.tag, then assign color
-            // via a mapping from color string to actual color.
-
-            //Color col = catapultBall.GetComponent<Grid>().Busy.GetComponent<SpriteRenderer>().sprite.texture.GetPixelBilinear(0.1f, 0.6f);
-            //col.a = 1;
-            //spriteRenderer.color = col;
-            
-
             cartridgeBall = GameItemFactory.Instance.CreateNewBall(boxCartridge.transform.position, LevelData.ItemType.random);
             cartridgeBall.GetComponent<Ball>().state = Ball.BallState.Waiting;
+
+
         }
     }
 
