@@ -6,6 +6,7 @@ public class DrawLine : MonoBehaviour
     LineRenderer line;
     bool draw = false;
     Color col = new Color(1,0,0,1);
+    float bottomY;
 
     public static Vector2[] waypoints = new Vector2[3];
     public float addAngle = 90;
@@ -18,6 +19,7 @@ public class DrawLine : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        bottomY = GameObject.Find("BottomBorder").transform.position.y;
         line = GetComponent<LineRenderer>();
         GeneratePoints();
         GeneratePositionsPoints();
@@ -42,7 +44,10 @@ public class DrawLine : MonoBehaviour
 
     private void GeneratePositionsPoints()
     {
-        if (mainscript.Instance.ballShooter.CatapultBall != null)
+        Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (pos.y <= bottomY)
+            return;
+            if (mainscript.Instance.ballShooter.CatapultBall != null)
         {
             //col = mainscript.Instance.ballShooter.boxCatapult.GetComponent<Grid>().AttachedGameItem.GetComponent<SpriteRenderer>().sprite.texture.GetPixelBilinear(0.6f, 0.6f);
             //col.a = 1;
@@ -163,9 +168,6 @@ public class DrawLine : MonoBehaviour
                         waypoints[2] = Quaternion.AngleAxis(angle + addAngle, Vector3.back) * ((Vector2)point - (point - Vector2.up * 100));
                         Vector2 dir2 = (waypoints[2] - waypoints[1]).normalized;
                         RaycastHit2D hit2 = Physics2D.Linecast(waypoints[1]+dir2*0.1f, waypoints[2]);
-                        Debug.Log("start: " + waypoints[1].x + " " + waypoints[1].y);
-                        Debug.Log("end: " + waypoints[2].x + " " + waypoints[2].y);
-                        Debug.Log("hit: " + hit2.point.x + " " + hit2.point.y);
 
                         waypoints[2] = hit2.point;
                               

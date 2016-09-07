@@ -89,19 +89,8 @@ public class BallShooter : MonoBehaviour {
             catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
             catapultBall.GetComponent<bouncer>().BounceToCatapult(boxCatapult.transform.position);
 
-            // Currently Disabled. Find color according to texture.
-            // Alternative way: get color string by catapultBall.tag, then assign color
-            // via a mapping from color string to actual color.
-
-            //Color col = catapultBall.GetComponent<Grid>().Busy.GetComponent<SpriteRenderer>().sprite.texture.GetPixelBilinear(0.1f, 0.6f);
-            //col.a = 1;
-            //spriteRenderer.color = col;
-
             cartridgeBall = GameItemFactory.Instance.CreateNewBall(boxCartridge.transform.position, LevelData.ItemType.random);
             cartridgeBall.GetComponent<Ball>().state = Ball.BallState.Waiting;
-            Debug.Log("color: " + catapultBall.GetComponent<Ball>().color);
-            //mainscript.Instance.currentBallShooterColor = catapultBall.GetComponent<Ball>().colorSprites[0].texture.GetPixelBilinear(0.6f, 0.6f);
-            //mainscript.Instance.currentBallShooterColor.a = 1;
 
 
         }
