@@ -68,7 +68,6 @@ public class mainscript : MonoBehaviour {
     }
 
     public GameObject targetStarPrefab;
-    public Vector3 targetStarMiddlePoint;
 
     public GameObject[] starsObject;
     public int stars = 0;
@@ -426,18 +425,7 @@ public class mainscript : MonoBehaviour {
             {
                 Instantiate(targetStarPrefab, grid.transform.position, grid.transform.rotation);
                 GameObject movingTargetStar = Instantiate(targetStarPrefab, grid.transform.position, grid.transform.rotation) as GameObject;
-                movingTargetStar.GetComponent<SpriteRenderer>().sortingOrder = 10; // 我们要让这个star显示在关卡物体之上
-
-                Vector3[] paths = new Vector3[3];
-                paths[0] = grid.transform.transform.position;
-                paths[1] = targetStarMiddlePoint;
-                paths[2] = new Vector3(0f, 3f, 0f);
-
-                Hashtable args = new Hashtable();
-                args.Add("easeType", iTween.EaseType.easeInOutQuad);
-                args.Add("path", paths);
-                args.Add("speed", 5f);
-                iTween.MoveTo(movingTargetStar, args);
+                movingTargetStar.GetComponent<TargetStar>().fly();
             }
         }
     }

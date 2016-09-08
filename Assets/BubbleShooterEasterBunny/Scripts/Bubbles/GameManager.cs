@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     {
         get { return GameManager.Instance.gameStatus; }
     }
+    public int emptyTopGrid;
 
 	// Use this for initialization
 	void Start () {
@@ -97,7 +98,7 @@ public class GameManager : MonoBehaviour
         // TODO：将来这个要被“拯救动物”，“除掉魔鬼”等游戏模式代替
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
         {
-            int emptyTopGrid = 0;
+            emptyTopGrid = 0;
             for (int i = 0; i < GridManager.Instance.colCount; i++)
             {
                 if (GridManager.Instance.Grid(0, i).GetComponent<Grid>().AttachedGameItem == null)
