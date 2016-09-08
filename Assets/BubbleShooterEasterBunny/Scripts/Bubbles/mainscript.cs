@@ -47,7 +47,6 @@ public class mainscript : MonoBehaviour {
     }
     */
 
-    public static int doubleScore=1;
     private PlatformController _platformController;
     public PlatformController platformController
     {

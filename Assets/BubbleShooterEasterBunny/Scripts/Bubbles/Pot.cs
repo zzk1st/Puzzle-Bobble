@@ -50,6 +50,6 @@ public class Pot : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        label.text = "" + score * mainscript.doubleScore;
+        label.text = "" + score * ScoreManager.DoubleScore;
 	}
 }

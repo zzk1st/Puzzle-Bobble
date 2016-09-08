@@ -25,6 +25,11 @@ public class ScoreManager : MonoBehaviour {
         set { currentScore = value; }
     }
 
+    public static int DoubleScore
+    {
+        get { return doubleScore; }
+    }
+
     public int ComboCount
     {
         get { return comboCount; }
