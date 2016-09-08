@@ -109,6 +109,7 @@ public class LevelData
             {
                 string blocksString = line.Replace("LIMIT", string.Empty).Trim();
                 string[] sizes = blocksString.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
+                LevelData.LimitAmount = int.Parse(sizes[1]);
                 //limitType = (LIMIT)int.Parse(sizes[0]);
                 // TODO: 加一个打击球的颜色列表
             }

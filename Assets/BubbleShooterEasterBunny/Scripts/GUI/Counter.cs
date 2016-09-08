@@ -14,7 +14,21 @@ public class Counter : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if( name == "Scores" || name == "Score" )
+        if (name == "Moves")
+        {
+            label.text = "" + LevelData.LimitAmount;
+            if (LevelData.LimitAmount <= 5 && GameManager.Instance.GameStatus == GameStatus.Playing)
+            {
+                label.color = Color.red;
+                if (!GetComponent<Animation>().isPlaying)
+                {
+                    GetComponent<Animation>().Play();
+                    SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.alert);
+                }
+            }
+        }
+
+        if ( name == "Scores" || name == "Score" )
         {
             label.text = "" + ScoreManager.Score;
         }
