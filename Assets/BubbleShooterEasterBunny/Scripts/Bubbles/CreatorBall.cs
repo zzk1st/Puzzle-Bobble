@@ -13,11 +13,11 @@ public class CreatorBall : MonoBehaviour
         mainscript.Instance.levelData.LoadLevel(mainscript.Instance.currentLevel);
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
         {
-            mainscript.Instance.gridManager.CreateGrids(LevelData.VerticalModeMaxRows, LevelData.VerticalModeMaxCols, mainscript.Instance.levelData.stageMoveMode);
+            GridManager.Instance.CreateGrids(LevelData.VerticalModeMaxRows, LevelData.VerticalModeMaxCols, mainscript.Instance.levelData.stageMoveMode);
         }
         else
         {
-            mainscript.Instance.gridManager.CreateGrids(LevelData.RoundedModeMaxRows, LevelData.RoundedModeMaxCols, mainscript.Instance.levelData.stageMoveMode);
+            GridManager.Instance.CreateGrids(LevelData.RoundedModeMaxRows, LevelData.RoundedModeMaxCols, mainscript.Instance.levelData.stageMoveMode);
         }
 
         mainscript.Instance.currentLevel = PlayerPrefs.GetInt("OpenLevel");// TargetHolder.level;
@@ -45,7 +45,7 @@ public class CreatorBall : MonoBehaviour
                     LevelData.ItemType type = (LevelData.ItemType)mapValue;
                     if (type != LevelData.ItemType.empty)
                     {
-                        GameItemFactory.Instance.CreateGameItemFromMap(mainscript.Instance.gridManager.Grid(row, col).transform.position, (LevelData.ItemType)mapValue);
+                        GameItemFactory.Instance.CreateGameItemFromMap(GridManager.Instance.Grid(row, col).transform.position, (LevelData.ItemType)mapValue);
                     }
                 }
                 else if( mapValue == 0 && levelData.stageMoveMode == StageMoveMode.Vertical && row == 0 )

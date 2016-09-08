@@ -23,7 +23,7 @@ public class GameItem : MonoBehaviour {
     {
         gameObject.transform.parent = mainscript.Instance.gameItemsNode.transform;
         gameObject.layer = LayerMask.NameToLayer("FixedBall");
-        mainscript.Instance.gridManager.ConnectGameItemToGrid(gameObject);
+        GridManager.Instance.ConnectGameItemToGrid(gameObject);
         mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
     }
 
@@ -31,7 +31,7 @@ public class GameItem : MonoBehaviour {
     {
         gameObject.transform.parent = transform.root;
         gameObject.layer = LayerMask.NameToLayer("Default");
-        mainscript.Instance.gridManager.DisconnectGameItemToGrid(gameObject);
+        GridManager.Instance.DisconnectGameItemToGrid(gameObject);
         mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
     }
 }

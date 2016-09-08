@@ -87,6 +87,52 @@ public class GameManager : MonoBehaviour
         gameStatus = newStatus;
     }
 
+    public bool checkWin()
+    {
+        if (GameManager.Instance.gameStatus != GameStatus.Playing)
+        {
+            return false;
+        }
+
+        // TODO：将来这个要被“拯救动物”，“除掉魔鬼”等游戏模式代替
+        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
+        {
+            int emptyTopGrid = 0;
+            for (int i = 0; i < GridManager.Instance.colCount; i++)
+            {
+                if (GridManager.Instance.Grid(0, i).GetComponent<Grid>().AttachedGameItem == null)
+                {
+                    emptyTopGrid++;
+                }
+            }
+
+            if (emptyTopGrid >= 6)
+            {
+                return true;
+            }
+        }
+        else // 圆形模式
+        {
+            int animalRow = LevelData.AnimalRow;
+            int animalCol = LevelData.AnimalCol;
+            if (
+                GridManager.Instance.Grid(animalRow-1, animalCol-1).GetComponent<Grid>().AttachedGameItem == null &&
+                GridManager.Instance.Grid(animalRow-1, animalCol).GetComponent<Grid>().AttachedGameItem == null &&
+                GridManager.Instance.Grid(animalRow-1, animalCol+1).GetComponent<Grid>().AttachedGameItem == null &&
+                GridManager.Instance.Grid(animalRow, animalCol-1).GetComponent<Grid>().AttachedGameItem == null &&
+                GridManager.Instance.Grid(animalRow, animalCol+1).GetComponent<Grid>().AttachedGameItem == null &&
+                GridManager.Instance.Grid(animalRow+1, animalCol-1).GetComponent<Grid>().AttachedGameItem == null &&
+                GridManager.Instance.Grid(animalRow+1, animalCol).GetComponent<Grid>().AttachedGameItem == null &&
+                GridManager.Instance.Grid(animalRow+1, animalCol+1).GetComponent<Grid>().AttachedGameItem == null
+            )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 	// Update is called once per frame
 	IEnumerator WinAction () 
     {

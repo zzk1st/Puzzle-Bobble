@@ -290,7 +290,7 @@ public class Ball : MonoBehaviour
     public void PlayHitAnim(Vector3 newBallPos, Hashtable animTable)
     {
         // 对该球周围的所有球（该球自己除外），调用每个球的PlayHitAnimCorStart
-        List<GameObject> adjacentGameItems = mainscript.Instance.gridManager.GetAdjacentGameItems(gameObject);
+        List<GameObject> adjacentGameItems = GridManager.Instance.GetAdjacentGameItems(gameObject);
         foreach (GameObject gameItem in adjacentGameItems) {
             if (gameItem.GetComponent<GameItem>().itemType == GameItem.ItemType.Ball)
             {
@@ -446,6 +446,11 @@ public class Ball : MonoBehaviour
 
     public void Explode(float delayedExplodeTime)
     {
+        mainscript.Instance.GenerateTargetStar(grid);
+        GetComponent<GameItem>().DisconnectFromGrid();
+        GetComponent<CircleCollider2D>().enabled = false;    //删掉CircleCollider，防止再碰撞检测
+        gameObject.layer = LayerMask.NameToLayer("ExplodedBall");   // 从ball layer移除，防止之后connect nearball时候再连上
+
         StartCoroutine(ExplodeCor(delayedExplodeTime));
     }
 

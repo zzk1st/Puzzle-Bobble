@@ -53,14 +53,6 @@ public class mainscript : MonoBehaviour {
         get { return _platformController; }
     }
 
-    private GridManager _gridManager;
-    public GridManager gridManager
-    {
-        get { return _gridManager; }
-    }
-
-    public int TotalTargets;
-
     public int countOfPreparedToDestroy;
 
     public static List<BallColor> curStageColors = new List<BallColor>();
@@ -74,6 +66,9 @@ public class mainscript : MonoBehaviour {
             TargetCounter = value;
         }
     }
+
+    public GameObject targetStarPrefab;
+    public Vector3 targetStarMiddlePoint;
 
     public GameObject[] starsObject;
     public int stars = 0;
@@ -121,7 +116,6 @@ public class mainscript : MonoBehaviour {
 
         _ballShooter = GameObject.Find("BallShooter").GetComponent<BallShooter>();
         _platformController = gridsNode.GetComponent<PlatformController>();
-        _gridManager = gridsNode.GetComponent<GridManager>();
         //RandomizeWaitTime();
         ScoreManager.Score = 0;
         if (PlayerPrefs.GetInt("noSound") == 1) noSound = true;
@@ -185,7 +179,6 @@ public class mainscript : MonoBehaviour {
                 ScoreManager.Instance.ComboCount = 0;
             }
 
-            StartCoroutine(DestroyDetachedGameItems());
             checkBall = null;
         }
     }
@@ -222,8 +215,9 @@ public class mainscript : MonoBehaviour {
         }
 
         ConnectAndDestroyBalls();
+        DestroyDetachedGameItems();
 
-        if ( levelData.stageMoveMode == StageMoveMode.Vertical && TargetCounter >= 6 && GameManager.Instance.GameStatus == GameStatus.Playing )
+        if (GameManager.Instance.checkWin())
         {
             GameManager.Instance.Win();
         }
@@ -255,10 +249,9 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-    public IEnumerator DestroyDetachedGameItems()
+    public void DestroyDetachedGameItems()
     {
-        List<GameObject> gameItemsToDrop = gridManager.FindDetachedGameItems();
-        yield return new WaitForEndOfFrame();
+        List<GameObject> gameItemsToDrop = GridManager.Instance.FindDetachedGameItems();
 
         // 删掉ball，并调用StartFall让ball掉落
         if (gameItemsToDrop.Count > 0)
@@ -409,11 +402,6 @@ public class mainscript : MonoBehaviour {
         float delayedExplodeTime = 0f;
         foreach (GameObject ballGO in balls)
         {
-            GameItem ballGameItem = ballGO.GetComponent<GameItem>();
-            ballGameItem.DisconnectFromGrid();
-            ballGO.layer = LayerMask.NameToLayer("ExplodedBall");   // 从ball layer移除，防止之后connect nearball时候再连上
-            ballGO.GetComponent<CircleCollider2D>().enabled = false;    //删掉CircleCollider，防止再碰撞检测
-
             // 让ball爆炸
             Ball ball = ballGO.GetComponent<Ball>();
             ball.Explode(delayedExplodeTime);
@@ -426,6 +414,31 @@ public class mainscript : MonoBehaviour {
         {
             Vector3 pos = ballGo.transform.position;
             ScoreManager.Instance.PopupComboScore(val, pos);
+        }
+    }
+
+    public void GenerateTargetStar(Grid grid)
+    {
+        // TODO: 换成GameMode
+        if (levelData.stageMoveMode == StageMoveMode.Vertical)
+        {
+            if (grid.Row == 0)
+            {
+                Instantiate(targetStarPrefab, grid.transform.position, grid.transform.rotation);
+                GameObject movingTargetStar = Instantiate(targetStarPrefab, grid.transform.position, grid.transform.rotation) as GameObject;
+                movingTargetStar.GetComponent<SpriteRenderer>().sortingOrder = 10; // 我们要让这个star显示在关卡物体之上
+
+                Vector3[] paths = new Vector3[3];
+                paths[0] = grid.transform.transform.position;
+                paths[1] = targetStarMiddlePoint;
+                paths[2] = new Vector3(0f, 3f, 0f);
+
+                Hashtable args = new Hashtable();
+                args.Add("easeType", iTween.EaseType.easeInOutQuad);
+                args.Add("path", paths);
+                args.Add("speed", 5f);
+                iTween.MoveTo(movingTargetStar, args);
+            }
         }
     }
 }

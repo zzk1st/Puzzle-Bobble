@@ -10,28 +10,38 @@ public class PlatformController : MonoBehaviour
 {
     public float moveSpeed;
     // MinY指整个关卡最低的位置
-    public float lowerMinYLiimt;
-    public float upperMinYLiimt;
+    public float platformBottomLowerLimit;
+    public float platformBottomUpperLimit;
+
+    public GameObject topBorder;
+    private float initialTopBorderPos;
 
     // 当前所有fixed balls的最小y值，用来测试关卡是否过线
     private float _curFixedBallLocalMinY;
-    private float curPlatformMinY
+
+    // 因为垂直关卡的球都是从(0, 0)开始向下，所以关卡顶部坐标可以这么计算
+    private float curPlatformTopPos
+    {
+        get { return transform.position.y + mainscript.Instance.BallRealRadius; }
+    }
+
+    private float curPlatformBottomPos
     {
         get
         {
             float platformMinYWorldSpace = transform.position.y 
                                            + _curFixedBallLocalMinY
-                                           - mainscript.Instance.BallColliderRadius;
+                                           - mainscript.Instance.BallRealRadius;
             return platformMinYWorldSpace;
         }
     }
 
-    private bool curMinYOutOfRange = false;
-    private float targetMinYPos;
     private Quaternion targetRotation;
 
     void Start()
     {
+        // TODO: 更好的获得屏幕上端坐标的方法？
+        initialTopBorderPos = topBorder.transform.position.y;
     }
 
     void OnCollisionEnter2D(Collision2D coll)
@@ -53,25 +63,58 @@ public class PlatformController : MonoBehaviour
         }
         else    // Vertical
         {
-            if (curMinYOutOfRange)
+            float deltaPos = 0.1f;
+            bool arrived = false;
+            if (curPlatformTopPos - curPlatformBottomPos < initialTopBorderPos - platformBottomUpperLimit)    // 如果当前关卡高度太短
             {
-                if (Mathf.Abs(curPlatformMinY - targetMinYPos) > 0.1f)
+
+                if (curPlatformTopPos < initialTopBorderPos - deltaPos)
                 {
-                    if (curPlatformMinY > targetMinYPos)
+                    // 首要目标是让关卡顶部到达屏幕上端
+                    transform.Translate(0f, moveSpeed * Time.deltaTime, 0f);
+                }
+                else if (curPlatformTopPos > initialTopBorderPos + deltaPos)
+                {
+                    // 首要目标是让关卡顶部到达屏幕上端
+                    transform.Translate(0f, -moveSpeed * Time.deltaTime, 0f);
+                }
+                else
+                {
+                    arrived = true;
+                }
+            }
+            else
+            {
+                // 关卡高度足够，就看底部是不在合理区域内
+                if (GameManager.Instance.GameStatus == GameStatus.Demo)     // 注意游戏开始比较特殊，要保证关卡minPos高于upperlimit
+                {
+                    if (curPlatformBottomPos < platformBottomUpperLimit)
+                    {
+                        transform.Translate(0f, moveSpeed * Time.deltaTime, 0f);
+                    }
+                    else
+                    {
+                        arrived = true;
+                    }
+                }
+                else
+                {
+                    if (curPlatformBottomPos < platformBottomLowerLimit)
+                    {
+                        transform.Translate(0f, moveSpeed * Time.deltaTime, 0f);
+                    }
+                    else if (curPlatformBottomPos > platformBottomUpperLimit)
                     {
                         transform.Translate(0f, -moveSpeed * Time.deltaTime, 0f);
                     }
                     else
                     {
-                        transform.Translate(0f, moveSpeed * Time.deltaTime, 0f);
+                        arrived = true;
                     }
                 }
-                else
-                {
-                    curMinYOutOfRange = false;
-                }
             }
-            else
+
+            if (arrived)
             {
                 if (GameManager.Instance.GameStatus == GameStatus.Demo)
                 {
@@ -107,22 +150,6 @@ public class PlatformController : MonoBehaviour
                 UpdateLocalMinYFromSingleBall(go.GetComponent<GameItem>());
             }
         }
-
-        if (curPlatformMinY > upperMinYLiimt)
-        {
-            targetMinYPos = upperMinYLiimt;
-            curMinYOutOfRange = true;
-        }
-        else if (curPlatformMinY < lowerMinYLiimt)
-        {
-            targetMinYPos = lowerMinYLiimt;
-            curMinYOutOfRange = true;
-        }
-        else
-        {
-            curMinYOutOfRange = false;
-        }
-        //Debug.Log(string.Format("MinY recalculated! MinY={0}", curFixedBallLocalMinY));
     }
 
     float VectorAngle(Vector2 from, Vector2 to)
@@ -161,18 +188,14 @@ public class PlatformController : MonoBehaviour
         {
             float topBorderOffset = 0.35f;   // 这个值是grid高度一半，用来将topborder置于0排最上边
             // 这里我们要将topborder移动到grid下，这样border可以和grid一起移动
-            GameObject topBorder = GameObject.Find("TopBorder");
             topBorder.transform.parent = mainscript.Instance.gridsNode.transform;
             topBorder.transform.localPosition = new Vector3(0f, topBorderOffset, 0f);
-
-            targetMinYPos = upperMinYLiimt;
-            curMinYOutOfRange = true;
         }
     }
 
     void OnDrawGizmos()
     {
-        Gizmos.DrawLine(new Vector3(-5f, upperMinYLiimt, 0f), new Vector3(5f, upperMinYLiimt, 0f));
-        Gizmos.DrawLine(new Vector3(-5f, lowerMinYLiimt, 0f), new Vector3(5f, lowerMinYLiimt, 0f));
+        Gizmos.DrawLine(new Vector3(-5f, platformBottomUpperLimit, 0f), new Vector3(5f, platformBottomUpperLimit, 0f));
+        Gizmos.DrawLine(new Vector3(-5f, platformBottomLowerLimit, 0f), new Vector3(5f, platformBottomLowerLimit, 0f));
     }
 }

@@ -3,15 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GridManager : MonoBehaviour {
+    public static GridManager Instance;
 
     public GameObject gridPrefab;
 
-    private int rowCount;
-    private int colCount;
+    public int rowCount;
+    public int colCount;
     // TODO: 这个应该从creator计算？
     private float offsetStep = 0.33f;
     private List<GameObject> grids = new List<GameObject>();
     public List<Grid> controlGrids = new List<Grid>();  // 用来找到没有连到顶部或者动物的grids
+
+    void Start()
+    {
+        Instance = this;
+    }
 
     public void CreateGrids(int rows, int cols, StageMoveMode stageMoveMode)
     {
