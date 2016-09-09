@@ -116,7 +116,7 @@ public class mainscript : MonoBehaviour {
         _ballShooter = GameObject.Find("BallShooter").GetComponent<BallShooter>();
         _platformController = gridsNode.GetComponent<PlatformController>();
         //RandomizeWaitTime();
-        ScoreManager.Score = 0;
+        ScoreManager.Instance.Score = 0;
         if (PlayerPrefs.GetInt("noSound") == 1) noSound = true;
     }
 
@@ -223,11 +223,11 @@ public class mainscript : MonoBehaviour {
 
 
         //计算进度条应显示当前分数占最高级别（三星）的百分之多少
-        ProgressBarScript.Instance.UpdateDisplay((float)ScoreManager.Score / LevelData.stars[2]);
+        ProgressBarScript.Instance.UpdateDisplay((float)ScoreManager.Instance.Score / LevelData.stars[2]);
 
         //更新星星个数
         if (stars < 3)
-            stars += Mathf.Min(1, ScoreManager.Score / LevelData.stars[stars]);
+            stars += Mathf.Min(1, ScoreManager.Instance.Score / LevelData.stars[stars]);
         for (int i = 0; i < stars; ++i)
             starsObject[i].SetActive(true);
         
@@ -398,21 +398,16 @@ public class mainscript : MonoBehaviour {
     void ExplodeBalls(List<GameObject> balls)
     {
         mainscript.Instance.bounceCounter = 0;
+        //调用ScoreManager里爆炸球的分数更新函数
+        int score = ScoreManager.Instance.UpdateComboScore(balls.Count);
+
         float delayedExplodeTime = 0f;
         foreach (GameObject ballGO in balls)
         {
             // 让ball爆炸
             Ball ball = ballGO.GetComponent<Ball>();
-            ball.Explode(delayedExplodeTime);
+            ball.Explode(delayedExplodeTime, score);
             delayedExplodeTime += ballExplosionTimeInterval;
-        }
-        //调用ScoreManager里爆炸球的分数更新函数
-        int val = ScoreManager.Instance.UpdateComboScore(balls.Count);
-
-        foreach (GameObject ballGo in balls)
-        {
-            Vector3 pos = ballGo.transform.position;
-            ScoreManager.Instance.PopupComboScore(val, pos);
         }
     }
 

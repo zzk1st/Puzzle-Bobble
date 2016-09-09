@@ -419,7 +419,7 @@ public class Ball : MonoBehaviour
         _gameItem.ConnectToGrid();
 
         mainscript.Instance.checkBall = gameObject;
-        LevelData.LimitAmount--;
+        mainscript.Instance.levelData.LimitAmount--;
 
         Vector2 ballVelocity = GetComponent<Rigidbody2D>().velocity;
         // 删掉RigidBody2D，彻底让mesh接管运动
@@ -444,14 +444,14 @@ public class Ball : MonoBehaviour
         Destroy (gameObject);
     }
 
-    public void Explode(float delayedExplodeTime)
+    public void Explode(float delayedExplodeTime, int score)
     {
         mainscript.Instance.GenerateTargetStar(grid);
         GetComponent<GameItem>().DisconnectFromGrid();
         GetComponent<CircleCollider2D>().enabled = false;    //删掉CircleCollider，防止再碰撞检测
         gameObject.layer = LayerMask.NameToLayer("ExplodedBall");   // 从ball layer移除，防止之后connect nearball时候再连上
 
-        StartCoroutine(ExplodeCor(delayedExplodeTime));
+        StartCoroutine(ExplodeCor(delayedExplodeTime, score));
     }
 
     public void growUpPlaySound ()
@@ -464,7 +464,7 @@ public class Ball : MonoBehaviour
     }
 
 
-    IEnumerator ExplodeCor(float delayedExplodeTime)
+    IEnumerator ExplodeCor(float delayedExplodeTime, int score)
     {
         // 延迟球爆炸
         yield return new WaitForSeconds(delayedExplodeTime);
@@ -486,6 +486,9 @@ public class Ball : MonoBehaviour
         transform.GetChild(1).GetComponent<SpriteRenderer>().enabled = false;
 
         // TODO: 播放爆炸的动画，注意：1. 爆炸之后要销毁 2. 爆炸应挂在当前grid下面
+
+        // 播放分数动画在球爆炸之后
+        ScoreManager.Instance.PopupComboScore(score, transform.position);
 
         Destroy (gameObject, 1);
     }
