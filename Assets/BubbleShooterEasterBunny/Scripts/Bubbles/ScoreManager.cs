@@ -18,11 +18,17 @@ public class ScoreManager : MonoBehaviour {
     public GameObject popupScore;
     public GameObject fallingScore;
     public GameObject perfect;
+    public GameObject scoreText;
+    public GameObject canvas;
 
-    public static int Score
+    public int Score
     {
         get { return currentScore; }
-        set { currentScore = value; }
+        set
+        {
+            currentScore = value;
+            scoreText.GetComponent<TotalScoreCounter>().updateScore(currentScore);
+        }
     }
 
     public static int DoubleScore
@@ -36,6 +42,7 @@ public class ScoreManager : MonoBehaviour {
         set
         {
             comboCount = value;
+
             if (value > 0)
             {
                 SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[Mathf.Clamp(value - 1, 0, 5)]);
@@ -76,35 +83,35 @@ public class ScoreManager : MonoBehaviour {
     {
         int singleBallScore = 10 + (comboCount-1) * 5;
         int val = numBalls * singleBallScore;
-        currentScore += val;
+        Score += val;
         return singleBallScore;
     }
 
     public int UpdateFallingScore(int numBalls)
     {
         int val = numBalls * numBalls * 10;
-        currentScore += val;
+        Score += val;
         return val;
     }
 
     public int UpdatePlayedTimeScore(int playedTime)
     {
         int val = (int)(timeScoreLowerBound + (fastestTime / playedTime) * (timeScoreUpperBound - timeScoreLowerBound));
-        currentScore += val;
+        Score += val;
         return val;
     }
 
     public int UpdatePotScore(int val)
     {
         int score = val * doubleScore;
-        currentScore += score;
+        Score += score;
         return score;
     }
 
     // 在Combo时候跳出来的text
     public void PopupComboScore(int value, Vector3 pos)
     {
-        Transform parent = GameObject.Find("Scores").transform;
+        Transform parent = GameObject.Find("Canvas").transform;
         GameObject poptxt = Instantiate(popupScore, pos, Quaternion.identity) as GameObject;
         poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
         poptxt.transform.SetParent(parent);
@@ -114,7 +121,7 @@ public class ScoreManager : MonoBehaviour {
 
     public void PopupFallingScore(int value, Vector3 pos)
     {
-        Transform parent = GameObject.Find("Scores").transform;
+        Transform parent = GameObject.Find("Canvas").transform;
         GameObject poptxt = Instantiate(fallingScore, pos, Quaternion.identity) as GameObject;
         poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
         poptxt.transform.SetParent(parent);
@@ -125,7 +132,7 @@ public class ScoreManager : MonoBehaviour {
 
     public void PopupPotScore(double value, Vector3 pos)
     {
-        Transform parent = GameObject.Find("Scores").transform;
+        Transform parent = GameObject.Find("Canvas").transform;
         GameObject poptxt = Instantiate(popupScore, pos, Quaternion.identity) as GameObject;
         poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
         poptxt.transform.SetParent(parent);

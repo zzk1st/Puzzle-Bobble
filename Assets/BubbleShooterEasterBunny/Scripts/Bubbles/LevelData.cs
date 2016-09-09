@@ -53,13 +53,13 @@ public class LevelData
     public StageMoveMode stageMoveMode = StageMoveMode.Vertical;
     private float limitAmount = 40;
 
-    public static float LimitAmount
+    public float LimitAmount
     {
-        get { return mainscript.Instance.levelData.limitAmount; }
+        get { return limitAmount; }
         set 
         { 
-            mainscript.Instance.levelData.limitAmount = value;
-            if( value < 0 ) mainscript.Instance.levelData.limitAmount = 0;
+            limitAmount = value;
+            if( value < 0 ) limitAmount = 0;
         }
     }
     private static bool startReadData;
@@ -109,7 +109,7 @@ public class LevelData
             {
                 string blocksString = line.Replace("LIMIT", string.Empty).Trim();
                 string[] sizes = blocksString.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
-                LevelData.LimitAmount = int.Parse(sizes[1]);
+                LimitAmount = int.Parse(sizes[1]);
                 //limitType = (LIMIT)int.Parse(sizes[0]);
                 // TODO: 加一个打击球的颜色列表
             }

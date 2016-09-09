@@ -184,9 +184,9 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetInt( string.Format( "Level.{0:000}.StarsCount", mainscript.Instance.currentLevel ), mainscript.Instance.stars );
 
 
-        if( PlayerPrefs.GetInt( "HighScore" + mainscript.Instance.currentLevel ) < ScoreManager.Score )
+        if( PlayerPrefs.GetInt( "HighScore" + mainscript.Instance.currentLevel ) < ScoreManager.Instance.Score )
         {
-            PlayerPrefs.SetInt( "HighScore" + mainscript.Instance.currentLevel, ScoreManager.Score );
+            PlayerPrefs.SetInt( "HighScore" + mainscript.Instance.currentLevel, ScoreManager.Instance.Score );
 
         }
         GameObject.Find( "Canvas" ).transform.Find( "LevelCleared" ).gameObject.SetActive( false );
