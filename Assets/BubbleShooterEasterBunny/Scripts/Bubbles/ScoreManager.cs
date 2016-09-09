@@ -19,6 +19,7 @@ public class ScoreManager : MonoBehaviour {
     public GameObject fallingScore;
     public GameObject perfect;
     public GameObject scoreText;
+    public GameObject canvas;
 
     public int Score
     {
@@ -120,7 +121,7 @@ public class ScoreManager : MonoBehaviour {
 
     public void PopupFallingScore(int value, Vector3 pos)
     {
-        Transform parent = GameObject.Find("Scores").transform;
+        Transform parent = GameObject.Find("Canvas").transform;
         GameObject poptxt = Instantiate(fallingScore, pos, Quaternion.identity) as GameObject;
         poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
         poptxt.transform.SetParent(parent);
@@ -131,7 +132,7 @@ public class ScoreManager : MonoBehaviour {
 
     public void PopupPotScore(double value, Vector3 pos)
     {
-        Transform parent = GameObject.Find("Scores").transform;
+        Transform parent = GameObject.Find("Canvas").transform;
         GameObject poptxt = Instantiate(popupScore, pos, Quaternion.identity) as GameObject;
         poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
         poptxt.transform.SetParent(parent);

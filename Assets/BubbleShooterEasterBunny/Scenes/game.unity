@@ -6643,6 +6643,7 @@ MonoBehaviour:
   fallingScore: {fileID: 193970, guid: 12244117eb5901f4fac41d4006a6f471, type: 2}
   perfect: {fileID: 1206951055}
   scoreText: {fileID: 1968998540}
+  canvas: {fileID: 354244031}
 --- !u!4 &980524004
 Transform:
   m_ObjectHideFlags: 0
@@ -8745,7 +8746,7 @@ Transform:
   - {fileID: 434912548}
   - {fileID: 1884880417}
   m_Father: {fileID: 0}
-  m_RootOrder: 18
+  m_RootOrder: 14
 --- !u!1 &1384680784
 GameObject:
   m_ObjectHideFlags: 0
