@@ -325,7 +325,7 @@ public class mainscript : MonoBehaviour {
 			scoreCounter ++;*/
 
 			// 让没接上的ball都掉落
-            ball.GetComponent<Ball>().StartFall();
+            ball.GetComponent<GameItem>().StartFall();
 		}
         // 调用ScoreManager里针对掉落球的分数更新函数
         // 暂时注释掉因为女巫泡泡里没有掉落得分 (只有掉入pot的加分)

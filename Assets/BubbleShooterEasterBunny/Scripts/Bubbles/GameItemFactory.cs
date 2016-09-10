@@ -18,14 +18,14 @@ public class GameItemFactory : MonoBehaviour {
 
         switch(itemType)
         {
-        case LevelData.ItemType.empty:
+        case LevelData.ItemType.Empty:
             break;
-        case LevelData.ItemType.blue:
-        case LevelData.ItemType.green:
-        case LevelData.ItemType.red:
-        case LevelData.ItemType.violet:
-        case LevelData.ItemType.yellow:
-        case LevelData.ItemType.random:
+        case LevelData.ItemType.Blue:
+        case LevelData.ItemType.Green:
+        case LevelData.ItemType.Red:
+        case LevelData.ItemType.Violet:
+        case LevelData.ItemType.Yellow:
+        case LevelData.ItemType.Random:
             result = CreateFixedBall(vec, itemType);
             break;
         case LevelData.ItemType.Animal:
@@ -39,12 +39,12 @@ public class GameItemFactory : MonoBehaviour {
         return result;
     }
 
-    public GameObject CreateNewBall(Vector3 vec, LevelData.ItemType itemType = LevelData.ItemType.random)
+    public GameObject CreateNewBall(Vector3 vec, LevelData.ItemType itemType = LevelData.ItemType.Random)
     {
         GameObject ball = null;
 
         // 获取当前关卡颜色，并生成随机颜色
-        if (itemType == LevelData.ItemType.random)
+        if (itemType == LevelData.ItemType.Random)
         {
             mainscript.Instance.GetColorsInGame();
             itemType = (LevelData.ItemType)mainscript.curStageColors[UnityEngine.Random.Range(0, mainscript.curStageColors.Count)];
@@ -73,11 +73,11 @@ public class GameItemFactory : MonoBehaviour {
         return ball;
     }
 
-    public GameObject CreateFixedBall(Vector3 vec, LevelData.ItemType itemType = LevelData.ItemType.random)
+    public GameObject CreateFixedBall(Vector3 vec, LevelData.ItemType itemType = LevelData.ItemType.Random)
     {
         GameObject ball = null;
 
-        if( itemType == LevelData.ItemType.random)
+        if( itemType == LevelData.ItemType.Random)
             itemType = (LevelData.ItemType)LevelData.allColors[UnityEngine.Random.Range(1, LevelData.allColors.Count)];
 
         ball = Instantiate(ballPrefab, transform.position, transform.rotation) as GameObject;

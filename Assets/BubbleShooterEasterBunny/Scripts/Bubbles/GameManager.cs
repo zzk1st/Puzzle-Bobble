@@ -158,7 +158,7 @@ public class GameManager : MonoBehaviour
 
         foreach( GameObject item in GameObject.FindGameObjectsWithTag("Ball") )
         {
-            item.GetComponent<Ball>().StartFall();
+            item.GetComponent<GameItem>().StartFall();
                                    
         }
        // StartCoroutine( PushRestBalls() );

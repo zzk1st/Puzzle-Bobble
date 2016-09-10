@@ -415,27 +415,27 @@ public class LevelEditor : EditorWindow
                 }
                 else if (levelSquares[row * maxCols + col] != 0)
                 {
-                    if (levelSquares[row * maxCols + col] == LevelData.ItemType.blue)
+                    if (levelSquares[row * maxCols + col] == LevelData.ItemType.Blue)
                     {
                         imageButton = ballTex[0];
                     }
-                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.green)
+                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.Green)
                     {
                         imageButton = ballTex[1];
                     }
-                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.red)
+                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.Red)
                     {
                         imageButton = ballTex[2];
                     }
-                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.violet)
+                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.Violet)
                     {
                         imageButton = ballTex[3];
                     }
-                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.yellow)
+                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.Yellow)
                     {
                         imageButton = ballTex[4];
                     }
-                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.random)
+                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.Random)
                     {
                         imageButton = ballTex[5];
                     }

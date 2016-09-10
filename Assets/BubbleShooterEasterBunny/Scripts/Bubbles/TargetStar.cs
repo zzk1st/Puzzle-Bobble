@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class TargetStar : MonoBehaviour
 {
-    public GameObject targetCountGO;
-    public GameObject targetImageGO;
+    private GameObject targetCountGO;
+    private GameObject targetImageGO;
 
     public Vector3 flyingMiddlePoint;
 

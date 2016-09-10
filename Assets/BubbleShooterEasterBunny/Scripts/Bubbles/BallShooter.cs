@@ -36,7 +36,7 @@ public class BallShooter : MonoBehaviour {
 
     public void Initialize()
     {
-        cartridgeBall = GameItemFactory.Instance.CreateNewBall(boxCartridge.transform.position, LevelData.ItemType.random);
+        cartridgeBall = GameItemFactory.Instance.CreateNewBall(boxCartridge.transform.position, LevelData.ItemType.Random);
         cartridgeBall.GetComponent<Ball>().state = Ball.BallState.Waiting;
         Reload();
     }
@@ -89,7 +89,7 @@ public class BallShooter : MonoBehaviour {
             catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
             catapultBall.GetComponent<bouncer>().BounceToCatapult(boxCatapult.transform.position);
 
-            cartridgeBall = GameItemFactory.Instance.CreateNewBall(boxCartridge.transform.position, LevelData.ItemType.random);
+            cartridgeBall = GameItemFactory.Instance.CreateNewBall(boxCartridge.transform.position, LevelData.ItemType.Random);
             cartridgeBall.GetComponent<Ball>().state = Ball.BallState.Waiting;
 
 

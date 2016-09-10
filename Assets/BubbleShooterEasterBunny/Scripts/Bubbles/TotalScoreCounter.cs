@@ -22,6 +22,8 @@ public class TotalScoreCounter : MonoBehaviour {
     public void updateScore(int newScore)
     {
         incomingScores.Enqueue(newScore);
+        if (incomingScores.Count > 3)
+            incomingScores.Dequeue();
     }
 
     public void onPopScoreComplete()

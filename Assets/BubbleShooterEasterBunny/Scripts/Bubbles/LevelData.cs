@@ -20,19 +20,27 @@ public enum Target
     Chicken
 }
 
+public enum MissionType
+{
+    EliminateBalls=0,
+    RescueGhost,
+    SaveAnimals,
+    BattleWitch
+}
 
 public class LevelData
 {
     public enum ItemType
     {
-        empty = 0,
-        blue,
-        green,
-        red,
-        violet,
-        yellow,
-        random,
-        Animal
+        Empty = 0,
+        Blue,
+        Green,
+        Red,
+        Violet,
+        Yellow,
+        Random,
+        Animal,
+        Witch
     }
 
     public static int VerticalModeMaxRows = 71;
@@ -50,9 +58,25 @@ public class LevelData
     public int colCount;
 
     //List of mission in this map
-    public StageMoveMode stageMoveMode = StageMoveMode.Vertical;
-    private float limitAmount = 40;
+    private StageMoveMode _stageMoveMode;
+    public StageMoveMode stageMoveMode
+    {
+        get { return _stageMoveMode; }
+    }
 
+    private MissionType _missionType;
+    public MissionType missionType
+    {
+        get { return _missionType; }
+    }
+
+    private int _missionPoints;
+    public int missionPoints
+    {
+        get { return _missionPoints; }
+    }
+
+    private float limitAmount = 40;
     public float LimitAmount
     {
         get { return limitAmount; }
@@ -62,11 +86,13 @@ public class LevelData
             if( value < 0 ) limitAmount = 0;
         }
     }
+
     private static bool startReadData;
     public static List<ItemType> allColors = new List<ItemType>();
     static int key;
     public static int colorCount;
     public static int[] stars = new int[3];
+    private int[] itemTypeCounts = new int[System.Enum.GetValues(typeof(ItemType)).Length];
 
     public Target GetTarget(int levelNumber)
     {
@@ -83,6 +109,7 @@ public class LevelData
             mapText = Resources.Load("Levels/" + currentLevel) as TextAsset;
         }
         ProcessGameDataFromString(mapText.text);
+        CalculateMissionPoints();
         return true;
     }
 
@@ -93,10 +120,11 @@ public class LevelData
         int mapLine = 0;
         foreach (string line in lines)
         {
-            if (line.StartsWith("MODE "))
+            if (line.StartsWith("MISSIONTYPE "))
             {
-                string modeString = line.Replace("MODE", string.Empty).Trim();
-                stageMoveMode = (StageMoveMode)int.Parse(modeString);
+                string modeString = line.Replace("MISSIONTYPE", string.Empty).Trim();
+                _missionType = (MissionType)int.Parse(modeString);
+                _stageMoveMode = _missionType == MissionType.RescueGhost ? StageMoveMode.Rounded : StageMoveMode.Vertical;
             }
             else if (line.StartsWith("SIZE "))
             {
@@ -133,7 +161,8 @@ public class LevelData
                 string[] st = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < st.Length; i++)
                 {
-                    int value =  int.Parse(st[i][0].ToString());
+                    int value = int.Parse(st[i][0].ToString());
+                    itemTypeCounts[value]++;
                     int ballColorCount = Enum.GetNames(typeof(BallColor)).Length;
                     if (!allColors.Contains((ItemType)value) && value > 0 && value <= ballColorCount)
                     {
@@ -153,6 +182,25 @@ public class LevelData
             {
                 allColors.Add((ItemType) i);
             }
+        }
+    }
+
+    void CalculateMissionPoints()
+    {
+        switch(missionType)
+        {
+        case MissionType.EliminateBalls:
+            _missionPoints = 6;
+            break;
+        case MissionType.RescueGhost:
+            _missionPoints = 1;
+            break;
+        case MissionType.SaveAnimals:
+            _missionPoints = itemTypeCounts[(int)ItemType.Animal];
+            break;
+        case MissionType.BattleWitch:
+            _missionPoints = itemTypeCounts[(int)ItemType.Witch];
+            break;
         }
     }
 }

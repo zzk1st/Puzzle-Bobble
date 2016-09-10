@@ -99,6 +99,7 @@ public class Ball : MonoBehaviour
     {
         // 初始化references
         _gameItem = gameObject.GetComponent<GameItem>();
+        _gameItem.startFallFunc = StartFall;
         ballHighlightGO = transform.GetChild(0).gameObject;
         ballPicGO = transform.GetChild(1).gameObject;
     }

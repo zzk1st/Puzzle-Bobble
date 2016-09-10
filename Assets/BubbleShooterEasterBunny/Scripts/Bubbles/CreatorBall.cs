@@ -43,7 +43,7 @@ public class CreatorBall : MonoBehaviour
                 {
                     //if (levelData.gameMode == GameMode.Rounded) row = i +4;
                     LevelData.ItemType type = (LevelData.ItemType)mapValue;
-                    if (type != LevelData.ItemType.empty)
+                    if (type != LevelData.ItemType.Empty)
                     {
                         GameItemFactory.Instance.CreateGameItemFromMap(GridManager.Instance.Grid(row, col).transform.position, (LevelData.ItemType)mapValue);
                     }
