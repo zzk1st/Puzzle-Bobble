@@ -5,6 +5,7 @@ public class GameItemFactory : MonoBehaviour {
     static public GameItemFactory Instance;
 
     public GameObject ballPrefab;
+    public GameObject centerItemPrefab;
     public GameObject animalPrefab;
 
     void Awake()
@@ -27,6 +28,9 @@ public class GameItemFactory : MonoBehaviour {
         case LevelData.ItemType.Yellow:
         case LevelData.ItemType.Random:
             result = CreateFixedBall(vec, itemType);
+            break;
+        case LevelData.ItemType.CenterItem:
+            result = CreateCenterItem(vec, itemType);
             break;
         case LevelData.ItemType.Animal:
             result = CreateAnimal(vec, itemType);
@@ -67,7 +71,7 @@ public class GameItemFactory : MonoBehaviour {
         Rigidbody2D rig = ball.AddComponent<Rigidbody2D>();
         ball.GetComponent<CircleCollider2D>().enabled = false;
         rig.gravityScale = 0;
-        if( GameManager.Instance.GameStatus == GameStatus.Playing )
+        if( GameManager.Instance.gameStatus == GameStatus.Playing )
             ball.GetComponent<Animation>().Play();
 
         return ball;
@@ -101,11 +105,21 @@ public class GameItemFactory : MonoBehaviour {
         return ball;
     }
 
+    public GameObject CreateCenterItem(Vector3 vec, LevelData.ItemType itemType)
+    {
+        GameObject centerItem = Instantiate(centerItemPrefab, transform.position, transform.rotation) as GameObject;
+        centerItem.transform.position = vec;
+        centerItem.GetComponent<GameItem>().ConnectToGrid();
+        centerItem.GetComponent<CenterItem>().Initialize();
+        return centerItem;
+    }
+
     public GameObject CreateAnimal(Vector3 vec, LevelData.ItemType itemType)
     {
         GameObject animal = Instantiate(animalPrefab, transform.position, transform.rotation) as GameObject;
         animal.transform.position = vec;
         animal.GetComponent<GameItem>().ConnectToGrid();
+        animal.GetComponent<Animal>().Initialize();
         return animal;
     }
 }

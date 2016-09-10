@@ -25,7 +25,7 @@ public enum MissionType
     EliminateBalls=0,
     RescueGhost,
     SaveAnimals,
-    BattleWitch
+    BossBattle
 }
 
 public class LevelData
@@ -39,8 +39,9 @@ public class LevelData
         Violet,
         Yellow,
         Random,
+        CenterItem,
         Animal,
-        Witch
+        Boss
     }
 
     public static int VerticalModeMaxRows = 71;
@@ -198,8 +199,8 @@ public class LevelData
         case MissionType.SaveAnimals:
             _missionPoints = itemTypeCounts[(int)ItemType.Animal];
             break;
-        case MissionType.BattleWitch:
-            _missionPoints = itemTypeCounts[(int)ItemType.Witch];
+        case MissionType.BossBattle:
+            _missionPoints = itemTypeCounts[(int)ItemType.Boss];
             break;
         }
     }

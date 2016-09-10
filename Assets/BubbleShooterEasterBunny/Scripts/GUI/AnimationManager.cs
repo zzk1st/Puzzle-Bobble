@@ -144,7 +144,7 @@ public class AnimationManager : MonoBehaviour
 
         if( SceneManager.GetActiveScene().name == "game")
         {
-            if( GameManager.Instance.GameStatus == GameStatus.Pause )
+            if( GameManager.Instance.gameStatus == GameStatus.Pause )
             {
                 GameManager.Instance.Resume();
 
@@ -369,11 +369,11 @@ public class AnimationManager : MonoBehaviour
 
     public void FiveBallsBoost()
     {
-        if( GameManager.Instance.GameStatus != GameStatus.Playing ) return;
+        if( GameManager.Instance.gameStatus != GameStatus.Playing ) return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
         if( InitScript.Instance.FiveBallsBoost > 0 )
         {
-            if( GameManager.Instance.GameStatus == GameStatus.Playing )
+            if( GameManager.Instance.gameStatus == GameStatus.Playing )
                 InitScript.Instance.SpendBoost( BoostType.FiveBallsBoost );
         }
         else
@@ -383,11 +383,11 @@ public class AnimationManager : MonoBehaviour
     }
     public void ColorBallBoost()
     {
-        if( GameManager.Instance.GameStatus != GameStatus.Playing ) return;
+        if( GameManager.Instance.gameStatus != GameStatus.Playing ) return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
         if( InitScript.Instance.ColorBallBoost > 0 )
         {
-            if( GameManager.Instance.GameStatus == GameStatus.Playing )
+            if( GameManager.Instance.gameStatus == GameStatus.Playing )
                 InitScript.Instance.SpendBoost( BoostType.ColorBallBoost );
         }
         else
@@ -398,11 +398,11 @@ public class AnimationManager : MonoBehaviour
     }
     public void FireBallBoost()
     {
-        if( GameManager.Instance.GameStatus != GameStatus.Playing ) return;
+        if( GameManager.Instance.gameStatus != GameStatus.Playing ) return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
         if( InitScript.Instance.FireBallBoost > 0 )
         {
-            if( GameManager.Instance.GameStatus == GameStatus.Playing )
+            if( GameManager.Instance.gameStatus == GameStatus.Playing )
                 InitScript.Instance.SpendBoost( BoostType.FireBallBoost );
         }
         else

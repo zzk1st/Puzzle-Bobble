@@ -113,15 +113,6 @@ public class Ball : MonoBehaviour
 
     public void SetTypeAndColor(LevelData.ItemType itemType)
     {
-        if (itemType == LevelData.ItemType.Animal)
-        {
-            _gameItem.itemType = GameItem.ItemType.Animal;
-        }
-        else
-        {
-            
-        }
-
         color = (BallColor) itemType;
         gameObject.tag = "" + color;
 
@@ -145,7 +136,7 @@ public class Ball : MonoBehaviour
         // newBall表示这是不是一个准备发射的ball
         if (!ClickOnGUI() &&
             state == BallState.ReadyToShoot && 
-            !mainscript.Instance.gameOver && GameManager.Instance.GameStatus == GameStatus.Playing)
+            !mainscript.Instance.gameOver && GameManager.Instance.gameStatus == GameStatus.Playing)
         {
             Vector3 pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
             if (pos.y > bottomBoarderY && !mainscript.StopControl)
@@ -447,7 +438,11 @@ public class Ball : MonoBehaviour
 
     public void Explode(float delayedExplodeTime, int score)
     {
-        mainscript.Instance.GenerateTargetStar(grid);
+        if (grid.Row == 0)
+        {
+            MissionManager.Instance.GainTargetStar(grid);
+        }
+
         GetComponent<GameItem>().DisconnectFromGrid();
         GetComponent<CircleCollider2D>().enabled = false;    //删掉CircleCollider，防止再碰撞检测
         gameObject.layer = LayerMask.NameToLayer("ExplodedBall");   // 从ball layer移除，防止之后connect nearball时候再连上

@@ -43,7 +43,7 @@ public class BallShooter : MonoBehaviour {
 
     public void Update()
     {
-        if (GameManager.Instance.GameStatus == GameStatus.Playing)
+        if (GameManager.Instance.gameStatus == GameStatus.Playing)
         {
             Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // currentES.IsPointerOverGameObject()用来检测是否鼠标点击的是GUI
@@ -98,7 +98,7 @@ public class BallShooter : MonoBehaviour {
 
     public void SwapBalls()
     {
-        if (GameManager.Instance.GameStatus == GameStatus.Playing)
+        if (GameManager.Instance.gameStatus == GameStatus.Playing)
         {
             if (state == BallShooterState.ReadyToShoot)
             {

@@ -22,17 +22,18 @@ public enum GameStatus
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    private GameStatus gameStatus;
     private GameStatus lastGameStatus;
     bool winStarted;
-    public GameStatus GameStatus
+
+    private GameStatus _gameStatus;
+    public GameStatus gameStatus
     {
-        get { return GameManager.Instance.gameStatus; }
+        get { return GameManager.Instance._gameStatus; }
     }
-    public int emptyTopGrid;
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+    {
         Instance = this;
         setGameStatus(GameStatus.None);
 	}
@@ -84,54 +85,8 @@ public class GameManager : MonoBehaviour
 
     void setGameStatus(GameStatus newStatus)
     {
-        lastGameStatus = gameStatus;
-        gameStatus = newStatus;
-    }
-
-    public bool checkWin()
-    {
-        if (GameManager.Instance.gameStatus != GameStatus.Playing)
-        {
-            return false;
-        }
-
-        // TODO：将来这个要被“拯救动物”，“除掉魔鬼”等游戏模式代替
-        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
-        {
-            emptyTopGrid = 0;
-            for (int i = 0; i < GridManager.Instance.colCount; i++)
-            {
-                if (GridManager.Instance.Grid(0, i).GetComponent<Grid>().AttachedGameItem == null)
-                {
-                    emptyTopGrid++;
-                }
-            }
-
-            if (emptyTopGrid >= 6)
-            {
-                return true;
-            }
-        }
-        else // 圆形模式
-        {
-            int animalRow = LevelData.AnimalRow;
-            int animalCol = LevelData.AnimalCol;
-            if (
-                GridManager.Instance.Grid(animalRow-1, animalCol-1).GetComponent<Grid>().AttachedGameItem == null &&
-                GridManager.Instance.Grid(animalRow-1, animalCol).GetComponent<Grid>().AttachedGameItem == null &&
-                GridManager.Instance.Grid(animalRow-1, animalCol+1).GetComponent<Grid>().AttachedGameItem == null &&
-                GridManager.Instance.Grid(animalRow, animalCol-1).GetComponent<Grid>().AttachedGameItem == null &&
-                GridManager.Instance.Grid(animalRow, animalCol+1).GetComponent<Grid>().AttachedGameItem == null &&
-                GridManager.Instance.Grid(animalRow+1, animalCol-1).GetComponent<Grid>().AttachedGameItem == null &&
-                GridManager.Instance.Grid(animalRow+1, animalCol).GetComponent<Grid>().AttachedGameItem == null &&
-                GridManager.Instance.Grid(animalRow+1, animalCol+1).GetComponent<Grid>().AttachedGameItem == null
-            )
-            {
-                return true;
-            }
-        }
-
-        return false;
+        lastGameStatus = _gameStatus;
+        _gameStatus = newStatus;
     }
 
 	// Update is called once per frame
@@ -169,11 +124,6 @@ public class GameManager : MonoBehaviour
             item.StartFall();
         }
 
-        foreach( Ball item in balls )
-        {
-            if(item != null)
-                item.StartFall();
-        }
         yield return new WaitForSeconds( 2f );
         while( GameObject.FindGameObjectsWithTag( "Ball" ).Length > 0  )
         {

@@ -25,6 +25,7 @@ public class CreatorBall : MonoBehaviour
             mainscript.Instance.currentLevel = 1;
         LoadMap();
 
+        MissionManager.Instance.Initialize();
         GameManager.Instance.Demo();
         mainscript.Instance.platformController.StartGameMoveUp();
         // TODO: 写一个iniitalizeBorders(), 负责border的初始化创建，注意要创建bottom border

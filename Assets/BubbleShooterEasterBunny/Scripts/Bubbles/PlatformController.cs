@@ -86,7 +86,7 @@ public class PlatformController : MonoBehaviour
             else
             {
                 // 关卡高度足够，就看底部是不在合理区域内
-                if (GameManager.Instance.GameStatus == GameStatus.Demo)     // 注意游戏开始比较特殊，要保证关卡minPos高于upperlimit
+                if (GameManager.Instance.gameStatus == GameStatus.Demo)     // 注意游戏开始比较特殊，要保证关卡minPos高于upperlimit
                 {
                     if (curPlatformBottomPos < platformBottomUpperLimit)
                     {
@@ -116,7 +116,7 @@ public class PlatformController : MonoBehaviour
 
             if (arrived)
             {
-                if (GameManager.Instance.GameStatus == GameStatus.Demo)
+                if (GameManager.Instance.gameStatus == GameStatus.Demo)
                 {
                     GameManager.Instance.PreTutorial();
                 }
@@ -179,7 +179,7 @@ public class PlatformController : MonoBehaviour
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
         {
             transform.position = new Vector3(0f, 0f, 0f);
-            if (GameManager.Instance.GameStatus == GameStatus.Demo)
+            if (GameManager.Instance.gameStatus == GameStatus.Demo)
             {
                 GameManager.Instance.PreTutorial();
             }

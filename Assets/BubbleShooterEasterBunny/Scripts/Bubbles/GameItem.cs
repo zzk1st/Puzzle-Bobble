@@ -18,6 +18,7 @@ public class GameItem : MonoBehaviour {
     public enum ItemType
     {
         Ball,
+        CenterItem,
         Animal
     }
 

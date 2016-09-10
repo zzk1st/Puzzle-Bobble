@@ -4,15 +4,13 @@ using UnityEngine.UI;
 
 public class TargetStar : MonoBehaviour
 {
-    private GameObject targetCountGO;
     private GameObject targetImageGO;
 
     public Vector3 flyingMiddlePoint;
 
     public void fly()
     {
-        targetCountGO = GameObject.Find("TargetCount");
-        targetImageGO = GameObject.Find("TargetImage");
+        targetImageGO = GameObject.Find("MissionTypeImage");
 
         // 我们要让这个star显示在UI层
         GetComponent<SpriteRenderer>().sortingLayerName = "UI layer";
@@ -34,7 +32,6 @@ public class TargetStar : MonoBehaviour
     void onFlyingComplete()
     {
         Destroy(gameObject);
-        // TODO: 以后mission manager负责更新
-        targetCountGO.GetComponent<Text>().text = GameManager.Instance.emptyTopGrid.ToString() + "/6";
+        MissionManager.Instance.UpdateMissionPointCounter();
     }
 }

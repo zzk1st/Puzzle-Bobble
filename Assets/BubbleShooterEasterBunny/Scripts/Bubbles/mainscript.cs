@@ -62,12 +62,8 @@ public class mainscript : MonoBehaviour {
     public int TargetCounter1
     {
         get { return TargetCounter; }
-        set {
-            TargetCounter = value;
-        }
+        set { TargetCounter = value; }
     }
-
-    public GameObject targetStarPrefab;
 
     public GameObject[] starsObject;
     public int stars = 0;
@@ -98,6 +94,9 @@ public class mainscript : MonoBehaviour {
 
     public float ballExplosionTimeInterval;
 
+    public delegate void DestroyBallsHandler();
+    public event DestroyBallsHandler onBallsDestroyed;
+
     void Awake()
     {
         Instance = this;
@@ -126,7 +125,7 @@ public class mainscript : MonoBehaviour {
         {
 
             yield return new WaitForSeconds( 30 );
-            if( GameManager.Instance.GameStatus == GameStatus.Playing )
+            if( GameManager.Instance.gameStatus == GameStatus.Playing )
             {
                 arrows.SetActive( true );
 
@@ -151,7 +150,7 @@ public class mainscript : MonoBehaviour {
     {
         // 游戏中最重要的算法部分：检测ball是否连上，销毁，以及判断是否有其它drop的balls
         // checkBall在ball.cs中被赋值，当ball停住的时候，就说明需要判断连接了，这个值也就被设定了
-        if (checkBall != null && GameManager.Instance.GameStatus == GameStatus.Playing)
+        if (checkBall != null && GameManager.Instance.gameStatus == GameStatus.Playing)
         {
             // 找到同色的ball并将其销毁
             List<GameObject> ballsToDelete = new List<GameObject>();
@@ -179,6 +178,11 @@ public class mainscript : MonoBehaviour {
             }
 
             checkBall = null;
+
+            if (onBallsDestroyed != null)
+            {
+                onBallsDestroyed();
+            }
         }
     }
 
@@ -216,12 +220,6 @@ public class mainscript : MonoBehaviour {
         ConnectAndDestroyBalls();
         DestroyDetachedGameItems();
 
-        if (GameManager.Instance.checkWin())
-        {
-            GameManager.Instance.Win();
-        }
-
-
         //计算进度条应显示当前分数占最高级别（三星）的百分之多少
         ProgressBarScript.Instance.UpdateDisplay((float)ScoreManager.Instance.Score / LevelData.stars[2]);
 
@@ -235,7 +233,7 @@ public class mainscript : MonoBehaviour {
 
 	public void CheckLosing()
     {
-        if (GameManager.Instance.GameStatus == GameStatus.Playing)
+        if (GameManager.Instance.gameStatus == GameStatus.Playing)
         {
             /*
             float stageMinYWorldSpace = platformController.curPlatformMinY;
@@ -309,7 +307,7 @@ public class mainscript : MonoBehaviour {
 	}
 	
     // DropBalls, 注意和DestroyBalls并不相同，后者是让球爆炸，这个是让球落下
-    public void DropGameItems(List<GameObject> ballsToDrop)
+    public void DropGameItems(List<GameObject> gameItemsToDrop)
     {
         mainscript.Instance.bounceCounter = 0;
 
@@ -317,7 +315,7 @@ public class mainscript : MonoBehaviour {
 		/*int scoreCounter = 0;
 		int rate = 0;*/
 
-        foreach(GameObject ball in ballsToDrop) {
+        foreach(GameObject gameItem in gameItemsToDrop) {
 			/*if(scoreCounter > 3){
 				rate +=3;
 				scoreCounter += rate;
@@ -325,7 +323,7 @@ public class mainscript : MonoBehaviour {
 			scoreCounter ++;*/
 
 			// 让没接上的ball都掉落
-            ball.GetComponent<GameItem>().StartFall();
+            gameItem.GetComponent<GameItem>().StartFall();
 		}
         // 调用ScoreManager里针对掉落球的分数更新函数
         // 暂时注释掉因为女巫泡泡里没有掉落得分 (只有掉入pot的加分)
@@ -408,20 +406,6 @@ public class mainscript : MonoBehaviour {
             Ball ball = ballGO.GetComponent<Ball>();
             ball.Explode(delayedExplodeTime, score);
             delayedExplodeTime += ballExplosionTimeInterval;
-        }
-    }
-
-    public void GenerateTargetStar(Grid grid)
-    {
-        // TODO: 换成GameMode
-        if (levelData.stageMoveMode == StageMoveMode.Vertical)
-        {
-            if (grid.Row == 0)
-            {
-                Instantiate(targetStarPrefab, grid.transform.position, grid.transform.rotation);
-                GameObject movingTargetStar = Instantiate(targetStarPrefab, grid.transform.position, grid.transform.rotation) as GameObject;
-                movingTargetStar.GetComponent<TargetStar>().fly();
-            }
         }
     }
 }
