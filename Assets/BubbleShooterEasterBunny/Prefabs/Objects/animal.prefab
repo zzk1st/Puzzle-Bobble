@@ -9,6 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 488702}
   - 212: {fileID: 21240690}
+  - 58: {fileID: 5803226}
   - 114: {fileID: 11471702}
   - 114: {fileID: 11436352}
   m_Layer: 0
@@ -31,6 +32,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!58 &5803226
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 199126}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 8f921e88c9db2bd4d8df3fa3169ddb20, type: 2}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.3
 --- !u!114 &11436352
 MonoBehaviour:
   m_ObjectHideFlags: 1
