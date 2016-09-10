@@ -411,7 +411,7 @@ public class Ball : MonoBehaviour
         _gameItem.ConnectToGrid();
 
         mainscript.Instance.checkBall = gameObject;
-        mainscript.Instance.levelData.LimitAmount--;
+        mainscript.Instance.levelData.limitAmount--;
 
         Vector2 ballVelocity = GetComponent<Rigidbody2D>().velocity;
         // 删掉RigidBody2D，彻底让mesh接管运动

@@ -12,7 +12,7 @@ GameObject:
   - 114: {fileID: 11471702}
   - 114: {fileID: 11436352}
   m_Layer: 0
-  m_Name: Animal
+  m_Name: animal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

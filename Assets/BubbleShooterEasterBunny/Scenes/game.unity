@@ -3938,7 +3938,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.size
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 402878, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: m_LocalPosition.x
@@ -3981,6 +3981,46 @@ Prefab:
       propertyPath: sprites.Array.data[8]
       value: 
       objectReference: {fileID: 21300000, guid: 2c287bacbf8a03a419eea29290b502e7,
+        type: 3}
+    - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
+      propertyPath: sprites.Array.data[9]
+      value: 
+      objectReference: {fileID: 21300000, guid: 2c287bacbf8a03a419eea29290b502e7,
+        type: 3}
+    - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
+      propertyPath: sprites.Array.data[1]
+      value: 
+      objectReference: {fileID: 21300002, guid: a1b80f395d35f4e6cb4a268edb9d9b20,
+        type: 3}
+    - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
+      propertyPath: sprites.Array.data[2]
+      value: 
+      objectReference: {fileID: 21300002, guid: 7d705963bd11341ea908a0e9b8e413e0,
+        type: 3}
+    - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
+      propertyPath: sprites.Array.data[3]
+      value: 
+      objectReference: {fileID: 21300002, guid: 5a5df168313d144bead6cfe2010a7e16,
+        type: 3}
+    - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
+      propertyPath: sprites.Array.data[4]
+      value: 
+      objectReference: {fileID: 21300002, guid: ba03296062f2646f5a1cb5efc0e99a46,
+        type: 3}
+    - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
+      propertyPath: sprites.Array.data[5]
+      value: 
+      objectReference: {fileID: 21300002, guid: 2dd7d7ec5a91544688d2c35c1c19bf3d,
+        type: 3}
+    - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
+      propertyPath: sprites.Array.data[6]
+      value: 
+      objectReference: {fileID: 21300000, guid: 19ca967f222c60b4f8b0507c89abadcc,
+        type: 3}
+    - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
+      propertyPath: sprites.Array.data[0]
+      value: 
+      objectReference: {fileID: 21300000, guid: 78b0f80a4614d2743b411a365819b140,
         type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}

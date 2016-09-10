@@ -51,48 +51,24 @@ public class LevelData
     public static int RoundedModeMaxCols = 11;
 
     // animal在圆形模式下的row和col
-    public static int AnimalRow = RoundedModeMaxRows / 2;
-    public static int AnimalCol = RoundedModeMaxCols / 2;
+    public static int CenterItemRow = RoundedModeMaxRows / 2;
+    public static int CenterItemCol = RoundedModeMaxCols / 2;
 
+    // 没找到更好的解决方法，为了让编辑器能复用levelData，目前把所有成员变量设为public
+    public int currentLevel;
     public int[] map = new int[VerticalModeMaxRows * VerticalModeMaxCols];
     public int rowCount;
     public int colCount;
 
     //List of mission in this map
-    private StageMoveMode _stageMoveMode;
-    public StageMoveMode stageMoveMode
-    {
-        get { return _stageMoveMode; }
-    }
+    public StageMoveMode stageMoveMode;
+    public MissionType missionType;
+    public int missionPoints;
+    public int limitAmount = 40;
 
-    private MissionType _missionType;
-    public MissionType missionType
-    {
-        get { return _missionType; }
-    }
-
-    private int _missionPoints;
-    public int missionPoints
-    {
-        get { return _missionPoints; }
-    }
-
-    private float limitAmount = 40;
-    public float LimitAmount
-    {
-        get { return limitAmount; }
-        set 
-        { 
-            limitAmount = value;
-            if( value < 0 ) limitAmount = 0;
-        }
-    }
-
-    private static bool startReadData;
-    public static List<ItemType> allColors = new List<ItemType>();
-    static int key;
-    public static int colorCount;
-    public static int[] stars = new int[3];
+    public List<ItemType> allColors = new List<ItemType>();
+    public int allowedColorCount;
+    public int[] starScores = new int[3];
     private int[] itemTypeCounts = new int[System.Enum.GetValues(typeof(ItemType)).Length];
 
     public Target GetTarget(int levelNumber)
@@ -101,31 +77,20 @@ public class LevelData
         return (Target)stageMoveMode;
     }
 
-    public bool LoadLevel(int currentLevel)
-    {
-        //Read data from text file
-        TextAsset mapText = Resources.Load("Levels/" + currentLevel) as TextAsset;
-        if (mapText == null)
-        {
-            mapText = Resources.Load("Levels/" + currentLevel) as TextAsset;
-        }
-        ProcessGameDataFromString(mapText.text);
-        CalculateMissionPoints();
-        return true;
-    }
-
     void ProcessGameDataFromString(string mapText)
     {
         string[] lines = mapText.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
         allColors.Clear();
+        map = new int[VerticalModeMaxRows * VerticalModeMaxCols];
+
         int mapLine = 0;
         foreach (string line in lines)
         {
             if (line.StartsWith("MISSIONTYPE "))
             {
                 string modeString = line.Replace("MISSIONTYPE", string.Empty).Trim();
-                _missionType = (MissionType)int.Parse(modeString);
-                _stageMoveMode = _missionType == MissionType.RescueGhost ? StageMoveMode.Rounded : StageMoveMode.Vertical;
+                missionType = (MissionType)int.Parse(modeString);
+                stageMoveMode = missionType == MissionType.RescueGhost ? StageMoveMode.Rounded : StageMoveMode.Vertical;
             }
             else if (line.StartsWith("SIZE "))
             {
@@ -138,14 +103,14 @@ public class LevelData
             {
                 string blocksString = line.Replace("LIMIT", string.Empty).Trim();
                 string[] sizes = blocksString.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
-                LimitAmount = int.Parse(sizes[1]);
+                limitAmount = int.Parse(sizes[1]);
                 //limitType = (LIMIT)int.Parse(sizes[0]);
                 // TODO: 加一个打击球的颜色列表
             }
             else if (line.StartsWith("COLOR LIMIT "))
             {
                 string blocksString = line.Replace("COLOR LIMIT", string.Empty).Trim();
-                colorCount = int.Parse(blocksString);
+                allowedColorCount = int.Parse(blocksString);
             }
             else if (line.StartsWith("STARS "))
             {
@@ -153,7 +118,7 @@ public class LevelData
                 string[] blocksNumbers = blocksString.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < 3; ++i)
                 {
-                    stars[i] = int.Parse(blocksNumbers[i]);
+                    starScores[i] = int.Parse(blocksNumbers[i]);
                 }
             }
             else
@@ -179,7 +144,7 @@ public class LevelData
         // 根据文件创建该level全部颜色表
         if (allColors.Count == 0)
         {
-            for (int i = 1; i <= colorCount; ++i)
+            for (int i = 1; i <= allowedColorCount; ++i)
             {
                 allColors.Add((ItemType) i);
             }
@@ -191,17 +156,72 @@ public class LevelData
         switch(missionType)
         {
         case MissionType.EliminateBalls:
-            _missionPoints = 6;
+            missionPoints = 6;
             break;
         case MissionType.RescueGhost:
-            _missionPoints = 1;
+            missionPoints = 1;
             break;
         case MissionType.SaveAnimals:
-            _missionPoints = itemTypeCounts[(int)ItemType.Animal];
+            missionPoints = itemTypeCounts[(int)ItemType.Animal];
             break;
         case MissionType.BossBattle:
-            _missionPoints = itemTypeCounts[(int)ItemType.Boss];
+            missionPoints = itemTypeCounts[(int)ItemType.Boss];
             break;
+        }
+    }
+
+    public bool LoadLevel(int curLevel)
+    {
+        currentLevel = curLevel;
+        //Read data from text file
+        TextAsset mapText = Resources.Load("Levels/" + currentLevel) as TextAsset;
+        if (mapText == null)
+        {
+            return false;
+        }
+        ProcessGameDataFromString(mapText.text);
+        CalculateMissionPoints();
+        return true;
+    }
+
+    public void SaveLevel()
+    {
+        string saveString = "";
+        //Create save string
+        saveString += "MISSIONTYPE " + (int)missionType;
+        saveString += "\r\n";
+        saveString += "SIZE " + colCount + "/" + rowCount;
+        saveString += "\r\n";
+        saveString += "LIMIT " + "0" + "/" + limitAmount;
+        saveString += "\r\n";
+        saveString += "COLOR LIMIT " + allowedColorCount;
+        saveString += "\r\n";
+        saveString += "STARS " + starScores[0] + "/" + starScores[1] + "/" + starScores[2];
+        saveString += "\r\n";
+
+        //set map data
+        for (int row = 0; row < rowCount; row++)
+        {
+            for (int col = 0; col < colCount; col++)
+            {
+                saveString += (int)map[row * colCount + col];
+                //if this column not yet end of row, add space between them
+                if (col < (colCount - 1))
+                    saveString += " ";
+            }
+            //if this row is not yet end of row, add new line symbol between rows
+            if (row < (rowCount - 1))
+                saveString += "\r\n";
+        }
+
+        if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.WindowsEditor)
+        {
+            //Write to file
+            string activeDir = Application.dataPath + @"/BubbleShooterEasterBunny/Resources/Levels/";
+            string newPath = System.IO.Path.Combine(activeDir, currentLevel + ".txt");
+            StreamWriter sw = new StreamWriter(newPath);
+            sw.Write(saveString);
+            sw.Close();
         }
     }
 }

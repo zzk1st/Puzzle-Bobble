@@ -147,7 +147,7 @@ public class Grid : MonoBehaviour
             }
             break;
         case StageMoveMode.Rounded:
-            if (Row == LevelData.AnimalRow && Col == LevelData.AnimalCol)
+            if (Row == LevelData.CenterItemRow && Col == LevelData.CenterItemCol)
             {
                 AddFrom(grids, controlGrids);
                 grids.Clear();

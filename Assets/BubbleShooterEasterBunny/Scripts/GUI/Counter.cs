@@ -16,8 +16,8 @@ public class Counter : MonoBehaviour {
 	void Update () {
         if (name == "Moves")
         {
-            label.text = "" + mainscript.Instance.levelData.LimitAmount;
-            if (mainscript.Instance.levelData.LimitAmount <= 5 && GameManager.Instance.gameStatus == GameStatus.Playing)
+            label.text = "" + mainscript.Instance.levelData.limitAmount;
+            if (mainscript.Instance.levelData.limitAmount <= 5 && GameManager.Instance.gameStatus == GameStatus.Playing)
             {
                 label.color = Color.red;
                 if (!GetComponent<Animation>().isPlaying)

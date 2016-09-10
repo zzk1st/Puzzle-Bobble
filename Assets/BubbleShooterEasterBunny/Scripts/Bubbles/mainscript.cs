@@ -221,11 +221,11 @@ public class mainscript : MonoBehaviour {
         DestroyDetachedGameItems();
 
         //计算进度条应显示当前分数占最高级别（三星）的百分之多少
-        ProgressBarScript.Instance.UpdateDisplay((float)ScoreManager.Instance.Score / LevelData.stars[2]);
+        ProgressBarScript.Instance.UpdateDisplay((float)ScoreManager.Instance.Score / levelData.starScores[2]);
 
         //更新星星个数
         if (stars < 3)
-            stars += Mathf.Min(1, ScoreManager.Instance.Score / LevelData.stars[stars]);
+            stars += Mathf.Min(1, ScoreManager.Instance.Score / levelData.starScores[stars]);
         for (int i = 0; i < stars; ++i)
             starsObject[i].SetActive(true);
         

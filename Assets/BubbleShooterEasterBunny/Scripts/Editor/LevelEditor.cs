@@ -7,22 +7,13 @@ using System.IO;
 public class LevelEditor : EditorWindow
 {
     private static LevelEditor window;
-    private int maxRows;
-    private int maxCols = 11;
-    public static LevelData.ItemType[] levelSquares = new LevelData.ItemType[81];
+
+    LevelData levelData = new LevelData();
+
     private Texture[] ballTex;
     int levelNumber = 1;
     private Vector2 scrollViewVector;
-    private Target target;
-    private LIMIT limitType;
-    private int limit;
-    private int colorLimit;
-    private int star1;
-    private int star2;
-    private int star3;
-    private string fileName = "1.txt";
     private LevelData.ItemType brush;
-    private int selected;
 
     [MenuItem("Window/Level editor")]
     static void Init()
@@ -40,12 +31,6 @@ public class LevelEditor : EditorWindow
 
     void OnFocus()
     {
-        if (maxRows <= 0)
-            maxRows = 30;
-        if (maxCols <= 0)
-            maxCols = 11;
-
-        Initialize();
         LoadDataFromLocal(levelNumber);
         LevelEditorBase lm = GameObject.Find("LevelEditorBase").GetComponent<LevelEditorBase>();
         ballTex = new Texture[lm.sprites.Length];
@@ -53,17 +38,6 @@ public class LevelEditor : EditorWindow
         {
             ballTex[i] = lm.sprites[i].texture;
         }
-
-    }
-
-    void Initialize()
-    {
-        levelSquares = new LevelData.ItemType[maxCols * maxRows];
-        for (int i = 0; i < levelSquares.Length; i++)
-        {
-            levelSquares[i] = 0;
-        }
-
     }
 
     void OnGUI()
@@ -71,36 +45,30 @@ public class LevelEditor : EditorWindow
         if (levelNumber < 1)
             levelNumber = 1;
 
-
         scrollViewVector = GUI.BeginScrollView(new Rect(25, 45, position.width - 30, position.height), scrollViewVector, new Rect(0, 0, 400, 2000));
-  //      GUILayout.Space(-30);
+
+        GUILevelSelector();
+        GUILayout.Space(10);
+
+        GUIMissionType();
+        GUILayout.Space(10);
+
+        GUILimit();
+        GUILayout.Space(10);
 
 
+        GUIColorLimit();
+        GUILayout.Space(10);
 
-            GUILevelSelector();
-            GUILayout.Space(10);
+        GUIStars();
+        GUILayout.Space(10);
 
-            GUILimit();
-            GUILayout.Space(10);
+        GUIBlocks();
+        GUILayout.Space(20);
 
+        GUIGameField();
 
-            GUIColorLimit();
-            GUILayout.Space(10);
-
-            GUIStars();
-            GUILayout.Space(10);
-
-            //GUITarget();
-            //GUILayout.Space(10);
-
-            GUIBlocks();
-            GUILayout.Space(20);
-
-
-            GUIGameField();
-
-            GUI.EndScrollView();
-
+        GUI.EndScrollView();
     }
 
 
@@ -178,7 +146,6 @@ public class LevelEditor : EditorWindow
     {
         SaveLevel();
         levelNumber = GetLastLevel() + 1;
-        Initialize();
         SaveLevel();
     }
 
@@ -196,13 +163,9 @@ public class LevelEditor : EditorWindow
             levelNumber = 1;
         if (!LoadDataFromLocal(levelNumber))
             levelNumber++;
-
-
     }
 
-
     #endregion
-
 
     void GUILimit()
     {
@@ -210,27 +173,12 @@ public class LevelEditor : EditorWindow
         GUILayout.Space(60);
 
         GUILayout.Label("Limit:", EditorStyles.label, new GUILayoutOption[] { GUILayout.Width(50) });
-        LIMIT limitTypeSave = limitType;
-        int oldLimit = limit;
-        limitType = (LIMIT)EditorGUILayout.EnumPopup(limitType, GUILayout.Width(93));
-        if (limitType == LIMIT.MOVES)
-            limit = EditorGUILayout.IntField(limit, new GUILayoutOption[] { GUILayout.Width(50) });
-        else
-        {
-            GUILayout.BeginHorizontal();
-            int limitMin = EditorGUILayout.IntField(limit / 60, new GUILayoutOption[] { GUILayout.Width(30) });
-            GUILayout.Label(":", new GUILayoutOption[] { GUILayout.Width(10) });
-            int limitSec = EditorGUILayout.IntField(limit - (limit / 60) * 60, new GUILayoutOption[] { GUILayout.Width(30) });
-            limit = limitMin * 60 + limitSec;
-            GUILayout.EndHorizontal();
-        }
-        if (limit <= 0)
-            limit = 1;
+        int oldLimit = levelData.limitAmount;
+        levelData.limitAmount = EditorGUILayout.IntField(levelData.limitAmount, new GUILayoutOption[] { GUILayout.Width(50) });
         GUILayout.EndHorizontal();
 
-        if (limitTypeSave != limitType || oldLimit != limit)
+        if (oldLimit != levelData.limitAmount)
             SaveLevel();
-
     }
 
     void GUIColorLimit()
@@ -238,18 +186,14 @@ public class LevelEditor : EditorWindow
         GUILayout.BeginHorizontal();
         GUILayout.Space(60);
 
-        int saveInt = colorLimit;
+        int saveInt = levelData.allowedColorCount;
         GUILayout.Label("Color limit:", EditorStyles.label, new GUILayoutOption[] { GUILayout.Width(100) });
-        colorLimit = (int)GUILayout.HorizontalSlider(colorLimit, 3, 5, new GUILayoutOption[] { GUILayout.Width(100) });
-        colorLimit = EditorGUILayout.IntField("", colorLimit, new GUILayoutOption[] { GUILayout.Width(50) });
-        if (colorLimit < 3)
-            colorLimit = 3;
-        if (colorLimit > 5)
-            colorLimit = 5;
+        levelData.allowedColorCount = (int)GUILayout.HorizontalSlider(levelData.allowedColorCount, 3, 5, new GUILayoutOption[] { GUILayout.Width(100) });
+        levelData.allowedColorCount = EditorGUILayout.IntField("", levelData.allowedColorCount, new GUILayoutOption[] { GUILayout.Width(50) });
 
         GUILayout.EndHorizontal();
 
-        if (saveInt != colorLimit)
+        if (saveInt != levelData.allowedColorCount)
         {
             SaveLevel();
         }
@@ -275,37 +219,30 @@ public class LevelEditor : EditorWindow
         GUILayout.BeginHorizontal();
         GUILayout.Space(30);
         int s = 0;
-        s = EditorGUILayout.IntField("", star1, new GUILayoutOption[] { GUILayout.Width(100) });
-        if (s != star1)
+        s = EditorGUILayout.IntField("", levelData.starScores[0], new GUILayoutOption[] { GUILayout.Width(100) });
+        if (s != levelData.starScores[0])
         {
-            star1 = s;
+            levelData.starScores[0] = s;
             SaveLevel();
         }
-        if (star1 < 0)
-            star1 = 10;
-        s = EditorGUILayout.IntField("", star2, new GUILayoutOption[] { GUILayout.Width(100) });
-        if (s != star2)
+        s = EditorGUILayout.IntField("", levelData.starScores[1], new GUILayoutOption[] { GUILayout.Width(100) });
+        if (s != levelData.starScores[1])
         {
-            star2 = s;
+            levelData.starScores[1] = s;
             SaveLevel();
         }
-        if (star2 < star1)
-            star2 = star1 + 10;
-        s = EditorGUILayout.IntField("", star3, new GUILayoutOption[] { GUILayout.Width(100) });
-        if (s != star3)
+        s = EditorGUILayout.IntField("", levelData.starScores[2], new GUILayoutOption[] { GUILayout.Width(100) });
+        if (s != levelData.starScores[2])
         {
-            star3 = s;
+            levelData.starScores[2] = s;
             SaveLevel();
         }
-        if (star3 < star2)
-            star3 = star2 + 10;
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
         GUILayout.EndHorizontal();
-
     }
 
-    void GUITarget()
+    void GUIMissionType()
     {
         GUILayout.BeginHorizontal();
         GUILayout.Space(30);
@@ -314,19 +251,15 @@ public class LevelEditor : EditorWindow
         GUILayout.BeginHorizontal();
         GUILayout.Space(30);
         GUILayout.BeginVertical();
-        Target saveTarget = target;
-        target = (Target)EditorGUILayout.EnumPopup(target, GUILayout.Width(100));
-        if (target == Target.Top)
-        {
-        }
+        MissionType missionType = levelData.missionType;
+        levelData.missionType = (MissionType) EditorGUILayout.EnumPopup(levelData.missionType, GUILayout.Width(100));
         GUILayout.EndVertical();
-        if (saveTarget != target)
+        if (missionType != levelData.missionType)
         {
             SaveLevel();
         }
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
-
 
         GUILayout.EndHorizontal();
     }
@@ -343,9 +276,9 @@ public class LevelEditor : EditorWindow
         GUILayout.Label("Tools:", EditorStyles.boldLabel);
         if (GUILayout.Button("Clear", new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
         {
-            for (int i = 0; i < levelSquares.Length; i++)
+            for (int i = 0; i < levelData.map.Length; i++)
             {
-                levelSquares[i] = 0;
+                levelData.map[i] = 0;
             }
             SaveLevel();
         }
@@ -358,20 +291,17 @@ public class LevelEditor : EditorWindow
         GUILayout.BeginVertical();
         GUILayout.BeginHorizontal();
 
-        for (int i = 1; i <= System.Enum.GetValues(typeof(LevelData.ItemType)).Length-1; i++)
+        for (int i = 0; i <= System.Enum.GetValues(typeof(LevelData.ItemType)).Length-1; i++)
         {
-            if ((LevelData.ItemType)i != 0)
+            if (GUILayout.Button(ballTex[i], new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
             {
-                if (GUILayout.Button(ballTex[i - 1], new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
+                if ((LevelData.ItemType)i != LevelData.ItemType.CenterItem)
+                    brush = (LevelData.ItemType)i;
+                else
                 {
-                    if ((LevelData.ItemType)i != LevelData.ItemType.CenterItem)
-                        brush = (LevelData.ItemType)i;
-                    else
-                    {
-                        target = Target.Chicken;
-                        levelSquares[LevelData.AnimalRow * maxCols + LevelData.AnimalCol] = LevelData.ItemType.CenterItem;
-                        SaveLevel();
-                    }
+                    levelData.missionType = MissionType.RescueGhost;
+                    levelData.map[LevelData.CenterItemRow * levelData.colCount + LevelData.CenterItemCol] = (int) LevelData.ItemType.CenterItem;
+                    SaveLevel();
                 }
             }
         }
@@ -396,7 +326,7 @@ public class LevelEditor : EditorWindow
     {
         GUILayout.BeginVertical();
         bool offset = false;
-        for (int row = 0; row < maxRows; row++)
+        for (int row = 0; row < levelData.rowCount; row++)
         {
             GUILayout.BeginHorizontal();
             if (offset)
@@ -405,45 +335,16 @@ public class LevelEditor : EditorWindow
                 GUILayout.Space(30);
 
             }
-            for (int col = 0; col < maxCols; col++)
+            for (int col = 0; col < levelData.colCount; col++)
             {
-
                 var imageButton = new object();
-                if (levelSquares[row * maxCols + col] == 0)
+                if (levelData.map[row * levelData.colCount + col] == 0)
                 {
                     imageButton = "X";
                 }
-                else if (levelSquares[row * maxCols + col] != 0)
+                else if (levelData.map[row * levelData.colCount + col] != 0)
                 {
-                    if (levelSquares[row * maxCols + col] == LevelData.ItemType.Blue)
-                    {
-                        imageButton = ballTex[0];
-                    }
-                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.Green)
-                    {
-                        imageButton = ballTex[1];
-                    }
-                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.Red)
-                    {
-                        imageButton = ballTex[2];
-                    }
-                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.Violet)
-                    {
-                        imageButton = ballTex[3];
-                    }
-                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.Yellow)
-                    {
-                        imageButton = ballTex[4];
-                    }
-                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.Random)
-                    {
-                        imageButton = ballTex[5];
-                    }
-                    else if (levelSquares[row * maxCols + col] == LevelData.ItemType.CenterItem)
-                    {
-                        imageButton = ballTex[6];
-                    }
-
+                    imageButton = ballTex[(int)levelData.map[row * levelData.colCount + col]];
                 }
 
                 if (GUILayout.Button(imageButton as Texture, new GUILayoutOption[] {
@@ -469,17 +370,8 @@ public class LevelEditor : EditorWindow
 
     void SetType(int col, int row)
     {
-        bool chickenExist = false;
-        levelSquares[row * maxCols + col] = brush;
-        foreach (LevelData.ItemType item in levelSquares)
-        {
-            if (item == LevelData.ItemType.CenterItem)
-                chickenExist = true;
-        }
-        if (chickenExist) target = Target.Chicken;
-        else target = Target.Top;
+        levelData.map[row * levelData.colCount + col] = (int) brush;
         SaveLevel();
-        // GetSquare(col, row).type = (int) squareType;
     }
 
 
@@ -499,126 +391,12 @@ public class LevelEditor : EditorWindow
 
     void SaveLevel()
     {
-        if (!fileName.Contains(".txt"))
-            fileName += ".txt";
-        SaveMap(fileName);
-    }
-
-    public void SaveMap(string fileName)
-    {
-        string saveString = "";
-        //Create save string
-        saveString += "MODE " + (int)target;
-        saveString += "\r\n";
-        saveString += "SIZE " + maxCols + "/" + maxRows;
-        saveString += "\r\n";
-        saveString += "LIMIT " + (int)limitType + "/" + limit;
-        saveString += "\r\n";
-        saveString += "COLOR LIMIT " + colorLimit;
-        saveString += "\r\n";
-        saveString += "STARS " + star1 + "/" + star2 + "/" + star3;
-        saveString += "\r\n";
-
-        //set map data
-        for (int row = 0; row < maxRows; row++)
-        {
-            for (int col = 0; col < maxCols; col++)
-            {
-                saveString += (int)levelSquares[row * maxCols + col];
-                //if this column not yet end of row, add space between them
-                if (col < (maxCols - 1))
-                    saveString += " ";
-            }
-            //if this row is not yet end of row, add new line symbol between rows
-            if (row < (maxRows - 1))
-                saveString += "\r\n";
-        }
-        if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.WindowsEditor)
-        {
-            //Write to file
-            string activeDir = Application.dataPath + @"/BubbleShooterEasterBunny/Resources/Levels/";
-            string newPath = System.IO.Path.Combine(activeDir, levelNumber + ".txt");
-            StreamWriter sw = new StreamWriter(newPath);
-            sw.Write(saveString);
-            sw.Close();
-        }
+        levelData.SaveLevel();
         AssetDatabase.Refresh();
     }
 
     public bool LoadDataFromLocal(int currentLevel)
     {
-        //Read data from text file
-        TextAsset mapText = Resources.Load("Levels/" + currentLevel) as TextAsset;
-        if (mapText == null)
-        {
-            SaveLevel();
-            mapText = Resources.Load("Levels/" + currentLevel) as TextAsset;
-            return false;
-        }
-        ProcessGameDataFromString(mapText.text);
-        return true;
+        return levelData.LoadLevel(currentLevel);
     }
-
-    void ProcessGameDataFromString(string mapText)
-    {
-        string[] lines = mapText.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-        int mapLine = 0;
-        foreach (string line in lines)
-        {
-            if (line.StartsWith("MODE "))
-            {
-                string modeString = line.Replace("MODE", string.Empty).Trim();
-                target = (Target)int.Parse(modeString);
-            }
-            else if (line.StartsWith("SIZE "))
-            {
-                string blocksString = line.Replace("SIZE", string.Empty).Trim();
-                string[] sizes = blocksString.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
-                maxCols = int.Parse(sizes[0]);
-                maxRows = int.Parse(sizes[1]);
-                Initialize();
-            }
-            else if (line.StartsWith("LIMIT "))
-            {
-                string blocksString = line.Replace("LIMIT", string.Empty).Trim();
-                string[] sizes = blocksString.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
-                limitType = (LIMIT)int.Parse(sizes[0]);
-                limit = int.Parse(sizes[1]);
-
-            }
-            else if (line.StartsWith("COLOR LIMIT "))
-            {
-                string blocksString = line.Replace("COLOR LIMIT", string.Empty).Trim();
-                colorLimit = int.Parse(blocksString);
-            }
-            else if (line.StartsWith("STARS "))
-            {
-                string blocksString = line.Replace("STARS", string.Empty).Trim();
-                string[] blocksNumbers = blocksString.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
-                star1 = int.Parse(blocksNumbers[0]);
-                star2 = int.Parse(blocksNumbers[1]);
-                star3 = int.Parse(blocksNumbers[2]);
-            }
-            else
-            { //Maps
-              //Split lines again to get map numbers
-                string[] st = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < st.Length; i++)
-                {
-                    levelSquares[mapLine * maxCols + i] = (LevelData.ItemType)int.Parse(st[i][0].ToString());
-                }
-                mapLine++;
-            }
-        }
-    }
-
-
-
-}
-
-
-public class MySprite : ScriptableObject
-{
-    public Sprite background;
 }
