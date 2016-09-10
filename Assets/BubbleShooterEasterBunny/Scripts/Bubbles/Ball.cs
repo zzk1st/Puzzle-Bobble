@@ -65,6 +65,7 @@ public class Ball : MonoBehaviour
 
     //	private OTSpriteBatch spriteBatch = null;
     float bottomBoarderY;  //低于此线就不能发射球
+    float destroyBoarderY; //低于此线就销毁飞行的球
     bool isPaused;
     public AudioClip swish;
     public AudioClip pops;
@@ -108,6 +109,7 @@ public class Ball : MonoBehaviour
     {
         isPaused = mainscript.Instance.isPaused;
         bottomBoarderY = GameObject.Find("BottomBorder").transform.position.y; //获取生死线的Y坐标
+        destroyBoarderY = GameObject.Find("DestroyBorder").transform.position.y; //获取生死线的Y坐标
     }
 
     public void SetTypeAndColor(LevelData.ItemType itemType)
@@ -172,6 +174,11 @@ public class Ball : MonoBehaviour
         if (state == BallState.Dropped)
         {
             ballPicGO.transform.Rotate(new Vector3(0f, 0f, ballFallRotationSpeed * Time.deltaTime));
+        }
+        if (state == BallState.Flying && gameObject.transform.position.y < destroyBoarderY)
+        {
+            GameObject.Find("BallShooter").GetComponent<BallShooter>().isFreezing = false;
+            Destroy(gameObject);
         }
     }
 
@@ -389,18 +396,7 @@ public class Ball : MonoBehaviour
             }
         }
 
-        if (other.gameObject.layer == LayerMask.NameToLayer("UI"))
-        {
-            return;
-        }
-
         if (state != BallState.Flying)
-        {
-            return;
-        }
-
-        // Flying的球位置在线以下不碰撞
-        if (other.gameObject.layer == LayerMask.NameToLayer("Pot"))
         {
             return;
         }
