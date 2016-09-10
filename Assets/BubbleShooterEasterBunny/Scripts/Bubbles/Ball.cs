@@ -60,7 +60,6 @@ public class Ball : MonoBehaviour
 
     //	 public OTSprite sprite;                    // This star's sprite class
     Vector3 forceVect;
-    public float startTime;
     public float dropFadeTime;
 
     //	private OTSpriteBatch spriteBatch = null;
@@ -154,7 +153,6 @@ public class Ball : MonoBehaviour
             {
                 GetComponent<CircleCollider2D> ().enabled = true;
 
-                startTime = Time.time;
                 // 取消circle collider的isTrigger, 以便触发ball和border的碰撞检测
                 CircleCollider2D coll = GetComponent<CircleCollider2D>();
                 coll.isTrigger = false;
@@ -172,12 +170,9 @@ public class Ball : MonoBehaviour
 
     public void PushBallAFterWin()
     {
-        //GetComponent<BoxCollider2D>().offset = Vector2.zero;
-        //GetComponent<BoxCollider2D>().size = new Vector2(0.5f, 0.5f);
-        
-        startTime = Time.time;
         StartFall();
-        //Invoke("StartFall", 0.4f);
+        // 给球一个较大的初速度，其他部分和startfall一样
+        gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(Random.Range(-ballFallXSpeedRange, ballFallXSpeedRange) , 10.0f);
     }
 
     void Update()
