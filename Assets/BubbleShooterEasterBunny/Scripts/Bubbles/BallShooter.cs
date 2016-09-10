@@ -21,6 +21,10 @@ public class BallShooter : MonoBehaviour {
     public GameObject CatapultBall
     {
         get { return catapultBall; }
+        set
+        {
+            catapultBall = value;
+        }
     }
 
     float bottomBoarderY;  //低于此线就不能发射球
@@ -52,6 +56,10 @@ public class BallShooter : MonoBehaviour {
                 Fire();
             }
         }
+        if (GameManager.Instance.gameStatus == GameStatus.Win && catapultBall == null)
+        {
+            Reload();
+        }
     }
 
     void Fire()
@@ -60,6 +68,7 @@ public class BallShooter : MonoBehaviour {
         if (catapultBall != null && !isFreezing)
         {
             catapultBall.GetComponent<Ball>().Fire();
+            mainscript.Instance.levelData.limitAmount--;
             isFreezing = true;
             catapultBall = null;
             Reload();
@@ -85,13 +94,19 @@ public class BallShooter : MonoBehaviour {
         {
             state = BallShooterState.Reloading;
 
-            catapultBall = cartridgeBall;
-            catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
-            catapultBall.GetComponent<bouncer>().BounceToCatapult(boxCatapult.transform.position);
-
-            cartridgeBall = GameItemFactory.Instance.CreateNewBall(boxCartridge.transform.position, LevelData.ItemType.Random);
-            cartridgeBall.GetComponent<Ball>().state = Ball.BallState.Waiting;
-
+            if (cartridgeBall != null)
+            {
+                catapultBall = cartridgeBall;
+                catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
+                catapultBall.GetComponent<bouncer>().BounceToCatapult(boxCatapult.transform.position);
+            }
+            if (mainscript.Instance.levelData.limitAmount > 0)
+            {
+                cartridgeBall = GameItemFactory.Instance.CreateNewBall(boxCartridge.transform.position, LevelData.ItemType.Random);
+                cartridgeBall.GetComponent<Ball>().state = Ball.BallState.Waiting;
+            }
+            else
+                cartridgeBall = null;
 
         }
     }
@@ -100,7 +115,7 @@ public class BallShooter : MonoBehaviour {
     {
         if (GameManager.Instance.gameStatus == GameStatus.Playing)
         {
-            if (state == BallShooterState.ReadyToShoot)
+            if (state == BallShooterState.ReadyToShoot && cartridgeBall != null)
             {
                 state = BallShooterState.Swapping;
                 // stopped here
@@ -129,7 +144,10 @@ public class BallShooter : MonoBehaviour {
 
     public void OnBounceToCatapultComplete()
     {
-        catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
-        state = BallShooterState.ReadyToShoot;
+        if (catapultBall != null)
+        {
+            catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
+            state = BallShooterState.ReadyToShoot;
+        }
     }
 }

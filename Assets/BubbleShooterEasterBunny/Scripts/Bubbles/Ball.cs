@@ -65,6 +65,7 @@ public class Ball : MonoBehaviour
 
     //	private OTSpriteBatch spriteBatch = null;
     float bottomBoarderY;  //低于此线就不能发射球
+    float destroyBoarderY; //低于此线就销毁飞行的球
     bool isPaused;
     public AudioClip swish;
     public AudioClip pops;
@@ -109,10 +110,20 @@ public class Ball : MonoBehaviour
     {
         isPaused = mainscript.Instance.isPaused;
         bottomBoarderY = GameObject.Find("BottomBorder").transform.position.y; //获取生死线的Y坐标
+        destroyBoarderY = GameObject.Find("DestroyBorder").transform.position.y; //获取生死线的Y坐标
     }
 
     public void SetTypeAndColor(LevelData.ItemType itemType)
     {
+        if (itemType == LevelData.ItemType.Animal)
+        {
+            _gameItem.itemType = GameItem.ItemType.Animal;
+        }
+        else
+        {
+            
+        }
+
         color = (BallColor) itemType;
         gameObject.tag = "" + color;
 
@@ -159,11 +170,26 @@ public class Ball : MonoBehaviour
         }
     }
 
+    public void PushBallAFterWin()
+    {
+        //GetComponent<BoxCollider2D>().offset = Vector2.zero;
+        //GetComponent<BoxCollider2D>().size = new Vector2(0.5f, 0.5f);
+        
+        startTime = Time.time;
+        StartFall();
+        //Invoke("StartFall", 0.4f);
+    }
+
     void Update()
     {
         if (state == BallState.Dropped)
         {
             ballPicGO.transform.Rotate(new Vector3(0f, 0f, ballFallRotationSpeed * Time.deltaTime));
+        }
+        if (state == BallState.Flying && gameObject.transform.position.y < destroyBoarderY)
+        {
+            GameObject.Find("BallShooter").GetComponent<BallShooter>().isFreezing = false;
+            Destroy(gameObject);
         }
     }
 
@@ -250,7 +276,10 @@ public class Ball : MonoBehaviour
     {
         enabled = true;
         state = BallState.Dropped;
-        _gameItem.DisconnectFromGrid();
+
+        // 特殊情况：最后撒彩球的时候也要调用startfall，此时球都没有attach在grid上，所以需要检测一下
+        if (_gameItem.isConnectedToGrid())
+            _gameItem.DisconnectFromGrid();
 
         // 从ball layer移除，防止之后连接nearby balls
         gameObject.layer = LayerMask.NameToLayer("FallingBall");
@@ -262,7 +291,7 @@ public class Ball : MonoBehaviour
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
         gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(Random.Range(-ballFallXSpeedRange, ballFallXSpeedRange), 0f);
         ballFallRotationSpeed = Random.Range(-ballFallRotationSpeedRange, ballFallRotationSpeedRange);
-
+        gameObject.GetComponent<CircleCollider2D>().sharedMaterial.bounciness = 0.62f;
         gameObject.GetComponent<CircleCollider2D>().enabled = true;
         gameObject.GetComponent<CircleCollider2D>().isTrigger = false;
         gameObject.GetComponent<CircleCollider2D>().radius = mainscript.Instance.BallRealRadius; // 这里我们要将ball碰撞半径扩大，增加和蜘蛛碰撞效果
@@ -411,7 +440,6 @@ public class Ball : MonoBehaviour
         _gameItem.ConnectToGrid();
 
         mainscript.Instance.checkBall = gameObject;
-        mainscript.Instance.levelData.limitAmount--;
 
         Vector2 ballVelocity = GetComponent<Rigidbody2D>().velocity;
         // 删掉RigidBody2D，彻底让mesh接管运动

@@ -235,6 +235,10 @@ public class mainscript : MonoBehaviour {
     {
         if (GameManager.Instance.gameStatus == GameStatus.Playing)
         {
+            if (levelData.limitAmount < 0)
+            {
+                GameManager.Instance.GameOver();
+            }
             /*
             float stageMinYWorldSpace = platformController.curPlatformMinY;
             if (stageMinYWorldSpace < bottomBorder.transform.position.y)

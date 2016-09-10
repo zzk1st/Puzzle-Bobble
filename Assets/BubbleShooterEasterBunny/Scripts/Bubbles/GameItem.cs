@@ -36,6 +36,11 @@ public class GameItem : MonoBehaviour {
         mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
     }
 
+    public bool isConnectedToGrid()
+    {
+        return grid != null;
+    }
+
     public void DisconnectFromGrid()
     {
         gameObject.transform.parent = transform.root;
