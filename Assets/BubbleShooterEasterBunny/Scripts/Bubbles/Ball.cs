@@ -169,6 +169,16 @@ public class Ball : MonoBehaviour
         }
     }
 
+    public void PushBallAFterWin()
+    {
+        //GetComponent<BoxCollider2D>().offset = Vector2.zero;
+        //GetComponent<BoxCollider2D>().size = new Vector2(0.5f, 0.5f);
+        
+        startTime = Time.time;
+        StartFall(true);
+        //Invoke("StartFall", 0.4f);
+    }
+
     void Update()
     {
         if (state == BallState.Dropped)
@@ -261,11 +271,12 @@ public class Ball : MonoBehaviour
         currentPath.Remove(gameObject);
     }
 
-    public void StartFall()
+    public void StartFall(bool up = false)
     {
         enabled = true;
         state = BallState.Dropped;
-        _gameItem.DisconnectFromGrid();
+        if (!up)
+            _gameItem.DisconnectFromGrid();
 
         // 从ball layer移除，防止之后连接nearby balls
         gameObject.layer = LayerMask.NameToLayer("FallingBall");
@@ -275,9 +286,12 @@ public class Ball : MonoBehaviour
 
         gameObject.GetComponent<Rigidbody2D>().isKinematic = false;
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
-        gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(Random.Range(-ballFallXSpeedRange, ballFallXSpeedRange), 0f);
+        if (!up)
+            gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(Random.Range(-ballFallXSpeedRange, ballFallXSpeedRange), 0f);
+        else
+            gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(Random.Range(-ballFallXSpeedRange, ballFallXSpeedRange) , 10.0f);
         ballFallRotationSpeed = Random.Range(-ballFallRotationSpeedRange, ballFallRotationSpeedRange);
-
+        gameObject.GetComponent<CircleCollider2D>().sharedMaterial.bounciness = 0.62f;
         gameObject.GetComponent<CircleCollider2D>().enabled = true;
         gameObject.GetComponent<CircleCollider2D>().isTrigger = false;
         gameObject.GetComponent<CircleCollider2D>().radius = mainscript.Instance.BallRealRadius; // 这里我们要将ball碰撞半径扩大，增加和蜘蛛碰撞效果
@@ -415,7 +429,6 @@ public class Ball : MonoBehaviour
         _gameItem.ConnectToGrid();
 
         mainscript.Instance.checkBall = gameObject;
-        mainscript.Instance.levelData.LimitAmount--;
 
         Vector2 ballVelocity = GetComponent<Rigidbody2D>().velocity;
         // 删掉RigidBody2D，彻底让mesh接管运动

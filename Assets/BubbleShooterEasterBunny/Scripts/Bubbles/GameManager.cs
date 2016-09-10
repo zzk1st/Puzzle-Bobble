@@ -158,7 +158,8 @@ public class GameManager : MonoBehaviour
 
         foreach( GameObject item in GameObject.FindGameObjectsWithTag("Ball") )
         {
-            item.GetComponent<Ball>().StartFall();
+            if (item.GetComponent<Ball>().state == Ball.BallState.Fixed)
+                item.GetComponent<Ball>().StartFall();
                                    
         }
        // StartCoroutine( PushRestBalls() );
@@ -166,14 +167,40 @@ public class GameManager : MonoBehaviour
         Ball[] balls = mainscript.Instance.gameItemsNode.GetComponentsInChildren<Ball>();
         foreach( Ball item in balls )
         {
-            item.StartFall();
-        }
-
-        foreach( Ball item in balls )
-        {
-            if(item != null)
+            if (item.GetComponent<Ball>().state == Ball.BallState.Fixed)
                 item.StartFall();
         }
+
+        while (mainscript.Instance.levelData.LimitAmount >= 0)
+        {
+            if (mainscript.Instance.ballShooter.CatapultBall != null)
+            {
+                Ball ball = mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>();
+                mainscript.Instance.ballShooter.CatapultBall = null;
+                ball.transform.parent = mainscript.Instance.gameItemsNode.transform;
+                ball.tag = "Ball";
+                ball.PushBallAFterWin();
+            }
+            mainscript.Instance.levelData.LimitAmount--;
+            yield return new WaitForSeconds(0.33f);
+            /*if (mainscript.Instance.ballShooter.boxCatapult.GetComponent<Grid>().AttachedGameItem != null)
+            {
+                mainscript.Instance.levelData.LimitAmount--;
+                Ball ball = mainscript.Instance.ballShooter.boxCatapult.GetComponent<Grid>().AttachedGameItem.GetComponent<Ball>();
+                mainscript.Instance.ballShooter.boxCatapult.GetComponent<Grid>().AttachedGameItem = null;
+                ball.transform.parent = mainscript.Instance.gameItemsNode.transform;
+                ball.tag = "Ball";
+                ball.PushBallAFterWin();
+            }*/
+            yield return new WaitForEndOfFrame();
+        }
+
+        foreach (Ball item in balls)
+        {
+            if (item != null)
+                item.StartFall();
+        }
+
         yield return new WaitForSeconds( 2f );
         while( GameObject.FindGameObjectsWithTag( "Ball" ).Length > 0  )
         {
