@@ -148,41 +148,36 @@ public class mainscript : MonoBehaviour {
 
     void ConnectAndDestroyBalls()
     {
-        // 游戏中最重要的算法部分：检测ball是否连上，销毁，以及判断是否有其它drop的balls
-        // checkBall在ball.cs中被赋值，当ball停住的时候，就说明需要判断连接了，这个值也就被设定了
-        if (checkBall != null && GameManager.Instance.gameStatus == GameStatus.Playing)
+        // 找到同色的ball并将其销毁
+        List<GameObject> ballsToDelete = new List<GameObject>();
+        ballsToDelete.AddRange(CheckNearbySameColorBalls(checkBall));
+        // 数字模式，不开启
+        //ballsToDelete.AddRange(checkNearbyConsecutiveNumberBalls(checkBall));
+        // 去掉重复元素
+        ballsToDelete = ballsToDelete.Distinct().ToList();
+
+
+        if (ballsToDelete.Count >= 3)
         {
-            // 找到同色的ball并将其销毁
-            List<GameObject> ballsToDelete = new List<GameObject>();
-            ballsToDelete.AddRange(CheckNearbySameColorBalls(checkBall));
-            // 数字模式，不开启
-            //ballsToDelete.AddRange(checkNearbyConsecutiveNumberBalls(checkBall));
-            // 去掉重复元素
-            ballsToDelete = ballsToDelete.Distinct().ToList();
+            PlayBallExplodeAudio(ballsToDelete.Count);
+            ScoreManager.Instance.ComboCount++;
+            // 在这里调用coroutine将其销毁
+            ExplodeBalls(ballsToDelete);
+        }
+        else
+        {
+            // 如果没爆超过3个，说明球只是撞上其他球，播撞球的音效
+            // TODO: 如果撞了topBorder，周围又没有球怎么情况？
+            SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.hitBall);
+            mainscript.Instance.bounceCounter++;
+            ScoreManager.Instance.ComboCount = 0;
+        }
 
+        checkBall = null;
 
-            if (ballsToDelete.Count >= 3)
-            {
-                PlayBallExplodeAudio(ballsToDelete.Count);
-                ScoreManager.Instance.ComboCount++;
-                // 在这里调用coroutine将其销毁
-                ExplodeBalls(ballsToDelete);
-            }
-            else
-            {
-                // 如果没爆超过3个，说明球只是撞上其他球，播撞球的音效
-                // TODO: 如果撞了topBorder，周围又没有球怎么情况？
-                SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.hitBall);
-                mainscript.Instance.bounceCounter++;
-                ScoreManager.Instance.ComboCount = 0;
-            }
-
-            checkBall = null;
-
-            if (onBallsDestroyed != null)
-            {
-                onBallsDestroyed();
-            }
+        if (onBallsDestroyed != null)
+        {
+            onBallsDestroyed();
         }
     }
 
@@ -217,8 +212,13 @@ public class mainscript : MonoBehaviour {
             //			GameObject.Find("PauseButton").GetComponent<clickButton>().OnMouseDown();
         }
 
-        ConnectAndDestroyBalls();
-        DestroyDetachedGameItems();
+        // 游戏中最重要的算法部分：检测ball是否连上，销毁，以及判断是否有其它drop的balls
+        // checkBall在ball.cs中被赋值，当ball停住的时候，就说明需要判断连接了，这个值也就被设定了
+        if (checkBall != null && GameManager.Instance.gameStatus == GameStatus.Playing)
+        {
+            ConnectAndDestroyBalls();
+            DestroyDetachedGameItems();
+        }
 
         //计算进度条应显示当前分数占最高级别（三星）的百分之多少
         ProgressBarScript.Instance.UpdateDisplay((float)ScoreManager.Instance.Score / levelData.starScores[2]);

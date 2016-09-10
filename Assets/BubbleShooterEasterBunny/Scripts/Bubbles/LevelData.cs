@@ -189,15 +189,15 @@ public class LevelData
         string saveString = "";
         //Create save string
         saveString += "MISSIONTYPE " + (int)missionType;
-        saveString += "\r\n";
+        saveString += "\n";
         saveString += "SIZE " + colCount + "/" + rowCount;
-        saveString += "\r\n";
+        saveString += "\n";
         saveString += "LIMIT " + "0" + "/" + limitAmount;
-        saveString += "\r\n";
+        saveString += "\n";
         saveString += "COLOR LIMIT " + allowedColorCount;
-        saveString += "\r\n";
+        saveString += "\n";
         saveString += "STARS " + starScores[0] + "/" + starScores[1] + "/" + starScores[2];
-        saveString += "\r\n";
+        saveString += "\n";
 
         //set map data
         for (int row = 0; row < rowCount; row++)
@@ -211,7 +211,7 @@ public class LevelData
             }
             //if this row is not yet end of row, add new line symbol between rows
             if (row < (rowCount - 1))
-                saveString += "\r\n";
+                saveString += "\n";
         }
 
         if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.WindowsEditor)

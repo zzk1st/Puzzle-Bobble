@@ -200,7 +200,6 @@ public class LevelEditor : EditorWindow
 
     }
 
-
     void GUIStars()
     {
         GUILayout.BeginHorizontal();

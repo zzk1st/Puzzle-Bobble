@@ -15,6 +15,7 @@ public class Animal : MonoBehaviour {
     {
         // TODO: 球掉落，动物动画删除
         MissionManager.Instance.GainAnimalPoint();
-        Destroy(this);
+
+        Destroy(gameObject);
     }
 }
