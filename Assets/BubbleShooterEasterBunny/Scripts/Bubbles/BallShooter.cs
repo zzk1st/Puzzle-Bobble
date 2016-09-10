@@ -132,4 +132,10 @@ public class BallShooter : MonoBehaviour {
         catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
         state = BallShooterState.ReadyToShoot;
     }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(boxCatapult.transform.position, boxCatapult.transform.localScale);
+        Gizmos.DrawWireCube(boxCartridge.transform.position, boxCartridge.transform.localScale);
+    }
 }
