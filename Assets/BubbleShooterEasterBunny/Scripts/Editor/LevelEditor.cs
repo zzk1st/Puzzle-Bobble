@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEditor;
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 public class LevelEditor : EditorWindow
 {
@@ -277,7 +278,7 @@ public class LevelEditor : EditorWindow
         {
             for (int i = 0; i < levelData.map.Length; i++)
             {
-                levelData.map[i] = 0;
+                levelData.map[i] = LevelData.ItemType.Empty;
             }
             SaveLevel();
         }
@@ -290,24 +291,30 @@ public class LevelEditor : EditorWindow
         GUILayout.BeginVertical();
         GUILayout.BeginHorizontal();
 
-        for (int i = 0; i <= System.Enum.GetValues(typeof(LevelData.ItemType)).Length-1; i++)
+        for (int i = 0; i < System.Enum.GetValues(typeof(LevelData.ItemType)).Length; i++)
         {
-            if (GUILayout.Button(ballTex[i], new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
+            // Occupied只由大型GameItem的放置和消除决定，不能手动设置
+            if (i != (int) LevelData.ItemType.Occupied)
             {
-                if ((LevelData.ItemType)i != LevelData.ItemType.CenterItem)
-                    brush = (LevelData.ItemType)i;
-                else
+                if (GUILayout.Button(ballTex[i], new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
                 {
-                    levelData.missionType = MissionType.RescueGhost;
-                    levelData.map[LevelData.CenterItemRow * levelData.colCount + LevelData.CenterItemCol] = (int) LevelData.ItemType.CenterItem;
-                    SaveLevel();
+                    if ((LevelData.ItemType)i != LevelData.ItemType.CenterItem)
+                    {
+                        brush = (LevelData.ItemType)i;
+                    }
+                    else
+                    {
+                        levelData.missionType = MissionType.RescueGhost;
+                        checkAndBrushMap(LevelData.ItemType.CenterItem, LevelData.CenterItemRow, LevelData.CenterItemCol);
+                        SaveLevel();
+                    }
                 }
             }
         }
 
         if (GUILayout.Button("  ", new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
         {
-            brush = 0;
+            brush = LevelData.ItemType.Empty;
         }
         //   GUILayout.Label(" - empty", EditorStyles.boldLabel);
 
@@ -337,13 +344,13 @@ public class LevelEditor : EditorWindow
             for (int col = 0; col < levelData.colCount; col++)
             {
                 var imageButton = new object();
-                if (levelData.map[row * levelData.colCount + col] == 0)
+                if (levelData.MapData(row, col) == LevelData.ItemType.Empty)
                 {
                     imageButton = "X";
                 }
-                else if (levelData.map[row * levelData.colCount + col] != 0)
+                else if (levelData.MapData(row, col) != LevelData.ItemType.Empty)
                 {
-                    imageButton = ballTex[(int)levelData.map[row * levelData.colCount + col]];
+                    imageButton = ballTex[(int)levelData.MapData(row, col)];
                 }
 
                 if (GUILayout.Button(imageButton as Texture, new GUILayoutOption[] {
@@ -351,7 +358,7 @@ public class LevelEditor : EditorWindow
                     GUILayout.Height (50)
                 }))
                 {
-                    SetType(col, row);
+                    BrushOrRemoveItem(row, col);
                 }
             }
             GUILayout.EndHorizontal();
@@ -367,10 +374,21 @@ public class LevelEditor : EditorWindow
         GUILayout.EndVertical();
     }
 
-    void SetType(int col, int row)
+    void BrushOrRemoveItem(int row, int col)
     {
-        levelData.map[row * levelData.colCount + col] = (int) brush;
-        SaveLevel();
+        if (levelData.MapData(row, col) != LevelData.ItemType.Occupied)   // 凡事Occupied的地方一律由gameitem的center决定
+        {
+            if (brush == LevelData.ItemType.Empty)
+            {
+                RemoveItemFromMap(row, col);
+            }
+            else
+            {
+                checkAndBrushMap(brush, row, col);
+            }
+
+            SaveLevel();
+        }
     }
 
 
@@ -397,5 +415,53 @@ public class LevelEditor : EditorWindow
     public bool LoadDataFromLocal(int currentLevel)
     {
         return levelData.LoadLevel(currentLevel);
+    }
+
+    // 检测如果在row,col放置该item, 其shap是否出界，是否占其他已存在item
+    bool checkAndBrushMap(LevelData.ItemType itemType, int row, int col)
+    {
+        GameItemShapeType shapeType = levelData.ShapeType(itemType);
+        List<GridCoord> gridCoords = GameItemShapes.Instance.ShapeGridCoords(shapeType, row, col);
+        foreach(GridCoord gridCoord in gridCoords)
+        {
+            if (gridCoord.row < 0 || gridCoord.row >= levelData.rowCount ||
+                gridCoord.col < 0 || gridCoord.col >= levelData.colCount)
+            {
+                return false;
+            }
+
+            if (levelData.MapData(gridCoord.row, gridCoord.col) != LevelData.ItemType.Empty)
+            {
+                return false;
+            }
+        }
+
+        foreach(GridCoord gridCoord in gridCoords)
+        {
+            levelData.map[gridCoord.row * levelData.colCount + gridCoord.col] = LevelData.ItemType.Occupied;
+        }
+        levelData.map[row * levelData.colCount + col] = itemType;   // 最后把大型gameItem的中心刷上
+
+        return true;
+    }
+
+    // 检测如果在row,col放置该item, 其shap是否出界，是否占其他已存在item
+    bool RemoveItemFromMap(int row, int col)
+    {
+        LevelData.ItemType itemType = levelData.MapData(row, col);
+        if (itemType == LevelData.ItemType.Occupied)
+        {
+            return false;
+        }
+
+        GameItemShapeType shapeType = levelData.ShapeType(itemType);
+        List<GridCoord> gridCoords = GameItemShapes.Instance.ShapeGridCoords(shapeType, row, col);
+
+        foreach(GridCoord gridCoord in gridCoords)
+        {
+            levelData.map[gridCoord.row * levelData.colCount + gridCoord.col] = LevelData.ItemType.Empty;
+        }
+
+        return true;
     }
 }

@@ -32,7 +32,7 @@ public class GameItemFactory : MonoBehaviour {
         case LevelData.ItemType.CenterItem:
             result = CreateCenterItem(vec, itemType);
             break;
-        case LevelData.ItemType.Animal:
+        case LevelData.ItemType.AnimalSingle:
             result = CreateAnimal(vec, itemType);
             break;
         default:

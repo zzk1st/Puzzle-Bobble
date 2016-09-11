@@ -40,9 +40,28 @@ public class LevelData
         Yellow,
         Random,
         CenterItem,
-        Animal,
-        Boss
+        AnimalSingle,
+        AnimalTriangle,
+        AnimalHexagon,
+        Boss,
+        Occupied    // 这个item表示该区域是某个大型gameItem的一部分，但并不是其中心
     }
+
+    public Dictionary<ItemType, GameItemShapeType> itemShapeTypes =  new Dictionary<ItemType, GameItemShapeType>
+    {
+        {ItemType.Empty, GameItemShapeType.Single},
+        {ItemType.Blue, GameItemShapeType.Single},
+        {ItemType.Green, GameItemShapeType.Single},
+        {ItemType.Red, GameItemShapeType.Single},
+        {ItemType.Violet, GameItemShapeType.Single},
+        {ItemType.Yellow, GameItemShapeType.Single},
+        {ItemType.Random, GameItemShapeType.Single},
+        {ItemType.CenterItem, GameItemShapeType.Single},
+        {ItemType.AnimalSingle, GameItemShapeType.Single},
+        {ItemType.AnimalTriangle, GameItemShapeType.Triangle},
+        {ItemType.AnimalHexagon, GameItemShapeType.Hexagon},
+        {ItemType.Boss, GameItemShapeType.Hexagon}
+    };
 
     public static int VerticalModeMaxRows = 71;
     public static int VerticalModeMaxCols = 11;
@@ -56,7 +75,7 @@ public class LevelData
 
     // 没找到更好的解决方法，为了让编辑器能复用levelData，目前把所有成员变量设为public
     public int currentLevel;
-    public int[] map = new int[VerticalModeMaxRows * VerticalModeMaxCols];
+    public ItemType[] map = new ItemType[VerticalModeMaxRows * VerticalModeMaxCols];
     public int rowCount;
     public int colCount;
 
@@ -77,11 +96,16 @@ public class LevelData
         return (Target)stageMoveMode;
     }
 
+    public ItemType MapData(int row, int col)
+    {
+        return map[row * colCount + col];
+    }
+
     void ProcessGameDataFromString(string mapText)
     {
         string[] lines = mapText.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
         allColors.Clear();
-        map = new int[VerticalModeMaxRows * VerticalModeMaxCols];
+        map = new ItemType[VerticalModeMaxRows * VerticalModeMaxCols];
 
         int mapLine = 0;
         foreach (string line in lines)
@@ -135,7 +159,7 @@ public class LevelData
                         allColors.Add((ItemType)value);
                     }
 
-                    map[mapLine * colCount + i] = int.Parse(st[i][0].ToString());
+                    map[mapLine * colCount + i] = (LevelData.ItemType) int.Parse(st[i][0].ToString());
                 }
                 mapLine++;
             }
@@ -162,7 +186,7 @@ public class LevelData
             missionPoints = 1;
             break;
         case MissionType.SaveAnimals:
-            missionPoints = itemTypeCounts[(int)ItemType.Animal];
+            missionPoints = itemTypeCounts[(int)ItemType.AnimalSingle];
             break;
         case MissionType.BossBattle:
             missionPoints = itemTypeCounts[(int)ItemType.Boss];
@@ -204,7 +228,7 @@ public class LevelData
         {
             for (int col = 0; col < colCount; col++)
             {
-                saveString += (int)map[row * colCount + col];
+                saveString += (int) map[row * colCount + col];
                 //if this column not yet end of row, add space between them
                 if (col < (colCount - 1))
                     saveString += " ";
@@ -223,6 +247,11 @@ public class LevelData
             sw.Write(saveString);
             sw.Close();
         }
+    }
+
+    public GameItemShapeType ShapeType(ItemType itemType)
+    {
+        return itemShapeTypes[itemType];
     }
 }
 

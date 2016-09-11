@@ -28,6 +28,11 @@ public class GameItem : MonoBehaviour {
 
     public StartFallDelegate startFallFunc;
 
+    void Awake()
+    {
+        enabled = false;
+    }
+
     public void ConnectToGrid()
     {
         gameObject.transform.parent = mainscript.Instance.gameItemsNode.transform;
