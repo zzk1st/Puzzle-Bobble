@@ -90,9 +90,10 @@ public class Ball : MonoBehaviour
         }
     }
 
-
     private GameObject ballHighlightGO;
     private GameObject ballPicGO;
+
+    public PhysicsMaterial2D fallingBallMaterial;
 
     // 初始化方法，在instantiate后手动调用
     public void Initialize()
@@ -282,14 +283,18 @@ public class Ball : MonoBehaviour
         if (gameObject.GetComponent<Rigidbody2D> () == null)
             gameObject.AddComponent<Rigidbody2D>();
 
-        gameObject.GetComponent<Rigidbody2D>().isKinematic = false;
-        gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
-        gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(Random.Range(-ballFallXSpeedRange, ballFallXSpeedRange), 0f);
+        Rigidbody2D rb = gameObject.GetComponent<Rigidbody2D>();
+        rb.mass = 100f;
+        rb.isKinematic = false;
+        rb.gravityScale = 1;
+        rb.velocity = new Vector2(Random.Range(-ballFallXSpeedRange, ballFallXSpeedRange), 0f);
         ballFallRotationSpeed = Random.Range(-ballFallRotationSpeedRange, ballFallRotationSpeedRange);
-        gameObject.GetComponent<CircleCollider2D>().sharedMaterial.bounciness = 0.62f;
-        gameObject.GetComponent<CircleCollider2D>().enabled = true;
-        gameObject.GetComponent<CircleCollider2D>().isTrigger = false;
-        gameObject.GetComponent<CircleCollider2D>().radius = mainscript.Instance.BallRealRadius; // 这里我们要将ball碰撞半径扩大，增加和蜘蛛碰撞效果
+
+        CircleCollider2D coll = gameObject.GetComponent<CircleCollider2D>();
+        coll.sharedMaterial = fallingBallMaterial;
+        coll.enabled = true;
+        coll.isTrigger = false;
+        coll.radius = mainscript.Instance.BallRealRadius; // 这里我们要将ball碰撞半径扩大，增加和蜘蛛碰撞效果
     }
 
     void PlayHitAnim()

@@ -151,11 +151,11 @@ MonoBehaviour:
   color: 0
   state: 0
   LaunchForce: 500
-  startTime: 0
   dropFadeTime: 0.5
   swish: {fileID: 0}
   pops: {fileID: 0}
   join: {fileID: 0}
+  fallingBallMaterial: {fileID: 6200000, guid: 279503c44e4964e82b941c29c069319d, type: 2}
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -179,7 +179,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemType: 0
-  grid: {fileID: 0}
+  shapeType: 0
+  centerGrid: {fileID: 0}
 --- !u!212 &21233580
 SpriteRenderer:
   m_ObjectHideFlags: 1
