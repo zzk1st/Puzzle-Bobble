@@ -51,7 +51,7 @@ public class Ball : MonoBehaviour
 
     public Grid grid
     {
-        get { return _gameItem.grid; }
+        get { return _gameItem.centerGrid; }
     }
 
     public BallState state;

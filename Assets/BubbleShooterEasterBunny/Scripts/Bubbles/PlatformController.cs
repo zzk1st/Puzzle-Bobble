@@ -126,9 +126,10 @@ public class PlatformController : MonoBehaviour
 
     void UpdateLocalMinYFromSingleBall(GameItem gameItem)
     {
-        if (gameItem.grid.localPos.y < _curFixedBallLocalMinY)
+        // TODO: 这里有一个bug，我们在这里只假设gameItem是小item，没有考虑大item的情况
+        if (gameItem.centerGrid.localPos.y < _curFixedBallLocalMinY)
         {
-            _curFixedBallLocalMinY = gameItem.grid.localPos.y;
+            _curFixedBallLocalMinY = gameItem.centerGrid.localPos.y;
         }
     }
 

@@ -55,29 +55,7 @@ public class Grid : MonoBehaviour
     {
     }
 
-    public void ConnectGameItem(GameObject gameItem)
-    {
-        if (attachedGameItem != null)
-        {
-            throw new System.AccessViolationException("尝试链接一个已经链接的grid!");
-        }
-
-        attachedGameItem = gameItem;
-        gameItem.GetComponent<GameItem>().grid = this;
-    }
-
-    public void DisonnectGameItem()
-    {
-        if (attachedGameItem.GetComponent<GameItem>().grid != this)
-        {
-            throw new System.AccessViolationException("Disconnect grid不是本grid！");
-        }
-
-        attachedGameItem.GetComponent<GameItem>().grid = null;
-        attachedGameItem = null;
-    }
-
-    public void connectAdjacentGrids()
+    public void ConnectAdjacentGrids()
     {
         int gridLayer = LayerMask.NameToLayer("Grid");
         Collider2D[] adjacentGridColls = Physics2D.OverlapCircleAll(transform.position, transform.localScale.x, 1 << gridLayer);

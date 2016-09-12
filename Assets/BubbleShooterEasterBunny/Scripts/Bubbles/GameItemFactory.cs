@@ -6,7 +6,9 @@ public class GameItemFactory : MonoBehaviour {
 
     public GameObject ballPrefab;
     public GameObject centerItemPrefab;
-    public GameObject animalPrefab;
+    public GameObject animalSinglePrefab;
+    public GameObject animalTrianglePrefab;
+    public GameObject animalHexagonPrefab;
 
     void Awake()
     {
@@ -20,6 +22,7 @@ public class GameItemFactory : MonoBehaviour {
         switch(itemType)
         {
         case LevelData.ItemType.Empty:
+        case LevelData.ItemType.Occupied:
             break;
         case LevelData.ItemType.Blue:
         case LevelData.ItemType.Green:
@@ -33,6 +36,8 @@ public class GameItemFactory : MonoBehaviour {
             result = CreateCenterItem(vec, itemType);
             break;
         case LevelData.ItemType.AnimalSingle:
+        case LevelData.ItemType.AnimalTriangle:
+        case LevelData.ItemType.AnimalHexagon:
             result = CreateAnimal(vec, itemType);
             break;
         default:
@@ -116,6 +121,22 @@ public class GameItemFactory : MonoBehaviour {
 
     public GameObject CreateAnimal(Vector3 vec, LevelData.ItemType itemType)
     {
+        GameObject animalPrefab;
+        switch(itemType)
+        {
+        case LevelData.ItemType.AnimalSingle:
+            animalPrefab = animalSinglePrefab;
+            break;
+        case LevelData.ItemType.AnimalTriangle:
+            animalPrefab = animalTrianglePrefab;
+            break;
+        case LevelData.ItemType.AnimalHexagon:
+            animalPrefab = animalHexagonPrefab;
+            break;
+        default:
+            throw new System.AccessViolationException("未知的AnimalType!");
+        }
+
         GameObject animal = Instantiate(animalPrefab, transform.position, transform.rotation) as GameObject;
         animal.transform.position = vec;
         animal.GetComponent<GameItem>().ConnectToGrid();

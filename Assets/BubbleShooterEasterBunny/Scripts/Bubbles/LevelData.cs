@@ -151,7 +151,7 @@ public class LevelData
                 string[] st = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < st.Length; i++)
                 {
-                    int value = int.Parse(st[i][0].ToString());
+                    int value = int.Parse(st[i]);
                     itemTypeCounts[value]++;
                     int ballColorCount = Enum.GetNames(typeof(BallColor)).Length;
                     if (!allColors.Contains((ItemType)value) && value > 0 && value <= ballColorCount)
@@ -159,7 +159,7 @@ public class LevelData
                         allColors.Add((ItemType)value);
                     }
 
-                    map[mapLine * colCount + i] = (LevelData.ItemType) int.Parse(st[i][0].ToString());
+                    map[mapLine * colCount + i] = (LevelData.ItemType) value;
                 }
                 mapLine++;
             }
@@ -186,7 +186,9 @@ public class LevelData
             missionPoints = 1;
             break;
         case MissionType.SaveAnimals:
-            missionPoints = itemTypeCounts[(int)ItemType.AnimalSingle];
+            missionPoints = itemTypeCounts[(int)ItemType.AnimalSingle] + 
+                            itemTypeCounts[(int)ItemType.AnimalTriangle] +
+                            itemTypeCounts[(int)ItemType.AnimalHexagon];
             break;
         case MissionType.BossBattle:
             missionPoints = itemTypeCounts[(int)ItemType.Boss];
