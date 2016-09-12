@@ -284,7 +284,7 @@ public class Ball : MonoBehaviour
             gameObject.AddComponent<Rigidbody2D>();
 
         Rigidbody2D rb = gameObject.GetComponent<Rigidbody2D>();
-        rb.mass = 100f;
+        rb.mass = 1f;
         rb.isKinematic = false;
         rb.gravityScale = 1;
         rb.velocity = new Vector2(Random.Range(-ballFallXSpeedRange, ballFallXSpeedRange), 0f);

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class BallShooter : MonoBehaviour {
     public enum BallShooterState {
@@ -15,8 +16,8 @@ public class BallShooter : MonoBehaviour {
     public GameObject rootBall;
     public bool isFreezing;
 
-    GameObject catapultBall;
-    GameObject cartridgeBall;
+    private GameObject catapultBall;
+    private GameObject cartridgeBall;
 
     public GameObject CatapultBall
     {
@@ -40,12 +41,12 @@ public class BallShooter : MonoBehaviour {
 
     public void Initialize()
     {
-        cartridgeBall = GameItemFactory.Instance.CreateNewBall(boxCartridge.transform.position, LevelData.ItemType.Random);
-        cartridgeBall.GetComponent<Ball>().state = Ball.BallState.Waiting;
+        mainscript.Instance.UpdateColorsInGame();
+        CreateCartridgeBall();
         Reload();
     }
 
-    public void Update()
+    void Update()
     {
         if (GameManager.Instance.gameStatus == GameStatus.Playing)
         {
@@ -76,6 +77,21 @@ public class BallShooter : MonoBehaviour {
         }
     }
 
+    public void UpdateBallColors()
+    {
+        if (catapultBall != null && !mainscript.Instance.curStageColors.Contains(catapultBall.GetComponent<Ball>().color))
+        {
+            Destroy(catapultBall);
+            CreateCatapultBall(false);
+        }
+
+        if (cartridgeBall != null && !mainscript.Instance.curStageColors.Contains(cartridgeBall.GetComponent<Ball>().color))
+        {
+            Destroy(cartridgeBall);
+            CreateCartridgeBall(false);
+        }
+    }
+
     public void ChangeRadius(float r)
     {
         if (rootBall == null) return;
@@ -84,6 +100,19 @@ public class BallShooter : MonoBehaviour {
             if (ball.gameObject.GetComponent<GameItem>().itemType == GameItem.ItemType.Ball)
                 ball.gameObject.GetComponent<CircleCollider2D>().radius = r;
         }
+    }
+
+    void CreateCatapultBall(bool playAnimation = true)
+    {
+        catapultBall = GameItemFactory.Instance.CreateNewBall(boxCatapult.transform.position, playAnimation);
+        catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
+
+    }
+
+    void CreateCartridgeBall(bool playAnimation = true)
+    {
+        cartridgeBall = GameItemFactory.Instance.CreateNewBall(boxCartridge.transform.position, playAnimation);
+        cartridgeBall.GetComponent<Ball>().state = Ball.BallState.Waiting;
     }
 
     /// <summary>
@@ -103,8 +132,7 @@ public class BallShooter : MonoBehaviour {
             }
             if (mainscript.Instance.levelData.limitAmount > 0)
             {
-                cartridgeBall = GameItemFactory.Instance.CreateNewBall(boxCartridge.transform.position, LevelData.ItemType.Random);
-                cartridgeBall.GetComponent<Ball>().state = Ball.BallState.Waiting;
+                CreateCartridgeBall();
             }
             else
                 cartridgeBall = null;

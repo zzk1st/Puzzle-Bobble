@@ -55,7 +55,7 @@ public class mainscript : MonoBehaviour {
 
     public int countOfPreparedToDestroy;
 
-    public static List<BallColor> curStageColors = new List<BallColor>();
+    public List<BallColor> curStageColors = new List<BallColor>();
 
     private int TargetCounter;
 
@@ -262,42 +262,22 @@ public class mainscript : MonoBehaviour {
             DropGameItems(gameItemsToDrop);
         }
 
-        // 下面这几步是为了让新产生的球不再有以前没有出现过的颜色
-        // TODO: 重新写下面两个方法
-        GetColorsInGame();
-        SetColorsForNewBall();
+        UpdateColorsInGame();
+        ballShooter.UpdateBallColors();
     }
 
-    public void SetColorsForNewBall()
+    public void UpdateColorsInGame()
     {
-        // TODO: 重新使用这行代码
-        /*
-        GameObject ball = null;
-        if( boxCatapult.GetComponent<Grid>().Busy != null && colorsDict .Count>0)
-        {
-            ball = boxCatapult.GetComponent<Grid>().Busy;
-            BallColor color = ball.GetComponent<ColorBallScript>().mainColor;
-            if( !colorsDict.ContainsValue( color ) )
-            {
-                ball.GetComponent<ColorBallScript>().SetColor( (BallColor)mainscript.colorsDict[Random.Range( 0, mainscript.colorsDict.Count )] ); 
-            }
-        }
-        */
-    }
+        curStageColors.Clear();
 
-    public void GetColorsInGame()
-    {
-        GameObject[] allGameObjects = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
-
-        foreach(GameObject obj in allGameObjects)
+        foreach(Transform gameItemTransform in gameItemsNode.transform)
         {
-            if (obj.layer == LayerMask.NameToLayer("FixedBall"))
+            Ball ball = gameItemTransform.gameObject.GetComponent<Ball>();
+            if (ball != null)
             {
-                Ball ball = obj.GetComponent<Ball>();
-                if (ball != null)
+                if (!curStageColors.Contains(ball.color))
                 {
-                    if (!curStageColors.Contains(ball.color))
-                        curStageColors.Add(ball.color);
+                    curStageColors.Add(ball.color);
                 }
             }
         }

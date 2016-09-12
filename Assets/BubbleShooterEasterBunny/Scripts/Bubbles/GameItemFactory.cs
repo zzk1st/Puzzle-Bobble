@@ -48,15 +48,18 @@ public class GameItemFactory : MonoBehaviour {
         return result;
     }
 
-    public GameObject CreateNewBall(Vector3 vec, LevelData.ItemType itemType = LevelData.ItemType.Random)
+    public GameObject CreateNewBall(Vector3 vec, bool playAnimation)
     {
         GameObject ball = null;
 
-        // 获取当前关卡颜色，并生成随机颜色
-        if (itemType == LevelData.ItemType.Random)
+        LevelData.ItemType itemType;
+        if (GameManager.Instance.gameStatus == GameStatus.Win)
         {
-            mainscript.Instance.GetColorsInGame();
-            itemType = (LevelData.ItemType)mainscript.curStageColors[UnityEngine.Random.Range(0, mainscript.curStageColors.Count)];
+            itemType = mainscript.Instance.levelData.ballColors[Random.Range(0, mainscript.Instance.levelData.ballColors.Count)];
+        }
+        else
+        {
+            itemType = (LevelData.ItemType)mainscript.Instance.curStageColors[Random.Range(0, mainscript.Instance.curStageColors.Count)];
         }
 
         ball = Instantiate(ballPrefab, transform.position, transform.rotation) as GameObject;
@@ -76,8 +79,11 @@ public class GameItemFactory : MonoBehaviour {
         Rigidbody2D rig = ball.AddComponent<Rigidbody2D>();
         ball.GetComponent<CircleCollider2D>().enabled = false;
         rig.gravityScale = 0;
-        if( GameManager.Instance.gameStatus == GameStatus.Playing )
+
+        if(playAnimation)
+        {
             ball.GetComponent<Animation>().Play();
+        }
 
         return ball;
     }
@@ -87,7 +93,7 @@ public class GameItemFactory : MonoBehaviour {
         GameObject ball = null;
 
         if( itemType == LevelData.ItemType.Random)
-            itemType = (LevelData.ItemType) mainscript.Instance.levelData.ballColors[UnityEngine.Random.Range(1, mainscript.Instance.levelData.ballColors.Count)];
+            itemType = (LevelData.ItemType) mainscript.Instance.levelData.ballColors[UnityEngine.Random.Range(0, mainscript.Instance.levelData.ballColors.Count)];
 
         ball = Instantiate(ballPrefab, transform.position, transform.rotation) as GameObject;
         ball.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
