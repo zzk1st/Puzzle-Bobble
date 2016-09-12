@@ -117,6 +117,8 @@ public class mainscript : MonoBehaviour {
         //RandomizeWaitTime();
         ScoreManager.Instance.Score = 0;
         if (PlayerPrefs.GetInt("noSound") == 1) noSound = true;
+
+        StageLoader.Load();
     }
 
     IEnumerator ShowArrows()

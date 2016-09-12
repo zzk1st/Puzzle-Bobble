@@ -85,7 +85,7 @@ public class LevelData
     public int missionPoints;
     public int limitAmount = 40;
 
-    public List<ItemType> allColors = new List<ItemType>();
+    public List<ItemType> ballColors = new List<ItemType>();
     public int allowedColorCount;
     public int[] starScores = new int[3];
     private int[] itemTypeCounts = new int[System.Enum.GetValues(typeof(ItemType)).Length];
@@ -104,7 +104,7 @@ public class LevelData
     void ProcessGameDataFromString(string mapText)
     {
         string[] lines = mapText.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-        allColors.Clear();
+        ballColors.Clear();
         map = new ItemType[VerticalModeMaxRows * VerticalModeMaxCols];
 
         int mapLine = 0;
@@ -154,9 +154,9 @@ public class LevelData
                     int value = int.Parse(st[i]);
                     itemTypeCounts[value]++;
                     int ballColorCount = Enum.GetNames(typeof(BallColor)).Length;
-                    if (!allColors.Contains((ItemType)value) && value > 0 && value <= ballColorCount)
+                    if (!ballColors.Contains((ItemType)value) && value > 0 && value <= ballColorCount)
                     {
-                        allColors.Add((ItemType)value);
+                        ballColors.Add((ItemType)value);
                     }
 
                     map[mapLine * colCount + i] = (LevelData.ItemType) value;
@@ -166,11 +166,11 @@ public class LevelData
         }
 
         // 根据文件创建该level全部颜色表
-        if (allColors.Count == 0)
+        if (ballColors.Count == 0)
         {
             for (int i = 1; i <= allowedColorCount; ++i)
             {
-                allColors.Add((ItemType) i);
+                ballColors.Add((ItemType) i);
             }
         }
     }

@@ -5,10 +5,10 @@ using System.Linq;
 using System;
 using UnityEngine.SceneManagement;
 
-public class CreatorBall : MonoBehaviour
+public class StageLoader
 {
     // Use this for initialization
-    void Start()
+    public static void Load()
     {
         mainscript.Instance.levelData.LoadLevel(mainscript.Instance.currentLevel);
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
@@ -31,7 +31,7 @@ public class CreatorBall : MonoBehaviour
         // TODO: 写一个iniitalizeBorders(), 负责border的初始化创建，注意要创建bottom border
     }
 
-    public void LoadMap()
+    static void LoadMap()
     {
         LevelData levelData = mainscript.Instance.levelData;
 

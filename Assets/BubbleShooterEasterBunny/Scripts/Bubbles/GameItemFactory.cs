@@ -87,7 +87,7 @@ public class GameItemFactory : MonoBehaviour {
         GameObject ball = null;
 
         if( itemType == LevelData.ItemType.Random)
-            itemType = (LevelData.ItemType) mainscript.Instance.levelData.allColors[UnityEngine.Random.Range(1, mainscript.Instance.levelData.allColors.Count-1)];
+            itemType = (LevelData.ItemType) mainscript.Instance.levelData.ballColors[UnityEngine.Random.Range(1, mainscript.Instance.levelData.ballColors.Count)];
 
         ball = Instantiate(ballPrefab, transform.position, transform.rotation) as GameObject;
         ball.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
