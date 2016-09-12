@@ -2848,7 +2848,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ballPrefab: {fileID: 100000, guid: 7e53458cd03f1724f9442cb26f3a53a1, type: 2}
   centerItemPrefab: {fileID: 185498, guid: 681dec1489c6349699a4a694785fe695, type: 2}
-  animalPrefab: {fileID: 199126, guid: bdaaba8e6bcbc408993c6fe8f127eda1, type: 2}
+  animalSinglePrefab: {fileID: 199126, guid: bdaaba8e6bcbc408993c6fe8f127eda1, type: 2}
+  animalTrianglePrefab: {fileID: 116314, guid: 22f20f970f2fa4e30b25b27b4dd4a3b7, type: 2}
+  animalHexagonPrefab: {fileID: 193736, guid: 30538c41c087342e6b3d94bd9a13b2fc, type: 2}
 --- !u!1 &151206853
 GameObject:
   m_ObjectHideFlags: 0
@@ -3024,7 +3026,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: m_RootOrder
-      value: 16
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8200000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: panLevelCustomCurve.m_RotationOrder
@@ -3967,7 +3969,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.size
-      value: 10
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 402878, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: m_LocalPosition.x
@@ -3999,7 +4001,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 402878, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: m_RootOrder
-      value: 14
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.data[7]
@@ -4009,37 +4011,37 @@ Prefab:
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.data[8]
       value: 
-      objectReference: {fileID: 21300000, guid: 2c287bacbf8a03a419eea29290b502e7,
+      objectReference: {fileID: 21300000, guid: e32ea8241659a4b2da1c19bd52596b92,
         type: 3}
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.data[9]
       value: 
-      objectReference: {fileID: 21300000, guid: 2c287bacbf8a03a419eea29290b502e7,
+      objectReference: {fileID: 21300000, guid: 53bbd628fab4f48ecaaf402f6604a395,
         type: 3}
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.data[1]
       value: 
-      objectReference: {fileID: 21300002, guid: a1b80f395d35f4e6cb4a268edb9d9b20,
+      objectReference: {fileID: 21300000, guid: c9d38b47f8b3c2e4faa2ef03c763dea6,
         type: 3}
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.data[2]
       value: 
-      objectReference: {fileID: 21300002, guid: 7d705963bd11341ea908a0e9b8e413e0,
+      objectReference: {fileID: 21300000, guid: c16eb65f597e8494abe11e23663f5f4b,
         type: 3}
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.data[3]
       value: 
-      objectReference: {fileID: 21300002, guid: 5a5df168313d144bead6cfe2010a7e16,
+      objectReference: {fileID: 21300000, guid: 252bd4574ae1d9a4aa39f00a3ac1332a,
         type: 3}
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.data[4]
       value: 
-      objectReference: {fileID: 21300002, guid: ba03296062f2646f5a1cb5efc0e99a46,
+      objectReference: {fileID: 21300000, guid: 106bd95171c358c45a7100c11e49b91c,
         type: 3}
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.data[5]
       value: 
-      objectReference: {fileID: 21300002, guid: 2dd7d7ec5a91544688d2c35c1c19bf3d,
+      objectReference: {fileID: 21300000, guid: bdd748563cec13f46b8731df24007ef7,
         type: 3}
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.data[6]
@@ -4049,7 +4051,22 @@ Prefab:
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.data[0]
       value: 
-      objectReference: {fileID: 21300000, guid: 78b0f80a4614d2743b411a365819b140,
+      objectReference: {fileID: 21300000, guid: 4ab60c3bfea70ad468726dcebcceb555,
+        type: 3}
+    - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
+      propertyPath: sprites.Array.data[10]
+      value: 
+      objectReference: {fileID: 21300000, guid: c5f2073c4abb64363a5ea148290391b2,
+        type: 3}
+    - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
+      propertyPath: sprites.Array.data[11]
+      value: 
+      objectReference: {fileID: 21300000, guid: 2c287bacbf8a03a419eea29290b502e7,
+        type: 3}
+    - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
+      propertyPath: sprites.Array.data[12]
+      value: 
+      objectReference: {fileID: 21300000, guid: b68714fe3bfcf5e4eaf556aed7a7aa7f,
         type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
@@ -7812,7 +7829,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22467632, guid: c7142a40a2133bd4685984d1f85e750c, type: 2}
       propertyPath: m_RootOrder
-      value: 18
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 22467632, guid: c7142a40a2133bd4685984d1f85e750c, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -9050,7 +9067,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 484928, guid: 7d028e4fec77cab4e926e4b65414b360, type: 2}
       propertyPath: m_RootOrder
-      value: 15
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 8280496, guid: 7d028e4fec77cab4e926e4b65414b360, type: 2}
       propertyPath: m_audioClip
@@ -12498,7 +12515,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22477102, guid: 12244117eb5901f4fac41d4006a6f471, type: 2}
       propertyPath: m_RootOrder
-      value: 17
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 22477102, guid: 12244117eb5901f4fac41d4006a6f471, type: 2}
       propertyPath: m_AnchoredPosition.x

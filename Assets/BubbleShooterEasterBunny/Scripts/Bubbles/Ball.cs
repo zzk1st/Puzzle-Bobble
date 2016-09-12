@@ -51,7 +51,7 @@ public class Ball : MonoBehaviour
 
     public Grid grid
     {
-        get { return _gameItem.grid; }
+        get { return _gameItem.centerGrid; }
     }
 
     public BallState state;
@@ -114,7 +114,7 @@ public class Ball : MonoBehaviour
 
     public void SetTypeAndColor(LevelData.ItemType itemType)
     {
-        if (itemType == LevelData.ItemType.Animal)
+        if (itemType == LevelData.ItemType.AnimalSingle)
         {
             _gameItem.itemType = GameItem.ItemType.Animal;
         }

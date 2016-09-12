@@ -103,19 +103,55 @@ public class GridManager : MonoBehaviour {
         return resultGrid;
     }
 
-    public void ConnectGameItemToGrid(GameObject gameItem)
+    public void ConnectGameItemToGrid(GameObject gameItemGO)
     {
         EnableGridColliders();
 
-        Grid closestGrid = FindClosestGridFromGameItem(gameItem);
-        closestGrid.GetComponent<Grid>().ConnectGameItem(gameItem);
+        GameItem gameItem = gameItemGO.GetComponent<GameItem>();
+        Grid gridFound = FindClosestGridFromGameItem(gameItemGO);
+        GameItemShapeType shapeType = gameItem.shapeType;
+        List<GridCoord> shapeGridCoords = GameItemShapes.Instance.ShapeGridCoords(shapeType, gridFound.Row, gridFound.Col);
+
+        // 我们不用检查边界，因为unity会自己抛出异常
+        foreach(GridCoord gridCoord in shapeGridCoords)
+        {
+            Grid grid = Grid(gridCoord.row, gridCoord.col).GetComponent<Grid>();
+            if (grid.AttachedGameItem != null)
+            {
+                throw new System.AccessViolationException("尝试链接一个已经链接的grid!");
+            }
+            else
+            {
+                grid.AttachedGameItem = gameItemGO;
+            }
+        }
+
+        gameItem.centerGrid = gridFound;
 
         DisableGridColliders();
     }
 
-    public void DisconnectGameItemToGrid(GameObject gameItem)
+    public void DisconnectGameItemToGrid(GameObject gameItemGO)
     {
-        gameItem.GetComponent<GameItem>().grid.DisonnectGameItem();
+        GameItem gameItem = gameItemGO.GetComponent<GameItem>();
+        GameItemShapeType shapeType = gameItem.shapeType;
+        List<GridCoord> shapeGridCoords = GameItemShapes.Instance.ShapeGridCoords(shapeType, gameItem.centerGrid.Row, gameItem.centerGrid.Col);
+
+        // 我们不用检查边界，因为unity会自己抛出异常
+        foreach(GridCoord gridCoord in shapeGridCoords)
+        {
+            Grid grid = Grid(gridCoord.row, gridCoord.col).GetComponent<Grid>();
+            if (grid.AttachedGameItem != gameItemGO)
+            {
+                throw new System.AccessViolationException("Disconnect grid不是本grid！");
+            }
+            else
+            {
+                grid.AttachedGameItem = null;
+            }
+        }
+
+        gameItem.centerGrid = null;
     }
 
     private void ConnectAllAdjacentGrids()
@@ -123,7 +159,7 @@ public class GridManager : MonoBehaviour {
         EnableGridColliders();
         foreach(GameObject grid in grids)
         {
-            grid.GetComponent<Grid>().connectAdjacentGrids();
+            grid.GetComponent<Grid>().ConnectAdjacentGrids();
         }
         DisableGridColliders();
     }
@@ -146,7 +182,7 @@ public class GridManager : MonoBehaviour {
 
     public List<GameObject> GetAdjacentGameItems(GameObject gameItem)
     {
-        return gameItem.GetComponent<GameItem>().grid.GetAdjacentGameItems();
+        return gameItem.GetComponent<GameItem>().centerGrid.GetAdjacentGameItems();
     }
 
     public GameObject Grid(int row, int col)

@@ -23,10 +23,17 @@ public class GameItem : MonoBehaviour {
     }
 
     public ItemType itemType;
+    public GameItemShapeType shapeType;
+
     [HideInInspector]
-    public Grid grid;
+    public Grid centerGrid;
 
     public StartFallDelegate startFallFunc;
+
+    void Awake()
+    {
+        enabled = false;
+    }
 
     public void ConnectToGrid()
     {
@@ -38,7 +45,7 @@ public class GameItem : MonoBehaviour {
 
     public bool isConnectedToGrid()
     {
-        return grid != null;
+        return centerGrid != null;
     }
 
     public void DisconnectFromGrid()

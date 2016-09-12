@@ -13,7 +13,7 @@ public class CenterItem : MonoBehaviour {
     void onBallsDestroyed()
     {
         bool adjacentGridsEmpty = true;
-        foreach(Grid adjacentGrid in _gameItem.grid.AdjacentGrids)
+        foreach(Grid adjacentGrid in _gameItem.centerGrid.AdjacentGrids)
         {
             if (adjacentGrid.AttachedGameItem != null)
             {
