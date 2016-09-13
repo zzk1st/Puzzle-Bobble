@@ -372,7 +372,7 @@ MonoBehaviour:
   gridsNode: {fileID: 665245363}
   gameItemsNode: {fileID: 1817034612}
   BallColliderRadius: 0.2
-  LineColliderRadius: 0.33
+  LineColliderRadius: 0.4
   BallRealRadius: 0.33
   topBorder: {fileID: 1502360742}
   lastStopBallPos: {x: 0, y: 0, z: 0}
@@ -13420,7 +13420,12 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 12001212, guid: 81d6cd4e77d05e742a54544437b5a098, type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 12001212, guid: 81d6cd4e77d05e742a54544437b5a098, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 81d6cd4e77d05e742a54544437b5a098, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &2008184778
