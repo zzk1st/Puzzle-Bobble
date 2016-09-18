@@ -30,6 +30,7 @@ TagManager:
   - dir_indicator
   - Mesh
   - Shadow
+  - SingleLevel
   layers:
   - Default
   - TransparentFX
