@@ -31,6 +31,7 @@ TagManager:
   - Mesh
   - Shadow
   - fire
+  - SingleLevel
   layers:
   - Default
   - TransparentFX
