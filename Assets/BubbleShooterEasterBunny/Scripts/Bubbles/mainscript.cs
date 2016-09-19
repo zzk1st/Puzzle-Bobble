@@ -86,6 +86,8 @@ public class mainscript : MonoBehaviour {
     public float BallRealRadius;
 
     public GameObject topBorder;
+    public GameObject leftBorder;
+    public GameObject rightBorder;
 
     public Vector3 lastStopBallPos;     // Last position of ball before it stops
 
@@ -119,6 +121,18 @@ public class mainscript : MonoBehaviour {
         if (PlayerPrefs.GetInt("noSound") == 1) noSound = true;
 
         StageLoader.Load();
+        InitializeTopBorder();
+    }
+
+    void InitializeTopBorder()
+    {
+        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
+        {
+            float topBorderOffset = 0.35f;   // 这个值是grid高度一半，用来将topborder置于0排最上边
+            // 这里我们要将topborder移动到grid下，这样border可以和grid一起移动
+            topBorder.transform.parent = mainscript.Instance.gridsNode.transform;
+            topBorder.transform.localPosition = new Vector3(0f, topBorderOffset, 0f);
+        }
     }
 
     IEnumerator ShowArrows()

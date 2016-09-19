@@ -3,12 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class BallShooter : MonoBehaviour {
-    public enum BallShooterState {
+    public enum BallShooterState
+    {
         ReadyToShoot,
         Reloading,
         Swapping,
         Freezing
-    };
+    }
+
+    public enum StageCollidersMode
+    {
+        AimMode,    // 用辅助线瞄准时候用，collider会根据LineRadius计算
+        FireMode    // 在发射球时候用，真正进行碰撞检测
+    }
 
     public BallShooterState state;
     public GameObject boxCatapult;
@@ -30,6 +37,10 @@ public class BallShooter : MonoBehaviour {
 
     float bottomBoarderY;  //低于此线就不能发射球
 
+    public GameObject topBorder;
+    public GameObject leftBorder;
+    public GameObject rightBorder;
+
     UnityEngine.EventSystems.EventSystem currentES;
 	// Use this for initialization
 	void Start ()
@@ -41,6 +52,7 @@ public class BallShooter : MonoBehaviour {
 
     public void Initialize()
     {
+        SetStageCollidersMode(StageCollidersMode.AimMode);
         mainscript.Instance.UpdateColorsInGame();
         CreateCartridgeBall();
         Reload();
@@ -66,7 +78,8 @@ public class BallShooter : MonoBehaviour {
 
     void Fire()
     {
-        ChangeRadius(mainscript.Instance.BallColliderRadius);
+        SetStageCollidersMode(StageCollidersMode.FireMode);
+
         if (catapultBall != null && !isFreezing)
         {
             catapultBall.GetComponent<Ball>().Fire();
@@ -92,7 +105,38 @@ public class BallShooter : MonoBehaviour {
         }
     }
 
-    public void ChangeRadius(float r)
+    void SetBordersOnAimMode()
+    {
+        GameObject topRowLeftGrid = GridManager.Instance.Grid(0, 0);
+        leftBorder.transform.position = new Vector3(topRowLeftGrid.transform.position.x, 0f, 0f);
+        GameObject topRowRightGrid = GridManager.Instance.Grid(0, GridManager.Instance.colCount - 1);
+        rightBorder.transform.position = new Vector3(topRowRightGrid.transform.position.x, 0f, 0f);
+    }
+
+    void SetBordersOnFireMode()
+    {
+        float borderOffset = mainscript.Instance.BallColliderRadius;
+        GameObject topRowLeftGrid = GridManager.Instance.Grid(0, 0);
+        leftBorder.transform.position = new Vector3(topRowLeftGrid.transform.position.x - borderOffset, 0f, 0f);
+        GameObject topRowRightGrid = GridManager.Instance.Grid(0, GridManager.Instance.colCount - 1);
+        rightBorder.transform.position = new Vector3(topRowRightGrid.transform.position.x + borderOffset, 0f, 0f);
+    }
+
+    public void SetStageCollidersMode(StageCollidersMode mode)
+    {
+        if (mode == StageCollidersMode.AimMode)
+        {
+            ChangeRadius(mainscript.Instance.LineColliderRadius);
+            SetBordersOnAimMode();
+        }
+        else
+        {
+            ChangeRadius(mainscript.Instance.BallColliderRadius);
+            SetBordersOnFireMode();
+        }
+    }
+
+    void ChangeRadius(float r)
     {
         if (rootBall == null) return;
         foreach (Transform ball in rootBall.transform)
