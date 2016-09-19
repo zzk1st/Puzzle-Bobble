@@ -108,6 +108,12 @@ public class ScoreManager : MonoBehaviour {
         return score;
     }
 
+    public int UpdateBugScore(int val)
+    {
+        Score += val;
+        return val;
+    }
+
     // 在Combo时候跳出来的text
     public void PopupComboScore(int value, Vector3 pos)
     {

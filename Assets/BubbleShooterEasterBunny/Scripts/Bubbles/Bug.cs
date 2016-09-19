@@ -91,7 +91,8 @@ public class Bug : MonoBehaviour {
             if( mainscript.Instance.bugSounds < 5)
                 SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.bug );
             col.collider.GetComponent<Ball>().HitBug++;
-            ScoreManager.Instance.PopupComboScore( col.collider.GetComponent<Ball>().HitBug * score * (color +1), transform.position);
+            int bugScore = ScoreManager.Instance.UpdateBugScore(col.collider.GetComponent<Ball>().HitBug * score * (color + 1));
+            ScoreManager.Instance.PopupComboScore( bugScore, transform.position);
             StartCoroutine( StartAnim( col.collider.transform.position ) );
             if( color == 2 )
             {SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[5]);
