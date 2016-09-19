@@ -30,7 +30,11 @@ TagManager:
   - dir_indicator
   - Mesh
   - Shadow
+<<<<<<< HEAD
   - fire
+=======
+  - SingleLevel
+>>>>>>> a9d77e1b0dc440073a891cae2bb7650057ad126e
   layers:
   - Default
   - TransparentFX
