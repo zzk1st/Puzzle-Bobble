@@ -3,6 +3,7 @@ using System.Collections;
 
 public class DrawLine : MonoBehaviour
 {
+    LineRenderer line;
     bool draw = false;
     Color col = new Color(1,0,0,1);
     float bottomY;
@@ -19,6 +20,7 @@ public class DrawLine : MonoBehaviour
     void Start()
     {
         bottomY = GameObject.Find("BottomBorder").transform.position.y;
+        line = GetComponent<LineRenderer>();
         GeneratePoints();
         GeneratePositionsPoints();
         HidePoints();
@@ -45,8 +47,7 @@ public class DrawLine : MonoBehaviour
         Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (pos.y <= bottomY)
             return;
-
-        if (mainscript.Instance.ballShooter.CatapultBall != null)
+            if (mainscript.Instance.ballShooter.CatapultBall != null)
         {
             //col = mainscript.Instance.ballShooter.boxCatapult.GetComponent<Grid>().AttachedGameItem.GetComponent<SpriteRenderer>().sprite.texture.GetPixelBilinear(0.6f, 0.6f);
             //col.a = 1;
@@ -56,58 +57,23 @@ public class DrawLine : MonoBehaviour
 
         HidePoints();
 
-        float lineTotalLength = (waypoints[1] - waypoints[0]).magnitude;
-        Vector2 normalizedLineDir = (waypoints[1] - waypoints[0]).normalized;
-        float factor = 0.67f;
         for (int i = 0; i < pointers.Length; i++)
         {
-            float curPointStartLengh = i * factor;
-            if (curPointStartLengh < lineTotalLength)
+            Vector2 AB = waypoints[1] - waypoints[0];
+            AB = AB.normalized;
+            float step = i / 1.5f;
+
+            if (step < (waypoints[1] - waypoints[0]).magnitude)
             {
                 pointers[i].GetComponent<SpriteRenderer>().enabled = true;
-                pointers[i].transform.position = waypoints[0] + (curPointStartLengh * normalizedLineDir);
+                pointers[i].transform.position = waypoints[0] + (step * AB);
                 pointers[i].GetComponent<SpriteRenderer>().color = col;
                 pointers[i].GetComponent<LinePoint>().startPoint = pointers[i].transform.position;
-                float nextPointLength = (i + 1) * factor;
-                if (nextPointLength > lineTotalLength)
-                {
-                    pointers[i].GetComponent<LinePoint>().nextPoint = waypoints[1];
-                }
-                else
-                {
-                    pointers[i].GetComponent<LinePoint>().nextPoint = waypoints[0] + (nextPointLength * normalizedLineDir);
-                }
+                pointers[i].GetComponent<LinePoint>().nextPoint = pointers[i].transform.position;
+                if (i > 0)
+                    pointers[i - 1].GetComponent<LinePoint>().nextPoint = pointers[i].transform.position;
             }
         }
-
-        lineTotalLength = (waypoints[2] - waypoints[1]).magnitude;
-        normalizedLineDir = (waypoints[2] - waypoints[1]).normalized;
-        for (int i = 0; i < pointers2.Length; i++)
-        {
-            float curPointStartLengh = i * factor;
-            if (curPointStartLengh < lineTotalLength)
-            {
-                pointers[i].GetComponent<SpriteRenderer>().enabled = true;
-                pointers[i].transform.position = waypoints[1] + (curPointStartLengh * normalizedLineDir);
-                pointers[i].GetComponent<SpriteRenderer>().color = col;
-                pointers[i].GetComponent<LinePoint>().startPoint = pointers[i].transform.position;
-                float nextPointLength = (i + 1) * factor;
-                if (nextPointLength > lineTotalLength)
-                {
-                    pointers[i].GetComponent<LinePoint>().nextPoint = waypoints[2];
-                }
-                else
-                {
-                    pointers[i].GetComponent<LinePoint>().nextPoint = waypoints[1] + (nextPointLength * normalizedLineDir);
-                }
-            }
-        }
-
-
-
-
-
-
         for (int i = 0; i < pointers2.Length; i++)
         {
             Vector2 AB = waypoints[2] - waypoints[1];
@@ -159,6 +125,7 @@ public class DrawLine : MonoBehaviour
             //  line.enabled = true;
             Vector3 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - Vector3.back * 10;
        //     if( dir.y - 2 < transform.position.y ) { HidePoints(); return; }
+            Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
             if( !mainscript.StopControl )
             {//dir.y < 15.5 && dir.y > - 2 && 
 
@@ -169,15 +136,20 @@ public class DrawLine : MonoBehaviour
                 }
                 else startAnim = false;
                 lastMousePos = dir;
+                line.SetPosition(0, transform.position);
 
                 waypoints[0] = transform.position;
 
+                Vector2 norm = Vector3.Cross(dir, Vector3.forward);
+                Vector2 left = 0.2f * norm + waypoints[0];
+                Vector2 right = -0.2f * norm + waypoints[0];
                 RaycastHit2D[] hit = Physics2D.LinecastAll( waypoints[0], waypoints[0] + ( (Vector2)dir - waypoints[0] ).normalized * 10 );
                 
                 foreach (RaycastHit2D item in hit)
                 {
                     Vector2 point = item.point;
                 //    if (point.y - waypoints[0].y < 1.5f) point += Vector2.up * 5;
+                    line.SetPosition(1, point);
                     addAngle = 180;
 
                        if (waypoints[1].x < 0) addAngle = 0;
@@ -188,6 +160,8 @@ public class DrawLine : MonoBehaviour
                            //Debug.DrawRay( waypoints[0], waypoints[1] - waypoints[0], Color.green );
                            waypoints[1] = point;
                            waypoints[2] = point;
+                           line.SetPosition( 1, dir );
+                           waypoints[1] = point;
                             float angle = 0;
                             angle = Vector2.Angle(waypoints[0] - waypoints[1], (point - Vector2.up * 100) - (Vector2)point);
                             if (waypoints[1].x > 0) angle = Vector2.Angle(waypoints[0] - waypoints[1], (Vector2)point - (point - Vector2.up * 100));
@@ -199,15 +173,20 @@ public class DrawLine : MonoBehaviour
                               
                             Vector2 AB = waypoints[2] - waypoints[1];
                             AB = AB.normalized;
+                            line.SetPosition(2, waypoints[2]);
                             break;
                         }
                         else if (item.collider.gameObject.layer == LayerMask.NameToLayer("FixedBall"))
                         {
-                            waypoints[1] = point;
-                            waypoints[2] = point;
-                            Debug.DrawLine(waypoints[0], waypoints[1], Color.red);
+                            //Debug.DrawLine( waypoints[0], waypoints[1], Color.red );  //waypoints[0] + ( (Vector2)dir - waypoints[0] ).normalized * 10
                             //Debug.DrawLine( waypoints[0], dir, Color.blue );
                             //Debug.DrawRay( waypoints[0], waypoints[1] - waypoints[0], Color.green );
+                            line.SetPosition( 1, point );
+                            waypoints[1] = point;
+                            waypoints[2] = point;
+                            Vector2 AB = waypoints[2] - waypoints[1];
+                            AB = AB.normalized;
+                            line.SetPosition(2, waypoints[1] + (0.1f * AB));
                             break;
                         }
                         else
