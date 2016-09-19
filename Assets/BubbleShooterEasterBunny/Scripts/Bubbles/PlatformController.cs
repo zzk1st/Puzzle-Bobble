@@ -185,13 +185,6 @@ public class PlatformController : MonoBehaviour
                 GameManager.Instance.PreTutorial();
             }
         }
-        else
-        {
-            float topBorderOffset = 0.35f;   // 这个值是grid高度一半，用来将topborder置于0排最上边
-            // 这里我们要将topborder移动到grid下，这样border可以和grid一起移动
-            topBorder.transform.parent = mainscript.Instance.gridsNode.transform;
-            topBorder.transform.localPosition = new Vector3(0f, topBorderOffset, 0f);
-        }
     }
 
     void OnDrawGizmos()
