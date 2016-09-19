@@ -46,7 +46,7 @@ public class Bug : MonoBehaviour {
 
             yield return new WaitForEndOfFrame();
         }
-        GetComponent<CircleCollider2D>().isTrigger = false;
+        GetComponent<BoxCollider2D>().isTrigger = false;
     }
 
     public void MoveOut()
