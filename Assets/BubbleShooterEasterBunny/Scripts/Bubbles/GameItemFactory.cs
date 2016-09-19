@@ -23,6 +23,7 @@ public class GameItemFactory : MonoBehaviour {
         {
         case LevelData.ItemType.Empty:
         case LevelData.ItemType.Occupied:
+        case LevelData.ItemType.RainbowBall:
             break;
         case LevelData.ItemType.Blue:
         case LevelData.ItemType.Green:
@@ -48,18 +49,29 @@ public class GameItemFactory : MonoBehaviour {
         return result;
     }
 
-    public GameObject CreateNewBall(Vector3 vec, bool playAnimation)
+    public GameObject CreateNewBall(Vector3 vec, bool playAnimation, BoostType boostType = BoostType.None)
     {
         GameObject ball = null;
 
-        LevelData.ItemType itemType;
-        if (GameManager.Instance.gameStatus == GameStatus.Win)
+        LevelData.ItemType itemType = LevelData.ItemType.Empty;
+        if (GameManager.Instance.gameStatus == GameStatus.Win && boostType == BoostType.None)
         {
             itemType = mainscript.Instance.levelData.ballColors[Random.Range(0, mainscript.Instance.levelData.ballColors.Count)];
         }
-        else
+        else if (boostType == BoostType.None)
         {
             itemType = (LevelData.ItemType)mainscript.Instance.curStageColors[Random.Range(0, mainscript.Instance.curStageColors.Count)];
+        }
+        else
+        {
+            switch (boostType) {
+                case BoostType.ColorBallBoost:
+                    itemType = LevelData.ItemType.RainbowBall;
+                    break;
+                case BoostType.FireBallBoost:
+                    itemType = LevelData.ItemType.FireBall;
+                    break;
+            }
         }
 
         ball = Instantiate(ballPrefab, transform.position, transform.rotation) as GameObject;

@@ -9,7 +9,8 @@ public enum BoostType
 {
     FiveBallsBoost = 0,
     ColorBallBoost,
-    FireBallBoost
+    FireBallBoost,
+    None
 }
 
 namespace InitScriptName
@@ -84,7 +85,7 @@ namespace InitScriptName
             //			print(InitScript.DateOfExit );
             DateOfExit = PlayerPrefs.GetString("DateOfExit", "");
 
-            Gems = PlayerPrefs.GetInt("Gems");
+            Gems = 100000;// PlayerPrefs.GetInt("Gems");
             Lifes = PlayerPrefs.GetInt("Lifes");
 
             if (PlayerPrefs.GetInt("Lauched") == 0)
@@ -199,7 +200,7 @@ namespace InitScriptName
 
         public void BuyBoost(BoostType boostType, int count, int price)
         {
-            SpendGems(price);
+            //SpendGems(price);
             if (boostType != BoostType.FiveBallsBoost)
             {
                 PlayerPrefs.SetInt("" + boostType, count);
@@ -214,8 +215,9 @@ namespace InitScriptName
 
         public void SpendBoost(BoostType boostType)
         {
-            //if (boostType != BoostType.FiveBallsBoost)
-            //    mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy.GetComponent<Ball>().SetBoost(boostType);
+            if (boostType != BoostType.FiveBallsBoost)
+                //mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy.GetComponent<Ball>().SetBoost(boostType);
+                mainscript.Instance.ballShooter.SetBoost(boostType);
             PlayerPrefs.SetInt("" + boostType, PlayerPrefs.GetInt("" + boostType) - 1);
             PlayerPrefs.Save();
             ReloadBoosts();

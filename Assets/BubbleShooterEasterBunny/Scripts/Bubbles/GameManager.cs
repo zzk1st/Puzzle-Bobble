@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
 
     public void Resume()
     {
-        setGameStatus(lastGameStatus);
+        setGameStatus(GameStatus.Playing);
         Time.timeScale = 1;
     }
 

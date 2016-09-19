@@ -22,7 +22,10 @@ public class mainscript : MonoBehaviour {
                              new Color(19 / 255f, 161 / 255f, 30 / 255f, 1),
                              new Color(224 / 255f, 52 / 255f, 0, 1),
                              new Color(179 / 255f, 0, 222 / 255f, 1),
-                             new Color(188 / 255f, 62 / 255f, 0, 1)};
+                             new Color(188 / 255f, 62 / 255f, 0, 1),
+                             new Color(1.0f,1.0f,1.0f), //random color reserve
+                             new Color(1.0f, 1.0f, 1.0f)//white color for rainbow call
+                             /*fire color*/};
 
     public List<GameObject> controlGrids = new List<GameObject>();
 	public bool isPaused;

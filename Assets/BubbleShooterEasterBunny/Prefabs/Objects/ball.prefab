@@ -148,6 +148,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2dd7d7ec5a91544688d2c35c1c19bf3d, type: 3}
   - {fileID: 21300002, guid: ba03296062f2646f5a1cb5efc0e99a46, type: 3}
   - {fileID: 21300000, guid: ba03296062f2646f5a1cb5efc0e99a46, type: 3}
+  boostSprites:
+  - {fileID: 21300002, guid: 6b65a34eb9eacb840baee2f1fbccad7e, type: 3}
+  - {fileID: 21300002, guid: 4f4b1d835f307b44186e96abbfcde620, type: 3}
   color: 0
   state: 0
   LaunchForce: 500
