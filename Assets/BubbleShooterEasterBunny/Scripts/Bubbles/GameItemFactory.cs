@@ -82,9 +82,23 @@ public class GameItemFactory : MonoBehaviour {
         ball.GetComponent<Ball>().SetTypeAndColor(itemType);
         ball.GetComponent<Ball>().number = UnityEngine.Random.Range(1, 6);
 
-        GameObject[] fixedBalls = GameObject.FindObjectsOfType( typeof( GameObject ) ) as GameObject[];
-        ball.name = ball.name + fixedBalls.Length.ToString();
-
+        if (boostType == BoostType.None)
+        {
+            GameObject[] fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
+            ball.name = ball.name + fixedBalls.Length.ToString();
+        }
+        else
+        {
+            switch (boostType)
+            {
+                case BoostType.ColorBallBoost:
+                    ball.name = "rainbowball";
+                    break;
+                case BoostType.FireBallBoost:
+                    ball.name = "fireball";
+                    break;
+            }
+        }
         // Rigidbody2D在createBall里程序化的被加入
         ball.gameObject.layer = LayerMask.NameToLayer("NewBall");
         ball.transform.parent = Camera.main.transform;

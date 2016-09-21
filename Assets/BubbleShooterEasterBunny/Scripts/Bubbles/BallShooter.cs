@@ -192,6 +192,7 @@ public class BallShooter : MonoBehaviour {
             if (tempBall != null)
             {
                 cartridgeBall = tempBall;
+                tempBall = null;
             }
             else if (mainscript.Instance.levelData.limitAmount > 0)
             {

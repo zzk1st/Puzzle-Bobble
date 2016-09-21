@@ -200,6 +200,35 @@ public class mainscript : MonoBehaviour {
         }
     }
 
+    //和ConnectAndDestroyBalls一样
+    //只是用在rainbowball的检测中
+    void DestroyNearbyBalls()
+    {
+        // 找到同色的ball并将其销毁
+        List<GameObject> ballsToDelete = new List<GameObject>();
+        ballsToDelete.AddRange(CheckNearbySameColorBalls2(checkBall));
+        // 数字模式，不开启
+        //ballsToDelete.AddRange(checkNearbyConsecutiveNumberBalls(checkBall));
+        // 去掉重复元素
+        ballsToDelete = ballsToDelete.Distinct().ToList();
+
+
+        //if (ballsToDelete.Count >= 3)
+        {
+            PlayBallExplodeAudio(ballsToDelete.Count);
+            ScoreManager.Instance.ComboCount++;
+            // 在这里调用coroutine将其销毁
+            ExplodeBalls(ballsToDelete);
+        }
+
+        checkBall = null;
+
+        if (onBallsDestroyed != null)
+        {
+            onBallsDestroyed();
+        }
+    }
+
     void PlayBallExplodeAudio(int ballCount)
     {
         if (ballCount < 5)
@@ -235,7 +264,14 @@ public class mainscript : MonoBehaviour {
         // checkBall在ball.cs中被赋值，当ball停住的时候，就说明需要判断连接了，这个值也就被设定了
         if (checkBall != null && GameManager.Instance.gameStatus == GameStatus.Playing)
         {
-            ConnectAndDestroyBalls();
+            if (checkBall.name != "rainbowball" && checkBall.name != "fireball")
+            {
+                ConnectAndDestroyBalls();
+            }
+            else
+            {
+                DestroyNearbyBalls();
+            }
             DestroyDetachedGameItems();
         }
 
@@ -391,6 +427,21 @@ public class mainscript : MonoBehaviour {
         List<GameObject> ballsToDelete = new List<GameObject>();
         ballsToDelete.Add(checkBallGO);
         checkBall.CheckNextNearestColor(ballsToDelete);
+        mainscript.Instance.countOfPreparedToDestroy = ballsToDelete.Count;
+
+        return ballsToDelete;
+    }
+
+    //和CheckNearbySameColorBall一样
+    //只是源球是彩虹球，可匹配任意颜色，并忽略三个的限制
+    List<GameObject> CheckNearbySameColorBalls2(GameObject checkBallGO)
+    {
+        // 该方法用来查找是否有其它ball与之相连，形成三个或以上的ball，如果有则将其销毁
+        Ball checkBall = checkBallGO.GetComponent<Ball>();
+
+        List<GameObject> ballsToDelete = new List<GameObject>();
+        ballsToDelete.Add(checkBallGO);
+        checkBall.CheckNearbyColor(ballsToDelete);
         mainscript.Instance.countOfPreparedToDestroy = ballsToDelete.Count;
 
         return ballsToDelete;
