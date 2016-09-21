@@ -19,11 +19,6 @@ public class BoostShop : MonoBehaviour {
 	
 	}
 
-    void Update()
-    {
-        GameManager.Instance.Pause();
-    }
-	
 	// Update is called once per frame
 	public void SetBoost (BoostType _boostType ) 
     {
