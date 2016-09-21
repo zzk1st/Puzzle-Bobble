@@ -9,7 +9,7 @@ TagManager:
   - orange
   - red
   - yellow
-  - Rainbow
+  - rainbow
   - blue
   - green
   - pink
@@ -30,7 +30,7 @@ TagManager:
   - dir_indicator
   - Mesh
   - Shadow
-  - SingleLevel
+  - fire
   layers:
   - Default
   - TransparentFX
@@ -55,7 +55,7 @@ TagManager:
   - BallHighlight
   - Number
   - BottomScreen
-  - 
+  - SpecialBall
   - 
   - 
   - 
@@ -70,6 +70,12 @@ TagManager:
     locked: 0
   - name: NewBall
     uniqueID: 926732247
+    locked: 0
+  - name: rainbow
+    uniqueID: 1400451977
+    locked: 0
+  - name: fire
+    uniqueID: 495506737
     locked: 0
   - name: Default
     uniqueID: 0

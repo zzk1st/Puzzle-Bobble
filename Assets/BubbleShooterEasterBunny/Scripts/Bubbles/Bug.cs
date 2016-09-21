@@ -10,6 +10,7 @@ public class Bug : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         spiders = GameObject.Find( "Spiders" ).transform;
+        transform.localScale = new Vector3(0.5f, 0.5f, 1);
         ChangeColor( 0 );
         if(ScoreManager.Instance.ComboCount % 3 == 0 && ScoreManager.Instance.ComboCount > 0 ) ChangeColor( 1 );
         if(ScoreManager.Instance.ComboCount % 5 == 0 && ScoreManager.Instance.ComboCount > 0 ) ChangeColor( 2 );
@@ -125,7 +126,7 @@ public class Bug : MonoBehaviour {
         Vector3 startPos = transform.localPosition;
         float speed = 25;
         float distCovered = 0;
-        while( distCovered < 1 && !float.IsNaN( dir.x ) )
+        while( distCovered < 0.5f && !float.IsNaN( dir.x ) )
         {
             distCovered = ( Time.time - startTime ) * speed;
             if( this == null ) yield break;
@@ -136,7 +137,7 @@ public class Bug : MonoBehaviour {
         Vector3 lastPos = transform.localPosition;
         startTime = Time.time;
         distCovered = 0;
-        while( distCovered < 1 && !float.IsNaN( dir.x ) )
+        while( distCovered < 0.5f && !float.IsNaN( dir.x ) )
         {
             distCovered = ( Time.time - startTime ) * speed;
             if( this == null ) yield break;
@@ -144,5 +145,6 @@ public class Bug : MonoBehaviour {
             transform.localScale = new Vector3( curveScaleReverseX.Evaluate( distCovered ), curveScaleReverse.Evaluate( distCovered ), 1 );
             yield return new WaitForEndOfFrame();
         }
+        transform.localScale = new Vector3(0.5f, 0.5f, 1);
     }
 }

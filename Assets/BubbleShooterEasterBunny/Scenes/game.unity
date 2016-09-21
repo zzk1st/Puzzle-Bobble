@@ -116,7 +116,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -224, y: -106}
+  m_AnchoredPosition: {x: -231.6, y: -106}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &17379850
@@ -346,6 +346,8 @@ MonoBehaviour:
   - {r: 0.8784314, g: 0.20392157, b: 0, a: 1}
   - {r: 0.7019608, g: 0, b: 0.87058824, a: 1}
   - {r: 0.7372549, g: 0.24313726, b: 0, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
   controlGrids: []
   isPaused: 0
   noSound: 0
@@ -478,8 +480,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 55273497}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.22, y: 6.03, z: 27.55}
-  m_LocalScale: {x: 1.3, y: -1, z: 1}
+  m_LocalPosition: {x: 0.13, y: 6.03, z: 27.55}
+  m_LocalScale: {x: 0.253, y: -0.34, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 729910742}
@@ -510,7 +512,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1414487041
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: b34ecf42117bbd74687f16b4545b987a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3204,8 +3206,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 244921210}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.15, y: -6.09, z: 27.55}
-  m_LocalScale: {x: 1.2088635, y: 1.2088636, z: 1.2088636}
+  m_LocalPosition: {x: 0.11, y: -6.09, z: 27.55}
+  m_LocalScale: {x: 0.253, y: 0.224, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 729910742}
@@ -3236,7 +3238,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1414487041
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: b34ecf42117bbd74687f16b4545b987a, type: 3}
+  m_Sprite: {fileID: 21300026, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3281,11 +3283,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22406436, guid: d3b9d50b2e5448b48b351503b10e1d2b, type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 78.7
+      value: -30
       objectReference: {fileID: 0}
     - target: {fileID: 22406436, guid: d3b9d50b2e5448b48b351503b10e1d2b, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -172.9
+      value: -209
       objectReference: {fileID: 0}
     - target: {fileID: 22406436, guid: d3b9d50b2e5448b48b351503b10e1d2b, type: 2}
       propertyPath: m_SizeDelta.x
@@ -4089,7 +4091,7 @@ GameObject:
   m_Layer: 0
   m_Name: SpiderPlace
   m_TagString: Untagged
-  m_Icon: {fileID: -3545028842045912814, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -4100,7 +4102,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 422990484}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.07, y: -2.45, z: -6.17}
+  m_LocalPosition: {x: 1.91, y: -1.83, z: -6.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -4157,7 +4159,7 @@ GameObject:
   m_Layer: 0
   m_Name: SpiderPlace
   m_TagString: Untagged
-  m_Icon: {fileID: -3545028842045912814, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -4168,7 +4170,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 448950884}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.43, y: -2.5, z: -6.174805}
+  m_LocalPosition: {x: -2.166305, y: -1.9993241, z: -6.174805}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -4432,7 +4434,7 @@ GameObject:
   m_Layer: 0
   m_Name: SpiderPlace
   m_TagString: Untagged
-  m_Icon: {fileID: -3545028842045912814, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -4443,7 +4445,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 500421778}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.72, y: -3.35, z: -6.1748047}
+  m_LocalPosition: {x: -2.5034432, y: -2.9918783, z: -6.1748047}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -4458,11 +4460,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 400000, guid: e0240944f3bd27e449975ef82726c682, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 1.48
+      value: 0.77
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0240944f3bd27e449975ef82726c682, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.56
+      value: -1.16
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0240944f3bd27e449975ef82726c682, type: 2}
       propertyPath: m_LocalPosition.z
@@ -4538,7 +4540,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &519754615
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4984,8 +4986,8 @@ RectTransform:
   m_RootOrder: 5
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 145, y: 64}
-  m_SizeDelta: {x: 95, y: 98}
+  m_AnchoredPosition: {x: 148, y: 52}
+  m_SizeDelta: {x: 70, y: 68}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &619650267
 MonoBehaviour:
@@ -5058,7 +5060,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 643a69211d9502f47ad12a9ed59d5ad5, type: 3}
+  m_Sprite: {fileID: 21300004, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5203,7 +5205,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
+  m_Children:
+  - {fileID: 1872648541}
+  - {fileID: 1962547453}
   m_Father: {fileID: 0}
   m_RootOrder: 10
 --- !u!212 &637827612
@@ -5232,7 +5236,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: -10
-  m_Sprite: {fileID: 21300000, guid: 6014057a2964a45529b97c722cbbd16d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a06cc97baa8bc8544ade7f5991b5cf98, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -5834,6 +5838,7 @@ GameObject:
   - 4: {fileID: 709320748}
   - 61: {fileID: 709320750}
   - 114: {fileID: 709320749}
+  - 212: {fileID: 709320751}
   m_Layer: 5
   m_Name: SwapBallClickArea
   m_TagString: Untagged
@@ -5848,8 +5853,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 709320747}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.41, y: -0.07, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.17, y: -0.54, z: 0}
+  m_LocalScale: {x: 0.3159582, y: 0.29230395, z: 0.3927421}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 1149556133}
@@ -5876,9 +5881,39 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_UsedByEffector: 0
-  m_Offset: {x: 0.33012444, y: -0.22331953}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 1.6602489, y: 1.6019907}
+  m_Size: {x: 7.01, y: 7.55}
+--- !u!212 &709320751
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 709320747}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_ReflectionProbeUsage: 0
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300016, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
 --- !u!1 &729910737
 GameObject:
   m_ObjectHideFlags: 0
@@ -6101,7 +6136,7 @@ GameObject:
   m_Layer: 0
   m_Name: SpiderPlace
   m_TagString: Untagged
-  m_Icon: {fileID: -3545028842045912814, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -6112,7 +6147,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 744044597}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.05, y: -3.39, z: -6.17}
+  m_LocalPosition: {x: -0.35, y: -3.62, z: -6.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -7169,7 +7204,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 621f5c12fb0d58744ae99e0003e7c7f9, type: 3}
+  m_Sprite: {fileID: 21300006, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7199,8 +7234,8 @@ RectTransform:
   m_RootOrder: 4
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 8, y: 63}
-  m_SizeDelta: {x: 97, y: 98}
+  m_AnchoredPosition: {x: 47, y: 52}
+  m_SizeDelta: {x: 72, y: 68}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1033342284
 GameObject:
@@ -10120,7 +10155,7 @@ GameObject:
   m_Layer: 0
   m_Name: SpiderPlace
   m_TagString: Untagged
-  m_Icon: {fileID: -3545028842045912814, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -10131,7 +10166,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1510404973}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.77, y: -3.3, z: -6.17}
+  m_LocalPosition: {x: 2.44, y: -3.02, z: -6.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -11527,7 +11562,7 @@ GameObject:
   m_Layer: 0
   m_Name: SpiderPlace
   m_TagString: Untagged
-  m_Icon: {fileID: -3545028842045912814, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -11538,7 +11573,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1623543571}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.44, y: -3.33, z: -6.17}
+  m_LocalPosition: {x: 1.48, y: -2.36, z: -6.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -12564,8 +12599,8 @@ RectTransform:
   m_RootOrder: 3
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -134, y: 62}
-  m_SizeDelta: {x: 97, y: 98}
+  m_AnchoredPosition: {x: -59, y: 51}
+  m_SizeDelta: {x: 72, y: 68}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1769561010
 MonoBehaviour:
@@ -12638,7 +12673,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: cc1c6b9c0eeef8843aec97362b0c2ced, type: 3}
+  m_Sprite: {fileID: 21300008, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12868,6 +12903,65 @@ BoxCollider2D:
   m_Offset: {x: -0.2940936, y: 0.000000074505806}
   serializedVersion: 2
   m_Size: {x: 1.2, y: 1}
+--- !u!1 &1872648540
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1872648541}
+  - 212: {fileID: 1872648542}
+  m_Layer: 0
+  m_Name: Pots
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1872648541
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1872648540}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -19.66, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 637827611}
+  m_RootOrder: 0
+--- !u!212 &1872648542
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1872648540}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_ReflectionProbeUsage: 0
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300054, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
 --- !u!1 &1877000466
 GameObject:
   m_ObjectHideFlags: 0
@@ -13115,15 +13209,15 @@ RectTransform:
   m_GameObject: {fileID: 1949512147}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 0.76, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 354244034}
   m_RootOrder: 2
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 102.5, y: 55.700012}
-  m_SizeDelta: {x: 69, y: 69}
+  m_AnchoredPosition: {x: 156, y: 50.749}
+  m_SizeDelta: {x: 49, y: 95.137}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1949512149
 MonoBehaviour:
@@ -13196,7 +13290,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 90b1063946346ea44ac4f6a0347df366, type: 3}
+  m_Sprite: {fileID: 21300014, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -13269,6 +13363,65 @@ Transform:
   m_Children: []
   m_Father: {fileID: 729910742}
   m_RootOrder: 0
+--- !u!1 &1962547452
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1962547453}
+  - 212: {fileID: 1962547454}
+  m_Layer: 0
+  m_Name: Bear
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1962547453
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1962547452}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.5, y: -10.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 637827611}
+  m_RootOrder: 1
+--- !u!212 &1962547454
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1962547452}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_ReflectionProbeUsage: 0
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300040, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
 --- !u!1 &1968998540
 GameObject:
   m_ObjectHideFlags: 0
@@ -13304,7 +13457,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0.15862137, y: 0.9865025}
   m_AnchorMax: {x: 0.15862137, y: 0.9865025}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 15.6, y: 0}
   m_SizeDelta: {x: 250, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1968998542
@@ -13425,12 +13578,7 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 12001212, guid: 81d6cd4e77d05e742a54544437b5a098, type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 12001212, guid: 81d6cd4e77d05e742a54544437b5a098, type: 2}
+    m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 81d6cd4e77d05e742a54544437b5a098, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &2008184778
@@ -13444,7 +13592,7 @@ GameObject:
   m_Layer: 0
   m_Name: SpiderPlace
   m_TagString: Untagged
-  m_Icon: {fileID: -3545028842045912814, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -13455,7 +13603,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2008184778}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.93, y: -2.58, z: -6.17}
+  m_LocalPosition: {x: -1.38, y: -3.12, z: -6.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -13725,7 +13873,7 @@ GameObject:
   m_Layer: 0
   m_Name: SpiderPlace
   m_TagString: Untagged
-  m_Icon: {fileID: -3545028842045912814, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -13736,7 +13884,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2090837762}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.69, y: -2.54, z: -6.17}
+  m_LocalPosition: {x: 0.62, y: -2.85, z: -6.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []

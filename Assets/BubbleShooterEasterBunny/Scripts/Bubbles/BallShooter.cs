@@ -25,6 +25,7 @@ public class BallShooter : MonoBehaviour {
 
     private GameObject catapultBall;
     private GameObject cartridgeBall;
+    private GameObject tempBall; // 在有道具球时暂时保存之前的cartridgeBall
 
     public GameObject CatapultBall
     {
@@ -153,10 +154,24 @@ public class BallShooter : MonoBehaviour {
 
     }
 
+    void CreateSpecialBall(BoostType boostType)
+    {
+        tempBall = cartridgeBall;
+        cartridgeBall = catapultBall;
+        catapultBall = GameItemFactory.Instance.CreateNewBall(boxCatapult.transform.position, false, boostType);
+        catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
+        mainscript.Instance.levelData.limitAmount++;
+    }
+
     void CreateCartridgeBall(bool playAnimation = true)
     {
         cartridgeBall = GameItemFactory.Instance.CreateNewBall(boxCartridge.transform.position, playAnimation);
         cartridgeBall.GetComponent<Ball>().state = Ball.BallState.Waiting;
+    }
+
+    public void SetBoost(BoostType boostType)
+    {
+        CreateSpecialBall(boostType);
     }
 
     /// <summary>
@@ -174,7 +189,12 @@ public class BallShooter : MonoBehaviour {
                 catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
                 catapultBall.GetComponent<bouncer>().BounceToCatapult(boxCatapult.transform.position);
             }
-            if (mainscript.Instance.levelData.limitAmount > 0)
+            if (tempBall != null)
+            {
+                cartridgeBall = tempBall;
+                tempBall = null;
+            }
+            else if (mainscript.Instance.levelData.limitAmount > 0)
             {
                 CreateCartridgeBall();
             }

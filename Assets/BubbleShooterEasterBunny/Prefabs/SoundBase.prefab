@@ -81,7 +81,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -103,7 +103,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -142,6 +142,12 @@ MonoBehaviour:
   OutOfMoves: {fileID: 8300000, guid: 4d7302bebdb842147885db15b1b3eccf, type: 3}
   Boom: {fileID: 8300000, guid: 95229ddd7f59864469fdd9703ba50843, type: 3}
   black_hole: {fileID: 8300000, guid: 1545d492d6a0c074ab45df8cc4b26372, type: 3}
+  ballExplode: {fileID: 0}
+  ballExplode5Hit: {fileID: 0}
+  ballExplode9Hit: {fileID: 0}
+  shoot: {fileID: 0}
+  hitBall: {fileID: 0}
+  hitBorder: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

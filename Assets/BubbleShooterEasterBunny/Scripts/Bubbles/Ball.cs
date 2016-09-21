@@ -35,6 +35,7 @@ public class Ball : MonoBehaviour
     private GameItem _gameItem;
 
     public Sprite[] colorSprites;
+    public Sprite[] boostSprites;
     public BallColor color;
 
     private int _number;
@@ -119,23 +120,35 @@ public class Ball : MonoBehaviour
         {
             _gameItem.itemType = GameItem.ItemType.Animal;
         }
+        else if (itemType == LevelData.ItemType.RainbowBall)
+        {
+            _gameItem.itemType = GameItem.ItemType.RainbowBall;
+            color = (BallColor)LevelData.ItemType.Rainbow;
+            gameObject.tag = "rainbow";
+            ballPicGO.GetComponent<SpriteRenderer>().sprite = boostSprites[0];
+        }
+        else if (itemType == LevelData.ItemType.FireBall)
+        {
+            _gameItem.itemType = GameItem.ItemType.FireBall;
+            color = (BallColor)LevelData.ItemType.Fire;
+            gameObject.tag = "fire";
+            ballPicGO.GetComponent<SpriteRenderer>().sprite = boostSprites[1];
+        }
         else
         {
-            
-        }
+            color = (BallColor)itemType;
+            gameObject.tag = "" + color;
 
-        color = (BallColor) itemType;
-        gameObject.tag = "" + color;
-
-        foreach (Sprite item in colorSprites)
-        {
-            if( item.name == "bubble_" + color )
+            foreach (Sprite item in colorSprites)
             {
-                ballPicGO.GetComponent<SpriteRenderer>().sprite = item;
-            }
-            else if (item.name == "bubble_" + color + "_highlight")
-            {
-                ballHighlightGO.GetComponent<SpriteRenderer>().sprite = item;
+                if (item.name == "" + color + "_ball")
+                {
+                    ballPicGO.GetComponent<SpriteRenderer>().sprite = item;
+                }
+                else if (item.name == "" + color + "_hl")
+                {
+                    ballHighlightGO.GetComponent<SpriteRenderer>().sprite = item;
+                }
             }
         }
 
@@ -238,6 +251,17 @@ public class Ball : MonoBehaviour
                 results.Add(nearbyBall);
                 nearbyBall.GetComponent<Ball>().CheckNextNearestColor(results);
             }
+        }
+    }
+
+    //和CheckNextNearestColor一样 只是忽略第一次的源球
+    //而把源球周围所有球以及与他们同样颜色的球都收集起来
+    public void CheckNearbyColor(List<GameObject> results)
+    {
+        foreach (GameObject nearbyBall in grid.GetAdjacentGameItems())
+        {
+            results.Add(nearbyBall);
+            nearbyBall.GetComponent<Ball>().CheckNextNearestColor(results);
         }
     }
 
@@ -434,7 +458,6 @@ public class Ball : MonoBehaviour
         mainscript.Instance.lastStopBallPos = gameObject.transform.position;
 
         GameObject.Find("BallShooter").GetComponent<BallShooter>().isFreezing = false;
-
         state = BallState.Fixed;
         this.enabled = false;
         _gameItem.ConnectToGrid();

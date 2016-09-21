@@ -19,7 +19,9 @@ public class GameItem : MonoBehaviour {
     {
         Ball,
         CenterItem,
-        Animal
+        Animal,
+        RainbowBall,
+        FireBall
     }
 
     public ItemType itemType;
