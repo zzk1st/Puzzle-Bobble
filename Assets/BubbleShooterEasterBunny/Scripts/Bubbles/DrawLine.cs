@@ -125,7 +125,6 @@ public class DrawLine : MonoBehaviour
             //  line.enabled = true;
             Vector3 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - Vector3.back * 10;
        //     if( dir.y - 2 < transform.position.y ) { HidePoints(); return; }
-            Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
             if( !mainscript.StopControl )
             {//dir.y < 15.5 && dir.y > - 2 && 
 
@@ -140,9 +139,6 @@ public class DrawLine : MonoBehaviour
 
                 waypoints[0] = transform.position;
 
-                Vector2 norm = Vector3.Cross(dir, Vector3.forward);
-                Vector2 left = 0.2f * norm + waypoints[0];
-                Vector2 right = -0.2f * norm + waypoints[0];
                 RaycastHit2D[] hit = Physics2D.LinecastAll( waypoints[0], waypoints[0] + ( (Vector2)dir - waypoints[0] ).normalized * 10 );
                 
                 foreach (RaycastHit2D item in hit)

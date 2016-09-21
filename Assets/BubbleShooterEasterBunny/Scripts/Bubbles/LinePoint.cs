@@ -3,7 +3,6 @@ using System.Collections;
 
 public class LinePoint : MonoBehaviour {
     int nextWayPoint;
-    float timeToLerp = 5; //lerp for two seconds.
     float timeLerped = 0.0f;
     float speed = 5;
     public Vector2 startPoint;

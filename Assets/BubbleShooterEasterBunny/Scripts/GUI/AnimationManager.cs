@@ -415,7 +415,9 @@ public class AnimationManager : MonoBehaviour
     public void OpenBoostShop( BoostType boosType )
     {
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        GameObject.Find( "Canvas" ).transform.Find( "BoostShop" ).gameObject.GetComponent<BoostShop>().SetBoost( boosType );
+        //GameObject.Find( "Canvas" ).transform.Find( "BoostShop" ).gameObject.GetComponent<BoostShop>().SetBoost( boosType );
+        //DEBUG!!!!!!!!
+        GameObject.Find( "Canvas" ).transform.Find( "NewBoostShop" ).gameObject.GetComponent<NewBoostShop>().SetBoost(BoostType.ColorBallBoost);
     }
 
     public void BuyBoost( BoostType boostType, int price )

@@ -156,11 +156,8 @@ public class BallShooter : MonoBehaviour {
 
     void CreateSpecialBall(BoostType boostType)
     {
-        tempBall = cartridgeBall;
-        cartridgeBall = catapultBall;
         catapultBall = GameItemFactory.Instance.CreateNewBall(boxCatapult.transform.position, false, boostType);
         catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
-        mainscript.Instance.levelData.limitAmount++;
     }
 
     void CreateCartridgeBall(bool playAnimation = true)
@@ -171,7 +168,17 @@ public class BallShooter : MonoBehaviour {
 
     public void SetBoost(BoostType boostType)
     {
+        tempBall = cartridgeBall;
+        //将tempBall隐藏起来
+        tempBall.SetActive(false);
+        cartridgeBall = catapultBall;
+        iTween.MoveTo(cartridgeBall, iTween.Hash("position", boxCartridge.transform.position,
+                                                 "time", 0.3 ,
+                                                 "easetype",iTween.EaseType.linear));
+
         CreateSpecialBall(boostType);
+
+        mainscript.Instance.levelData.limitAmount++;
     }
 
     /// <summary>
@@ -192,6 +199,7 @@ public class BallShooter : MonoBehaviour {
             if (tempBall != null)
             {
                 cartridgeBall = tempBall;
+                cartridgeBall.SetActive(true);
                 tempBall = null;
             }
             else if (mainscript.Instance.levelData.limitAmount > 0)

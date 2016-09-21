@@ -2,7 +2,6 @@
 using System.Collections;
 
 public class LockLevelRounded : MonoBehaviour {
-    Vector3 staticPos;
     public static LockLevelRounded Instance;
     Vector3 dir;
     Vector3 ballPos;
@@ -12,7 +11,6 @@ public class LockLevelRounded : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         Instance = this;
-        staticPos = transform.position;
         newRot = Quaternion.identity;
 	}
 

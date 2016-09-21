@@ -7,8 +7,8 @@ using System;
 using UnityEngine.UI;
 public enum BoostType
 {
-    FiveBallsBoost = 0,
-    ColorBallBoost,
+    ColorBallBoost = 0,
+    FiveBallsBoost,
     FireBallBoost,
     None
 }
@@ -20,8 +20,6 @@ namespace InitScriptName
     public class InitScript : MonoBehaviour
     {
         public static InitScript Instance;
-        private int _levelNumber = 1;
-        private int _starsCount = 1;
         private bool _isShow;
         public static int openLevel;
 
@@ -66,8 +64,6 @@ namespace InitScriptName
         public int FiveBallsBoost;
         public int ColorBallBoost;
         public int FireBallBoost;
-
-        Hashtable mapFriends = new Hashtable();
 
         public Target currentTarget;
 
@@ -216,7 +212,6 @@ namespace InitScriptName
         public void SpendBoost(BoostType boostType)
         {
             if (boostType != BoostType.FiveBallsBoost)
-                //mainscript.Instance.boxCatapult.GetComponent<Grid>().Busy.GetComponent<Ball>().SetBoost(boostType);
                 mainscript.Instance.ballShooter.SetBoost(boostType);
             PlayerPrefs.SetInt("" + boostType, PlayerPrefs.GetInt("" + boostType) - 1);
             PlayerPrefs.Save();

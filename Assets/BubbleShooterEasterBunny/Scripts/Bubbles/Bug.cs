@@ -60,7 +60,6 @@ public class Bug : MonoBehaviour {
     {
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.bugDissapier );
 
-        AnimationCurve curveX = new AnimationCurve( new Keyframe( 0, transform.localPosition.x ), new Keyframe( 1, 0 ) );
         AnimationCurve curveY = new AnimationCurve( new Keyframe( 0, transform.localPosition.y ), new Keyframe( 1, 10 ) );
         curveY.AddKey( 0.5f, transform.localPosition.y + 3 );
         float startTime = Time.time;
