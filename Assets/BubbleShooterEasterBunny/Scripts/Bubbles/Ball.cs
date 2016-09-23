@@ -81,6 +81,8 @@ public class Ball : MonoBehaviour
     private float ballFallRotationSpeed = 0.0f;
     private float ballFallRotationSpeedRange = 600f;
 
+    private int accumulatedCollisionTimes = 0; //累计撞击次数 用于火球 仅允许一次碰撞 一旦达到2则火球自身销毁 则清零
+
     private int hitBug;
     public int HitBug
     {

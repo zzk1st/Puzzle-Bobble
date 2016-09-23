@@ -56,9 +56,9 @@ public class Counter : MonoBehaviour {
         {
             label.text = "" + InitScript.Gems;
         }
-        if( name == "5BallsBoost" )
+        if( name == "MagicBallBoost" )
         {
-            label.text = "" + GetPlus(InitScript.Instance.FiveBallsBoost);
+            label.text = "" + GetPlus(InitScript.Instance.MagicBallBoost);
         }
         if( name == "ColorBallBoost" )
         {
