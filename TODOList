@@ -31,6 +31,9 @@ tutorial（每关开始一个）
 选择道具球时只有当前道具球数量为0时才激活购买菜单 如果为1，2，3则减少道具球数量，不激活购买菜单。
 道具窗口闪光效果
 
+viewport, unified resolution
+solution indicator
+
 Bugs：
 (DONE)目前射出球的轨迹与反射角相比会高些
 (DONE)Double Score的Hot Pots分数也要相应加倍
