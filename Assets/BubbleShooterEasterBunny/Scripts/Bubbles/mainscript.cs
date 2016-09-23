@@ -466,6 +466,19 @@ public class mainscript : MonoBehaviour {
             delayedExplodeTime += ballExplosionTimeInterval;
         }
     }
+
+    public void ExplodeSingleBall(GameObject ballobj)
+    {
+        mainscript.Instance.bounceCounter = 0;
+        //调用ScoreManager里爆炸球的分数更新函数
+        int score = ScoreManager.Instance.UpdateComboScore(1);
+
+        float delayedExplodeTime = 0f;
+            // 让ball爆炸
+            Ball ball = ballobj.GetComponent<Ball>();
+            ball.Explode(delayedExplodeTime, score);
+            delayedExplodeTime += ballExplosionTimeInterval;
+    }
 }
 
 

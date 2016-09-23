@@ -434,7 +434,8 @@ public class Ball : MonoBehaviour
             }
             else if (other.gameObject.layer == LayerMask.NameToLayer("FixedBall"))
             {
-                Destroy(other.gameObject);
+                mainscript.Instance.ExplodeSingleBall(other.gameObject);
+                //Destroy(other.gameObject);
                 mainscript.Instance.checkBall = gameObject;
             }
             return;
