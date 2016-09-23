@@ -420,6 +420,25 @@ public class Ball : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (gameObject.name == "fireball")
+        {
+            if (other.gameObject.layer == LayerMask.NameToLayer("Border"))
+                accumulatedCollisionTimes += 1;
+            if (accumulatedCollisionTimes == 2)
+            {
+                //达到碰撞上限，毁掉，同时发射器可以发射啦～
+                GameObject.Find("BallShooter").GetComponent<BallShooter>().isFreezing = false;
+                accumulatedCollisionTimes = 0;
+                mainscript.Instance.checkBall = null;
+                Destroy(gameObject);
+            }
+            else if (other.gameObject.layer == LayerMask.NameToLayer("FixedBall"))
+            {
+                Destroy(other.gameObject);
+                mainscript.Instance.checkBall = gameObject;
+            }
+            return;
+        }
         if (other.gameObject.layer == LayerMask.NameToLayer("Border"))
         {
             SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.hitBorder);
