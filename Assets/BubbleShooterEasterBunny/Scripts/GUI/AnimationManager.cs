@@ -367,18 +367,18 @@ public class AnimationManager : MonoBehaviour
 
     #region BOOSTS
 
-    public void FiveBallsBoost()
+    public void MagicBallBoost()
     {
         if( GameManager.Instance.gameStatus != GameStatus.Playing ) return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        if( InitScript.Instance.FiveBallsBoost > 0 )
+        if( InitScript.Instance.MagicBallBoost > 0 )
         {
             if( GameManager.Instance.gameStatus == GameStatus.Playing )
-                InitScript.Instance.SpendBoost( BoostType.FiveBallsBoost );
+                InitScript.Instance.SpendBoost( BoostType.MagicBallBoost );
         }
         else
         {
-            OpenBoostShop( BoostType.FiveBallsBoost );
+            OpenBoostShop( BoostType.MagicBallBoost );
         }
     }
     public void ColorBallBoost()
@@ -412,12 +412,12 @@ public class AnimationManager : MonoBehaviour
 
     }
 
-    public void OpenBoostShop( BoostType boosType )
+    public void OpenBoostShop( BoostType boostType )
     {
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
         //GameObject.Find( "Canvas" ).transform.Find( "BoostShop" ).gameObject.GetComponent<BoostShop>().SetBoost( boosType );
         //DEBUG!!!!!!!!
-        GameObject.Find( "Canvas" ).transform.Find( "NewBoostShop" ).gameObject.GetComponent<NewBoostShop>().SetBoost(BoostType.ColorBallBoost);
+        GameObject.Find( "Canvas" ).transform.Find( "NewBoostShop" ).gameObject.GetComponent<NewBoostShop>().SetBoost(boostType);
     }
 
     public void BuyBoost( BoostType boostType, int price )

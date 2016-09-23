@@ -23,9 +23,9 @@ public class mainscript : MonoBehaviour {
                              new Color(224 / 255f, 52 / 255f, 0, 1),
                              new Color(179 / 255f, 0, 222 / 255f, 1),
                              new Color(188 / 255f, 62 / 255f, 0, 1),
-                             new Color(1.0f,1.0f,1.0f), //random color reserve
-                             new Color(1.0f, 1.0f, 1.0f)//white color for rainbow call
-                             /*fire color*/};
+                             new Color(1.0f,1.0f,1.0f,1), //random color reserve
+                             new Color(1.0f, 1.0f, 1.0f,1), //white color for rainbow call
+                             new Color(224 / 255f, 52 / 255f, 0, 1) /*fire color*/};
 
     public List<GameObject> controlGrids = new List<GameObject>();
 	public bool isPaused;
@@ -264,13 +264,17 @@ public class mainscript : MonoBehaviour {
         // checkBall在ball.cs中被赋值，当ball停住的时候，就说明需要判断连接了，这个值也就被设定了
         if (checkBall != null && GameManager.Instance.gameStatus == GameStatus.Playing)
         {
-            if (checkBall.name != "rainbowball" && checkBall.name != "fireball")
+            switch (checkBall.name)
             {
-                ConnectAndDestroyBalls();
-            }
-            else
-            {
-                DestroyNearbyBalls();
+                case "rainbowball":
+                    DestroyNearbyBalls();
+                    break;
+                case "fireball":
+                    //TODO fireball behavior
+                    break;
+                default:
+                    ConnectAndDestroyBalls();
+                    break;
             }
             DestroyDetachedGameItems();
         }
@@ -461,6 +465,19 @@ public class mainscript : MonoBehaviour {
             ball.Explode(delayedExplodeTime, score);
             delayedExplodeTime += ballExplosionTimeInterval;
         }
+    }
+
+    public void ExplodeSingleBall(GameObject ballobj)
+    {
+        mainscript.Instance.bounceCounter = 0;
+        //调用ScoreManager里爆炸球的分数更新函数
+        int score = ScoreManager.Instance.UpdateComboScore(1);
+
+        float delayedExplodeTime = 0f;
+            // 让ball爆炸
+            Ball ball = ballobj.GetComponent<Ball>();
+            ball.Explode(delayedExplodeTime, score);
+            delayedExplodeTime += ballExplosionTimeInterval;
     }
 }
 

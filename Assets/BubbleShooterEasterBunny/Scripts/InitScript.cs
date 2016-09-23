@@ -7,8 +7,9 @@ using System;
 using UnityEngine.UI;
 public enum BoostType
 {
-    ColorBallBoost = 0,
-    FiveBallsBoost,
+    FiveBallsBoost = 0,
+    MagicBallBoost,
+    ColorBallBoost,
     FireBallBoost,
     None
 }
@@ -62,6 +63,7 @@ namespace InitScriptName
         public static bool openAgain;
 
         public int FiveBallsBoost;
+        public int MagicBallBoost;
         public int ColorBallBoost;
         public int FireBallBoost;
 
@@ -221,6 +223,7 @@ namespace InitScriptName
         public void ReloadBoosts()
         {
             FiveBallsBoost = PlayerPrefs.GetInt("" + BoostType.FiveBallsBoost);
+            MagicBallBoost = PlayerPrefs.GetInt("" + BoostType.MagicBallBoost);
             //    FiveBallsBoost = 0;
             ColorBallBoost = PlayerPrefs.GetInt("" + BoostType.ColorBallBoost);
             FireBallBoost = PlayerPrefs.GetInt("" + BoostType.FireBallBoost);

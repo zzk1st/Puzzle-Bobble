@@ -81,6 +81,8 @@ public class Ball : MonoBehaviour
     private float ballFallRotationSpeed = 0.0f;
     private float ballFallRotationSpeedRange = 600f;
 
+    private int accumulatedCollisionTimes = 0; //累计撞击次数 用于火球 仅允许一次碰撞 一旦达到2则火球自身销毁 则清零
+
     private int hitBug;
     public int HitBug
     {
@@ -418,6 +420,26 @@ public class Ball : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (gameObject.name == "fireball")
+        {
+            if (other.gameObject.layer == LayerMask.NameToLayer("Border"))
+                accumulatedCollisionTimes += 1;
+            if (accumulatedCollisionTimes == 2)
+            {
+                //达到碰撞上限，毁掉，同时发射器可以发射啦～
+                GameObject.Find("BallShooter").GetComponent<BallShooter>().isFreezing = false;
+                accumulatedCollisionTimes = 0;
+                mainscript.Instance.checkBall = null;
+                Destroy(gameObject);
+            }
+            else if (other.gameObject.layer == LayerMask.NameToLayer("FixedBall"))
+            {
+                mainscript.Instance.ExplodeSingleBall(other.gameObject);
+                //Destroy(other.gameObject);
+                mainscript.Instance.checkBall = gameObject;
+            }
+            return;
+        }
         if (other.gameObject.layer == LayerMask.NameToLayer("Border"))
         {
             SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.hitBorder);

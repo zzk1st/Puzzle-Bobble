@@ -24,6 +24,7 @@ public class GameItemFactory : MonoBehaviour {
         case LevelData.ItemType.Empty:
         case LevelData.ItemType.Occupied:
         case LevelData.ItemType.RainbowBall:
+        case LevelData.ItemType.FireBall:
             break;
         case LevelData.ItemType.Blue:
         case LevelData.ItemType.Green:
