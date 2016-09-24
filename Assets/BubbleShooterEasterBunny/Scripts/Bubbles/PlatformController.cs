@@ -179,7 +179,7 @@ public class PlatformController : MonoBehaviour
     {
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
         {
-            transform.position = new Vector3(0f, 0f, 0f);
+            transform.position = new Vector3(0f, 1.6f, 0f);
             if (GameManager.Instance.gameStatus == GameStatus.Demo)
             {
                 GameManager.Instance.PreTutorial();

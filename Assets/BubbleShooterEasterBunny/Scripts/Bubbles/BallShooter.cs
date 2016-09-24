@@ -21,6 +21,10 @@ public class BallShooter : MonoBehaviour {
     public GameObject boxCatapult;
     public GameObject boxCartridge;
     public GameObject rootBall;
+
+    public float camOrthographicSizeX;
+    public float camOrthographicSizeY;
+
     public bool isFreezing
     {
         get { return _isFreezing; }
@@ -70,6 +74,8 @@ public class BallShooter : MonoBehaviour {
         rootBall = GameObject.Find("-GameItems");
         bottomBorderY = GameObject.Find("BottomBorder").transform.position.y;
         currentES = UnityEngine.EventSystems.EventSystem.current;
+        camOrthographicSizeY = Camera.main.orthographicSize;
+        camOrthographicSizeX = Camera.main.orthographicSize / Screen.height * Screen.width;
     }
 
     public void Initialize()
@@ -143,19 +149,43 @@ public class BallShooter : MonoBehaviour {
 
     void SetBordersOnAimMode()
     {
-        GameObject topRowLeftGrid = GridManager.Instance.Grid(0, 0);
-        leftBorder.transform.position = new Vector3(topRowLeftGrid.transform.position.x, 0f, 0f);
-        GameObject topRowRightGrid = GridManager.Instance.Grid(0, GridManager.Instance.colCount - 1);
-        rightBorder.transform.position = new Vector3(topRowRightGrid.transform.position.x, 0f, 0f);
+        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+        {
+            float leftBorderX = Camera.main.transform.position.x - camOrthographicSizeX + mainscript.Instance.BallRealRadius;
+            leftBorder.transform.position = new Vector3(leftBorderX, 0f, 0f);
+            float rightBorderX = Camera.main.transform.position.x + camOrthographicSizeX - mainscript.Instance.BallRealRadius;
+            rightBorder.transform.position = new Vector3(rightBorderX, 0f, 0f);
+            float topBorderY = Camera.main.transform.position.y + camOrthographicSizeY - mainscript.Instance.BallRealRadius;
+            topBorder.transform.position = new Vector3(0f, topBorderY, 0f);
+        }
+        else
+        {
+            GameObject topRowLeftGrid = GridManager.Instance.Grid(0, 0);
+            leftBorder.transform.position = new Vector3(topRowLeftGrid.transform.position.x, 0f, 0f);
+            GameObject topRowRightGrid = GridManager.Instance.Grid(0, GridManager.Instance.colCount - 1);
+            rightBorder.transform.position = new Vector3(topRowRightGrid.transform.position.x, 0f, 0f);
+        }
     }
 
     void SetBordersOnFireMode()
     {
-        float borderOffset = mainscript.Instance.BallColliderRadius;
-        GameObject topRowLeftGrid = GridManager.Instance.Grid(0, 0);
-        leftBorder.transform.position = new Vector3(topRowLeftGrid.transform.position.x - borderOffset, 0f, 0f);
-        GameObject topRowRightGrid = GridManager.Instance.Grid(0, GridManager.Instance.colCount - 1);
-        rightBorder.transform.position = new Vector3(topRowRightGrid.transform.position.x + borderOffset, 0f, 0f);
+        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+        {
+            float leftBorderX = Camera.main.transform.position.x - camOrthographicSizeX + (mainscript.Instance.BallRealRadius - mainscript.Instance.BallColliderRadius);
+            leftBorder.transform.position = new Vector3(leftBorderX, 0f, 0f);
+            float rightBorderX = Camera.main.transform.position.x + camOrthographicSizeX - (mainscript.Instance.BallRealRadius - mainscript.Instance.BallColliderRadius);
+            rightBorder.transform.position = new Vector3(rightBorderX, 0f, 0f);
+            float topBorderY = Camera.main.transform.position.y + camOrthographicSizeY - (mainscript.Instance.BallRealRadius - mainscript.Instance.BallColliderRadius);
+            topBorder.transform.position = new Vector3(0f, topBorderY, 0f);
+        }
+        else
+        {
+            float borderOffset = mainscript.Instance.BallColliderRadius;
+            GameObject topRowLeftGrid = GridManager.Instance.Grid(0, 0);
+            leftBorder.transform.position = new Vector3(topRowLeftGrid.transform.position.x - borderOffset, 0f, 0f);
+            GameObject topRowRightGrid = GridManager.Instance.Grid(0, GridManager.Instance.colCount - 1);
+            rightBorder.transform.position = new Vector3(topRowRightGrid.transform.position.x + borderOffset, 0f, 0f);
+        }
     }
 
     void SetStageCollidersMode(StageCollidersMode mode)
