@@ -33,7 +33,6 @@ public class mainscript : MonoBehaviour {
 	public bool gameOver;
 	public GameObject ElectricLiana;
 	public static bool ElectricBoost;
-	public static bool StopControl;
 
     public GameObject TopBorder;
     public Hashtable animTable = new Hashtable();
@@ -55,8 +54,6 @@ public class mainscript : MonoBehaviour {
     {
         get { return _platformController; }
     }
-
-    public int countOfPreparedToDestroy;
 
     public List<BallColor> curStageColors = new List<BallColor>();
 
@@ -92,7 +89,6 @@ public class mainscript : MonoBehaviour {
     public GameObject leftBorder;
     public GameObject rightBorder;
 
-    public Vector3 lastStopBallPos;     // Last position of ball before it stops
 
     public int potSounds;
     public int bugSounds;
@@ -108,7 +104,6 @@ public class mainscript : MonoBehaviour {
         if( InitScript.Instance == null ) gameObject.AddComponent<InitScript>();
 
         currentLevel = PlayerPrefs.GetInt( "OpenLevel", 1 );
-		mainscript.StopControl = false;
         animTable.Clear();
 	}
 
@@ -168,20 +163,13 @@ public class mainscript : MonoBehaviour {
     void ConnectAndDestroyBalls()
     {
         // 找到同色的ball并将其销毁
-        List<GameObject> ballsToDelete = new List<GameObject>();
-        ballsToDelete.AddRange(CheckNearbySameColorBalls(checkBall));
+        List<GameObject> ballsToDelete = CheckNearbySameColorBalls(checkBall);
         // 数字模式，不开启
         //ballsToDelete.AddRange(checkNearbyConsecutiveNumberBalls(checkBall));
-        // 去掉重复元素
-        ballsToDelete = ballsToDelete.Distinct().ToList();
-
 
         if (ballsToDelete.Count >= 3)
         {
-            PlayBallExplodeAudio(ballsToDelete.Count);
-            ScoreManager.Instance.ComboCount++;
-            // 在这里调用coroutine将其销毁
-            ExplodeBalls(ballsToDelete);
+            DestroyFixedBalls(ballsToDelete);
         }
         else
         {
@@ -191,47 +179,27 @@ public class mainscript : MonoBehaviour {
             mainscript.Instance.bounceCounter++;
             ScoreManager.Instance.ComboCount = 0;
         }
-
-        checkBall = null;
-
-        if (onBallsDestroyed != null)
-        {
-            onBallsDestroyed();
-        }
     }
 
-    //和ConnectAndDestroyBalls一样
-    //只是用在rainbowball的检测中
-    void DestroyNearbyBalls()
+    public void DestroyFixedBalls(List<GameObject> ballsToDelete)
     {
-        // 找到同色的ball并将其销毁
-        List<GameObject> ballsToDelete = new List<GameObject>();
-        ballsToDelete.AddRange(CheckNearbySameColorBalls2(checkBall));
-        // 数字模式，不开启
-        //ballsToDelete.AddRange(checkNearbyConsecutiveNumberBalls(checkBall));
-        // 去掉重复元素
-        ballsToDelete = ballsToDelete.Distinct().ToList();
-
-
-        //if (ballsToDelete.Count >= 3)
-        {
-            PlayBallExplodeAudio(ballsToDelete.Count);
-            ScoreManager.Instance.ComboCount++;
-            // 在这里调用coroutine将其销毁
-            ExplodeBalls(ballsToDelete);
-        }
-
-        checkBall = null;
+        PlayBallExplodeAudio(ballsToDelete.Count);
+        ScoreManager.Instance.ComboCount++;
+        // 在这里调用coroutine将其销毁
+        ExplodeBalls(ballsToDelete);
 
         if (onBallsDestroyed != null)
         {
             onBallsDestroyed();
         }
+
+        // 每次销毁任何颜色球都要检测是否有球掉落
+        DestroyDetachedGameItems();
     }
 
     void PlayBallExplodeAudio(int ballCount)
     {
-        if (ballCount < 5)
+        if (ballCount > 1 && ballCount < 5)
         {
             SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.ballExplode);
         }
@@ -239,14 +207,18 @@ public class mainscript : MonoBehaviour {
         {
             SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.ballExplode5Hit);
         }
-        else
+        else if (ballCount >= 9)
         {
             SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.ballExplode9Hit);
+        }
+        else    // 毁掉单个球，不放音效
+        {
+            
         }
     }
 
 	// Update is called once per frame
-	void Update ()
+	void Update()
     {
         CheckLosing();
 
@@ -264,19 +236,8 @@ public class mainscript : MonoBehaviour {
         // checkBall在ball.cs中被赋值，当ball停住的时候，就说明需要判断连接了，这个值也就被设定了
         if (checkBall != null && GameManager.Instance.gameStatus == GameStatus.Playing)
         {
-            switch (checkBall.name)
-            {
-                case "rainbowball":
-                    DestroyNearbyBalls();
-                    break;
-                case "fireball":
-                    //TODO fireball behavior
-                    break;
-                default:
-                    ConnectAndDestroyBalls();
-                    break;
-            }
-            DestroyDetachedGameItems();
+            ConnectAndDestroyBalls();
+            checkBall = null;
         }
 
         //计算进度条应显示当前分数占最高级别（三星）的百分之多少
@@ -309,7 +270,7 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-    public void DestroyDetachedGameItems()
+    void DestroyDetachedGameItems()
     {
         List<GameObject> gameItemsToDrop = GridManager.Instance.FindDetachedGameItems();
 
@@ -431,22 +392,8 @@ public class mainscript : MonoBehaviour {
         List<GameObject> ballsToDelete = new List<GameObject>();
         ballsToDelete.Add(checkBallGO);
         checkBall.CheckNextNearestColor(ballsToDelete);
-        mainscript.Instance.countOfPreparedToDestroy = ballsToDelete.Count;
-
-        return ballsToDelete;
-    }
-
-    //和CheckNearbySameColorBall一样
-    //只是源球是彩虹球，可匹配任意颜色，并忽略三个的限制
-    List<GameObject> CheckNearbySameColorBalls2(GameObject checkBallGO)
-    {
-        // 该方法用来查找是否有其它ball与之相连，形成三个或以上的ball，如果有则将其销毁
-        Ball checkBall = checkBallGO.GetComponent<Ball>();
-
-        List<GameObject> ballsToDelete = new List<GameObject>();
-        ballsToDelete.Add(checkBallGO);
-        checkBall.CheckNearbyColor(ballsToDelete);
-        mainscript.Instance.countOfPreparedToDestroy = ballsToDelete.Count;
+        // 去掉重复元素
+        ballsToDelete = ballsToDelete.Distinct().ToList();
 
         return ballsToDelete;
     }
@@ -466,19 +413,4 @@ public class mainscript : MonoBehaviour {
             delayedExplodeTime += ballExplosionTimeInterval;
         }
     }
-
-    public void ExplodeSingleBall(GameObject ballobj)
-    {
-        mainscript.Instance.bounceCounter = 0;
-        //调用ScoreManager里爆炸球的分数更新函数
-        int score = ScoreManager.Instance.UpdateComboScore(1);
-
-        float delayedExplodeTime = 0f;
-            // 让ball爆炸
-            Ball ball = ballobj.GetComponent<Ball>();
-            ball.Explode(delayedExplodeTime, score);
-            delayedExplodeTime += ballExplosionTimeInterval;
-    }
 }
-
-

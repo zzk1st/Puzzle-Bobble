@@ -14,12 +14,6 @@ public enum BallColor
     yellow
 }
 
-public enum ItemType
-{
-    NormalColorBall = 1,
-    Animal
-}
-
 public class Ball : MonoBehaviour
 {
     public enum BallState
@@ -57,14 +51,11 @@ public class Ball : MonoBehaviour
 
     public BallState state;
 
-    public float LaunchForce;
-
     //	 public OTSprite sprite;                    // This star's sprite class
     Vector3 forceVect;
     public float dropFadeTime;
 
     //	private OTSpriteBatch spriteBatch = null;
-    float bottomBoarderY;  //低于此线就不能发射球
     float destroyBoarderY; //低于此线就销毁飞行的球
     bool isPaused;
     public AudioClip swish;
@@ -81,7 +72,6 @@ public class Ball : MonoBehaviour
     private float ballFallRotationSpeed = 0.0f;
     private float ballFallRotationSpeedRange = 600f;
 
-    private int accumulatedCollisionTimes = 0; //累计撞击次数 用于火球 仅允许一次碰撞 一旦达到2则火球自身销毁 则清零
 
     private int hitBug;
     public int HitBug
@@ -104,6 +94,7 @@ public class Ball : MonoBehaviour
         // 初始化references
         _gameItem = gameObject.GetComponent<GameItem>();
         _gameItem.startFallFunc = StartFall;
+        _gameItem.fireFunc = Fire;
         ballHighlightGO = transform.GetChild(0).gameObject;
         ballPicGO = transform.GetChild(1).gameObject;
     }
@@ -112,75 +103,36 @@ public class Ball : MonoBehaviour
     void Start ()
     {
         isPaused = mainscript.Instance.isPaused;
-        bottomBoarderY = GameObject.Find("BottomBorder").transform.position.y; //获取生死线的Y坐标
         destroyBoarderY = GameObject.Find("DestroyBorder").transform.position.y; //获取生死线的Y坐标
     }
 
     public void SetTypeAndColor(LevelData.ItemType itemType)
     {
-        if (itemType == LevelData.ItemType.AnimalSingle)
-        {
-            _gameItem.itemType = GameItem.ItemType.Animal;
-        }
-        else if (itemType == LevelData.ItemType.RainbowBall)
-        {
-            _gameItem.itemType = GameItem.ItemType.RainbowBall;
-            color = (BallColor)LevelData.ItemType.Rainbow;
-            gameObject.tag = "rainbow";
-            ballPicGO.GetComponent<SpriteRenderer>().sprite = boostSprites[0];
-        }
-        else if (itemType == LevelData.ItemType.FireBall)
-        {
-            _gameItem.itemType = GameItem.ItemType.FireBall;
-            color = (BallColor)LevelData.ItemType.Fire;
-            gameObject.tag = "fire";
-            ballPicGO.GetComponent<SpriteRenderer>().sprite = boostSprites[1];
-        }
-        else
-        {
-            color = (BallColor)itemType;
-            gameObject.tag = "" + color;
+        color = (BallColor)itemType;
+        gameObject.tag = "" + color;
 
-            foreach (Sprite item in colorSprites)
+        foreach (Sprite item in colorSprites)
+        {
+            if (item.name == "" + color + "_ball")
             {
-                if (item.name == "" + color + "_ball")
-                {
-                    ballPicGO.GetComponent<SpriteRenderer>().sprite = item;
-                }
-                else if (item.name == "" + color + "_hl")
-                {
-                    ballHighlightGO.GetComponent<SpriteRenderer>().sprite = item;
-                }
+                ballPicGO.GetComponent<SpriteRenderer>().sprite = item;
+            }
+            else if (item.name == "" + color + "_hl")
+            {
+                ballHighlightGO.GetComponent<SpriteRenderer>().sprite = item;
             }
         }
-
     }
 
     public void Fire()
     {
-        // ClickOnGUI检查是否单击在gui上
-        // newBall表示这是不是一个准备发射的ball
-        if (!ClickOnGUI() &&
-            state == BallState.ReadyToShoot && 
-            !mainscript.Instance.gameOver && GameManager.Instance.gameStatus == GameStatus.Playing)
+        if (state == BallState.ReadyToShoot)
         {
-            Vector3 pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-            if (pos.y > bottomBoarderY && !mainscript.StopControl)
-            {
-                GetComponent<CircleCollider2D> ().enabled = true;
-
-                // 取消circle collider的isTrigger, 以便触发ball和border的碰撞检测
-                CircleCollider2D coll = GetComponent<CircleCollider2D>();
-                coll.isTrigger = false;
-                // 在这里给发射的ball赋予一个force，产生初速度
-                Vector2 direction = pos - transform.position;
-                GetComponent<Rigidbody2D>().AddForce(direction.normalized * LaunchForce, ForceMode2D.Force);
-
-                // TODO: 播放发射球的声音
-                SoundBase.Instance.GetComponent<AudioSource> ().PlayOneShot(SoundBase.Instance.shoot);
-
-                state = BallState.Flying;
-            }
+            state = BallState.Flying;
+            GetComponent<CircleCollider2D> ().enabled = true;
+            // TODO: 播放发射球的声音
+            SoundBase.Instance.GetComponent<AudioSource> ().PlayOneShot(SoundBase.Instance.shoot);
+            mainscript.Instance.levelData.limitAmount--;
         }
     }
 
@@ -199,18 +151,9 @@ public class Ball : MonoBehaviour
         }
         if (state == BallState.Flying && gameObject.transform.position.y < destroyBoarderY)
         {
-            GameObject.Find("BallShooter").GetComponent<BallShooter>().isFreezing = false;
+            mainscript.Instance.ballShooter.isFreezing = false;
             Destroy(gameObject);
         }
-    }
-
-    bool ClickOnGUI()
-    {
-        UnityEngine.EventSystems.EventSystem ct = UnityEngine.EventSystems.EventSystem.current;
-
-        if (ct.IsPointerOverGameObject ())
-            return true;
-        return false;
     }
 
     public GameObject FindInArrayGameObject(List<GameObject> b, GameObject destObj)
@@ -253,17 +196,6 @@ public class Ball : MonoBehaviour
                 results.Add(nearbyBall);
                 nearbyBall.GetComponent<Ball>().CheckNextNearestColor(results);
             }
-        }
-    }
-
-    //和CheckNextNearestColor一样 只是忽略第一次的源球
-    //而把源球周围所有球以及与他们同样颜色的球都收集起来
-    public void CheckNearbyColor(List<GameObject> results)
-    {
-        foreach (GameObject nearbyBall in grid.GetAdjacentGameItems())
-        {
-            results.Add(nearbyBall);
-            nearbyBall.GetComponent<Ball>().CheckNextNearestColor(results);
         }
     }
 
@@ -319,8 +251,8 @@ public class Ball : MonoBehaviour
         CircleCollider2D coll = gameObject.GetComponent<CircleCollider2D>();
         coll.sharedMaterial = fallingBallMaterial;
         coll.enabled = true;
-        coll.isTrigger = false;
         coll.radius = mainscript.Instance.BallRealRadius; // 这里我们要将ball碰撞半径扩大，增加和蜘蛛碰撞效果
+        coll.isTrigger = false;
     }
 
     void PlayHitAnim()
@@ -413,33 +345,21 @@ public class Ball : MonoBehaviour
         animStarted = false;
     }
 
-    void OnCollisionEnter2D (Collision2D coll)
+    void OnCollisionEnter2D(Collision2D coll)
     {
         OnTriggerEnter2D(coll.collider);
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (gameObject.name == "fireball")
-        {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Border"))
-                accumulatedCollisionTimes += 1;
-            if (accumulatedCollisionTimes == 2)
-            {
-                //达到碰撞上限，毁掉，同时发射器可以发射啦～
-                GameObject.Find("BallShooter").GetComponent<BallShooter>().isFreezing = false;
-                accumulatedCollisionTimes = 0;
-                mainscript.Instance.checkBall = null;
-                Destroy(gameObject);
-            }
-            else if (other.gameObject.layer == LayerMask.NameToLayer("FixedBall"))
-            {
-                mainscript.Instance.ExplodeSingleBall(other.gameObject);
-                //Destroy(other.gameObject);
-                mainscript.Instance.checkBall = gameObject;
-            }
+        if (checkBorderAndContinue(other))
             return;
-        }
+
+        StopBall();
+    }
+
+    bool checkBorderAndContinue(Collider2D other)
+    {
         if (other.gameObject.layer == LayerMask.NameToLayer("Border"))
         {
             SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.hitBorder);
@@ -447,39 +367,37 @@ public class Ball : MonoBehaviour
             // 圆形模式下topBorder依然起碰撞作用
             if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
             {
-                return;
+                return true;
             }
                 
             if (other.gameObject != mainscript.Instance.topBorder)
             {
-                return;
+                return true;
             }
         }
-
-        if (other.gameObject.layer == LayerMask.NameToLayer("UI"))
+        else if (other.gameObject.layer == LayerMask.NameToLayer("UI"))
         {
-            return;
+            return true;
+        }
+        // Flying的球位置在线以下不碰撞
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Pot"))
+        {
+            return true;
         }
 
         if (state != BallState.Flying)
         {
-            return;
+            return true;
         }
 
-        // Flying的球位置在线以下不碰撞
-        if (other.gameObject.layer == LayerMask.NameToLayer("Pot"))
-        {
-            return;
-        }
-
-        StopBall();
+        return false;
     }
 
     void StopBall()
     {
-        mainscript.Instance.lastStopBallPos = gameObject.transform.position;
+        ScoreManager.Instance.lastStopBallPos = gameObject.transform.position;
 
-        GameObject.Find("BallShooter").GetComponent<BallShooter>().isFreezing = false;
+        mainscript.Instance.ballShooter.isFreezing = false;
         state = BallState.Fixed;
         this.enabled = false;
         _gameItem.ConnectToGrid();
@@ -501,7 +419,6 @@ public class Ball : MonoBehaviour
         mainscript.Instance.platformController.Rotate(transform.position, ballVelocity);
 
         PlayHitAnim();
-        mainscript.Instance.ballShooter.SetStageCollidersMode(BallShooter.StageCollidersMode.AimMode);
     }
 
     public void SplashDestroy()
@@ -516,7 +433,7 @@ public class Ball : MonoBehaviour
             MissionManager.Instance.GainTargetStar(grid);
         }
 
-        GetComponent<GameItem>().DisconnectFromGrid();
+        _gameItem.DisconnectFromGrid();
         GetComponent<CircleCollider2D>().enabled = false;    //删掉CircleCollider，防止再碰撞检测
         gameObject.layer = LayerMask.NameToLayer("ExplodedBall");   // 从ball layer移除，防止之后connect nearball时候再连上
 
@@ -562,7 +479,7 @@ public class Ball : MonoBehaviour
         Destroy (gameObject, 1);
     }
 
-    public void ShowFirework ()
+    public void ShowFirework()
     {
         fireworks++;
         if (fireworks <= 2)

@@ -102,7 +102,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 6200000, guid: 8f921e88c9db2bd4d8df3fa3169ddb20, type: 2}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
@@ -153,7 +153,6 @@ MonoBehaviour:
   - {fileID: 21300004, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   color: 0
   state: 0
-  LaunchForce: 500
   dropFadeTime: 0.5
   swish: {fileID: 0}
   pops: {fileID: 0}

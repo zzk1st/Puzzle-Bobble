@@ -5,7 +5,7 @@ public class DrawLine : MonoBehaviour
 {
     LineRenderer line;
     bool draw = false;
-    Color col = new Color(1,0,0,1);
+    Color lineColor = new Color(1,0,0,1);
     float bottomY;
 
     public static Vector2[] waypoints = new Vector2[3];
@@ -47,12 +47,18 @@ public class DrawLine : MonoBehaviour
         Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (pos.y <= bottomY)
             return;
-            if (mainscript.Instance.ballShooter.CatapultBall != null)
+
+        if (mainscript.Instance.ballShooter.CatapultBall != null)
         {
             //col = mainscript.Instance.ballShooter.boxCatapult.GetComponent<Grid>().AttachedGameItem.GetComponent<SpriteRenderer>().sprite.texture.GetPixelBilinear(0.6f, 0.6f);
             //col.a = 1;
-            int idx = (int)mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>().color-1;
-            col = mainscript.Instance.BallRGB[idx];
+            Ball ball = mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>();
+            if (ball)
+            {
+                int idx = (int)mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>().color-1;
+                lineColor = mainscript.Instance.BallRGB[idx];
+            }
+            else lineColor = mainscript.Instance.BallRGB[6];
         }
 
         HidePoints();
@@ -67,7 +73,7 @@ public class DrawLine : MonoBehaviour
             {
                 pointers[i].GetComponent<SpriteRenderer>().enabled = true;
                 pointers[i].transform.position = waypoints[0] + (step * AB);
-                pointers[i].GetComponent<SpriteRenderer>().color = col;
+                pointers[i].GetComponent<SpriteRenderer>().color = lineColor;
                 pointers[i].GetComponent<LinePoint>().startPoint = pointers[i].transform.position;
                 pointers[i].GetComponent<LinePoint>().nextPoint = pointers[i].transform.position;
                 if (i > 0)
@@ -84,7 +90,7 @@ public class DrawLine : MonoBehaviour
             {
                 pointers2[i].GetComponent<SpriteRenderer>().enabled = true;
                 pointers2[i].transform.position = waypoints[1] + (step * AB);
-                pointers2[i].GetComponent<SpriteRenderer>().color = col;
+                pointers2[i].GetComponent<SpriteRenderer>().color = lineColor;
                 pointers2[i].GetComponent<LinePoint>().startPoint = pointers2[i].transform.position;
                 pointers2[i].GetComponent<LinePoint>().nextPoint = pointers2[i].transform.position;
                 if (i > 0)
@@ -125,9 +131,7 @@ public class DrawLine : MonoBehaviour
             //  line.enabled = true;
             Vector3 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - Vector3.back * 10;
        //     if( dir.y - 2 < transform.position.y ) { HidePoints(); return; }
-            if( !mainscript.StopControl )
             {//dir.y < 15.5 && dir.y > - 2 && 
-
                 dir.z = 0;
                 if (lastMousePos == dir)
                 {

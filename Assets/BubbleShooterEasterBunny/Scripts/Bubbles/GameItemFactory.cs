@@ -1,10 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum BoostType
+{
+    FiveBallsBoost = 0,
+    MagicBallBoost,
+    RainbowBallBoost,
+    FireBallBoost,
+    None
+}
+
 public class GameItemFactory : MonoBehaviour {
     static public GameItemFactory Instance;
 
     public GameObject ballPrefab;
+    public GameObject rainbowBallPrefab;
+    public GameObject fireBallPrefab;
     public GameObject centerItemPrefab;
     public GameObject animalSinglePrefab;
     public GameObject animalTrianglePrefab;
@@ -23,8 +34,6 @@ public class GameItemFactory : MonoBehaviour {
         {
         case LevelData.ItemType.Empty:
         case LevelData.ItemType.Occupied:
-        case LevelData.ItemType.RainbowBall:
-        case LevelData.ItemType.FireBall:
             break;
         case LevelData.ItemType.Blue:
         case LevelData.ItemType.Green:
@@ -50,29 +59,53 @@ public class GameItemFactory : MonoBehaviour {
         return result;
     }
 
-    public GameObject CreateNewBall(Vector3 vec, bool playAnimation, BoostType boostType = BoostType.None)
+    public GameObject CreateBoost(BoostType boostType, Vector3 pos)
+    {
+        switch(boostType)
+        {
+        case BoostType.RainbowBallBoost:
+            return CreateRainbowBallBoost(pos);
+        case BoostType.FireBallBoost:
+            return CreateFireBallBoost(pos);
+        }
+
+        throw new System.AccessViolationException("未知特殊道具！");
+    }
+
+    GameObject CreateRainbowBallBoost(Vector3 vec)
+    {
+        GameObject ball = null;
+
+        ball = Instantiate(rainbowBallPrefab, transform.position, transform.rotation) as GameObject;
+        ball.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
+        ball.GetComponent<RainbowBallBoost>().Initialize();
+
+        return ball;
+    }
+
+    GameObject CreateFireBallBoost(Vector3 vec)
+    {
+        GameObject ball = null;
+
+        ball = Instantiate(fireBallPrefab, transform.position, transform.rotation) as GameObject;
+        ball.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
+        ball.GetComponent<FireBallBoost>().Initialize();
+
+        return ball;
+    }
+
+    public GameObject CreateNewBall(Vector3 vec, bool playAnimation)
     {
         GameObject ball = null;
 
         LevelData.ItemType itemType = LevelData.ItemType.Empty;
-        if (GameManager.Instance.gameStatus == GameStatus.Win && boostType == BoostType.None)
+        if (GameManager.Instance.gameStatus == GameStatus.Win)
         {
             itemType = mainscript.Instance.levelData.ballColors[Random.Range(0, mainscript.Instance.levelData.ballColors.Count)];
         }
-        else if (boostType == BoostType.None)
-        {
-            itemType = (LevelData.ItemType)mainscript.Instance.curStageColors[Random.Range(0, mainscript.Instance.curStageColors.Count)];
-        }
         else
         {
-            switch (boostType) {
-                case BoostType.ColorBallBoost:
-                    itemType = LevelData.ItemType.RainbowBall;
-                    break;
-                case BoostType.FireBallBoost:
-                    itemType = LevelData.ItemType.FireBall;
-                    break;
-            }
+            itemType = (LevelData.ItemType)mainscript.Instance.curStageColors[Random.Range(0, mainscript.Instance.curStageColors.Count)];
         }
 
         ball = Instantiate(ballPrefab, transform.position, transform.rotation) as GameObject;
@@ -80,26 +113,13 @@ public class GameItemFactory : MonoBehaviour {
         ball.GetComponent<Ball>().Initialize();
 
         ball.GetComponent<CircleCollider2D>().radius = mainscript.Instance.BallColliderRadius;
+        ball.GetComponent<CircleCollider2D>().isTrigger = false;
         ball.GetComponent<Ball>().SetTypeAndColor(itemType);
         ball.GetComponent<Ball>().number = UnityEngine.Random.Range(1, 6);
 
-        if (boostType == BoostType.None)
-        {
-            GameObject[] fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
-            ball.name = ball.name + fixedBalls.Length.ToString();
-        }
-        else
-        {
-            switch (boostType)
-            {
-                case BoostType.ColorBallBoost:
-                    ball.name = "rainbowball";
-                    break;
-                case BoostType.FireBallBoost:
-                    ball.name = "fireball";
-                    break;
-            }
-        }
+        GameObject[] fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
+        ball.name = ball.name + fixedBalls.Length.ToString();
+
         // Rigidbody2D在createBall里程序化的被加入
         ball.gameObject.layer = LayerMask.NameToLayer("NewBall");
         ball.transform.parent = Camera.main.transform;
@@ -129,6 +149,7 @@ public class GameItemFactory : MonoBehaviour {
         // 设置collider, state和其他基本属性
         ball.GetComponent<CircleCollider2D>().radius = mainscript.Instance.LineColliderRadius;
         ball.GetComponent<CircleCollider2D>().offset = Vector2.zero;
+        ball.GetComponent<CircleCollider2D>().isTrigger = true;
         ball.GetComponent<Ball>().SetTypeAndColor(itemType);
         ball.GetComponent<Ball>().number = UnityEngine.Random.Range(1, 6);
         ball.GetComponent<Ball>().state = Ball.BallState.Fixed;

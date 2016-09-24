@@ -388,11 +388,11 @@ public class AnimationManager : MonoBehaviour
         if( InitScript.Instance.ColorBallBoost > 0 )
         {
             if( GameManager.Instance.gameStatus == GameStatus.Playing )
-                InitScript.Instance.SpendBoost( BoostType.ColorBallBoost );
+                InitScript.Instance.SpendBoost( BoostType.RainbowBallBoost );
         }
         else
         {
-            OpenBoostShop( BoostType.ColorBallBoost );
+            OpenBoostShop( BoostType.RainbowBallBoost );
         }
 
     }
@@ -415,8 +415,6 @@ public class AnimationManager : MonoBehaviour
     public void OpenBoostShop( BoostType boostType )
     {
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        //GameObject.Find( "Canvas" ).transform.Find( "BoostShop" ).gameObject.GetComponent<BoostShop>().SetBoost( boosType );
-        //DEBUG!!!!!!!!
         GameObject.Find( "Canvas" ).transform.Find( "NewBoostShop" ).gameObject.GetComponent<NewBoostShop>().SetBoost(boostType);
     }
 

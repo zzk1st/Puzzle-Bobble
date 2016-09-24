@@ -5,14 +5,6 @@ using System.Collections.Generic;
 using System.Collections;
 using System;
 using UnityEngine.UI;
-public enum BoostType
-{
-    FiveBallsBoost = 0,
-    MagicBallBoost,
-    ColorBallBoost,
-    FireBallBoost,
-    None
-}
 
 namespace InitScriptName
 {
@@ -225,7 +217,7 @@ namespace InitScriptName
             FiveBallsBoost = PlayerPrefs.GetInt("" + BoostType.FiveBallsBoost);
             MagicBallBoost = PlayerPrefs.GetInt("" + BoostType.MagicBallBoost);
             //    FiveBallsBoost = 0;
-            ColorBallBoost = PlayerPrefs.GetInt("" + BoostType.ColorBallBoost);
+            ColorBallBoost = PlayerPrefs.GetInt("" + BoostType.RainbowBallBoost);
             FireBallBoost = PlayerPrefs.GetInt("" + BoostType.FireBallBoost);
 
         }

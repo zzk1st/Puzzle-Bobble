@@ -39,15 +39,11 @@ public class LevelData
         Violet,
         Yellow,
         Random,
-        Rainbow,
-        Fire,
         CenterItem,
         AnimalSingle,
         AnimalTriangle,
         AnimalHexagon,
         Boss,
-        RainbowBall,
-        FireBall,
         Occupied    // 这个item表示该区域是某个大型gameItem的一部分，但并不是其中心
     }
 

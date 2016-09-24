@@ -6,6 +6,7 @@ public class ScoreManager : MonoBehaviour {
 
     public static ScoreManager Instance;
 
+
     private static int highScore = 0;
     private static float fastestTime = 0;
     private static int currentLevel = 0;
@@ -15,11 +16,14 @@ public class ScoreManager : MonoBehaviour {
     private static int comboCount = 0;
     private static int doubleScore = 1;
     public static int playedTime = 0;
+
     public GameObject popupScore;
     public GameObject fallingScore;
     public GameObject perfect;
     public GameObject scoreText;
     public GameObject canvas;
+
+    public Vector3 lastStopBallPos;     // Last position of ball before it stops
 
     public int Score
     {
@@ -46,7 +50,7 @@ public class ScoreManager : MonoBehaviour {
             if (value > 0)
             {
                 SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[Mathf.Clamp(value - 1, 0, 5)]);
-                BugManager.Instance.CreateBug(mainscript.Instance.lastStopBallPos, value);
+                BugManager.Instance.CreateBug(lastStopBallPos, value);
                 if (value >= 6)
                 {
                     SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[5]);

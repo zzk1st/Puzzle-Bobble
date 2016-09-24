@@ -21,7 +21,24 @@ public class BallShooter : MonoBehaviour {
     public GameObject boxCatapult;
     public GameObject boxCartridge;
     public GameObject rootBall;
-    public bool isFreezing;
+    public bool isFreezing
+    {
+        get { return _isFreezing; }
+        set
+        {
+            _isFreezing = value;
+            if (_isFreezing)
+            {
+                SetStageCollidersMode(StageCollidersMode.FireMode);
+            }
+            else
+            {
+                SetStageCollidersMode(StageCollidersMode.AimMode);
+            }
+        }
+    }
+
+    public bool _isFreezing;
 
     private GameObject catapultBall;
     private GameObject cartridgeBall;
@@ -36,24 +53,29 @@ public class BallShooter : MonoBehaviour {
         }
     }
 
-    float bottomBoarderY;  //低于此线就不能发射球
+    float bottomBorderY;  //低于此线就不能发射球
+    public float launchForce;   // 发射力度
 
     public GameObject topBorder;
     public GameObject leftBorder;
     public GameObject rightBorder;
 
     UnityEngine.EventSystems.EventSystem currentES;
+
+    bool boostInPosition;   // 当boost准备发射时，不能切换球
+
 	// Use this for initialization
 	void Start ()
     {
         rootBall = GameObject.Find("-GameItems");
-        bottomBoarderY = GameObject.Find("BottomBorder").transform.position.y;
+        bottomBorderY = GameObject.Find("BottomBorder").transform.position.y;
         currentES = UnityEngine.EventSystems.EventSystem.current;
     }
 
     public void Initialize()
     {
-        SetStageCollidersMode(StageCollidersMode.AimMode);
+        boostInPosition = false;
+        isFreezing = false;
         mainscript.Instance.UpdateColorsInGame();
         CreateCartridgeBall();
         Reload();
@@ -61,15 +83,7 @@ public class BallShooter : MonoBehaviour {
 
     void Update()
     {
-        if (GameManager.Instance.gameStatus == GameStatus.Playing)
-        {
-            Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            // currentES.IsPointerOverGameObject()用来检测是否鼠标点击的是GUI
-            if (pos.y > bottomBoarderY && Input.GetMouseButtonUp (0) && !currentES.IsPointerOverGameObject())
-            {
-                Fire();
-            }
-        }
+        CheckAndFire();
 
         if (GameManager.Instance.gameStatus == GameStatus.Win && catapultBall == null)
         {
@@ -77,18 +91,39 @@ public class BallShooter : MonoBehaviour {
         }
     }
 
-    void Fire()
+    void CheckAndFire()
     {
-        SetStageCollidersMode(StageCollidersMode.FireMode);
-
-        if (catapultBall != null && !isFreezing)
+        if (GameManager.Instance.gameStatus == GameStatus.Playing && !mainscript.Instance.gameOver && !isFreezing)
         {
-            catapultBall.GetComponent<Ball>().Fire();
-            mainscript.Instance.levelData.limitAmount--;
-            isFreezing = true;
-            catapultBall = null;
-            Reload();
+            Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            // currentES.IsPointerOverGameObject()用来检测是否鼠标点击的是GUI
+            if (pos.y > bottomBorderY && Input.GetMouseButtonUp(0) && !currentES.IsPointerOverGameObject())
+            {
+                if (catapultBall != null)
+                {
+                    Fire(pos);
+                    Reload();
+                }
+            }
         }
+    }
+
+    void Fire(Vector3 pos)
+    {
+        // 在这里给发射的ball赋予一个force，产生初速度
+        Vector2 direction = pos - catapultBall.transform.position;
+        catapultBall.GetComponent<Rigidbody2D>().AddForce(direction.normalized * launchForce, ForceMode2D.Force);
+
+        // 根据gameItemType具体类型调用各自的Fire方法
+        GameItem gameItem = catapultBall.GetComponent<GameItem>();
+        gameItem.Fire();
+        if (gameItem.itemType == GameItem.ItemType.RainbowBall || gameItem.itemType == GameItem.ItemType.FireBall)
+        {
+            boostInPosition = false;
+        }
+
+        isFreezing = true;
+        catapultBall = null;
     }
 
     public void UpdateBallColors()
@@ -123,7 +158,7 @@ public class BallShooter : MonoBehaviour {
         rightBorder.transform.position = new Vector3(topRowRightGrid.transform.position.x + borderOffset, 0f, 0f);
     }
 
-    public void SetStageCollidersMode(StageCollidersMode mode)
+    void SetStageCollidersMode(StageCollidersMode mode)
     {
         if (mode == StageCollidersMode.AimMode)
         {
@@ -154,10 +189,10 @@ public class BallShooter : MonoBehaviour {
 
     }
 
-    void CreateSpecialBall(BoostType boostType)
+    void CreateBoost(BoostType boostType)
     {
-        catapultBall = GameItemFactory.Instance.CreateNewBall(boxCatapult.transform.position, false, boostType);
-        catapultBall.GetComponent<Ball>().state = Ball.BallState.ReadyToShoot;
+        catapultBall = GameItemFactory.Instance.CreateBoost(boostType, boxCatapult.transform.position);
+        boostInPosition = true;
     }
 
     void CreateCartridgeBall(bool playAnimation = true)
@@ -176,8 +211,7 @@ public class BallShooter : MonoBehaviour {
                                                  "time", 0.3 ,
                                                  "easetype",iTween.EaseType.linear));
 
-        CreateSpecialBall(boostType);
-
+        CreateBoost(boostType);
         mainscript.Instance.levelData.limitAmount++;
     }
 
@@ -214,7 +248,7 @@ public class BallShooter : MonoBehaviour {
 
     public void SwapBalls()
     {
-        if (GameManager.Instance.gameStatus == GameStatus.Playing)
+        if (GameManager.Instance.gameStatus == GameStatus.Playing && ! boostInPosition)
         {
             if (state == BallShooterState.ReadyToShoot && cartridgeBall != null)
             {

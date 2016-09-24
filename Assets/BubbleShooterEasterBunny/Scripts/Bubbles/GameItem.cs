@@ -2,6 +2,7 @@
 using System.Collections;
 
 public delegate void StartFallDelegate();
+public delegate void FireDelegate();
 
 /// <summary>
 /// 包含了游戏里在stage里的一切物体（球，道具，动物等）的通用属性／方法
@@ -31,6 +32,7 @@ public class GameItem : MonoBehaviour {
     public Grid centerGrid;
 
     public StartFallDelegate startFallFunc;
+    public FireDelegate fireFunc;
 
     void Awake()
     {
@@ -63,6 +65,14 @@ public class GameItem : MonoBehaviour {
         if (startFallFunc != null)
         {
             startFallFunc();
+        }
+    }
+
+    public void Fire()
+    {
+        if (fireFunc != null)
+        {
+            fireFunc();
         }
     }
 }
