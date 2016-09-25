@@ -411,7 +411,7 @@ public class Ball : MonoBehaviour
 
     public void SplashDestroy()
     {
-        Destroy (gameObject);
+        Destroy(gameObject);
     }
 
     public void Explode(float delayedExplodeTime, int score)
