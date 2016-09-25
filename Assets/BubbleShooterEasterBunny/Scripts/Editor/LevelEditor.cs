@@ -145,9 +145,7 @@ public class LevelEditor : EditorWindow
 
     void AddLevel()
     {
-        SaveLevel();
         levelNumber = GetLastLevel() + 1;
-        SaveLevel();
     }
 
     void NextLevel()
@@ -174,12 +172,8 @@ public class LevelEditor : EditorWindow
         GUILayout.Space(60);
 
         GUILayout.Label("Limit:", EditorStyles.label, new GUILayoutOption[] { GUILayout.Width(50) });
-        int oldLimit = levelData.limitAmount;
         levelData.limitAmount = EditorGUILayout.IntField(levelData.limitAmount, new GUILayoutOption[] { GUILayout.Width(50) });
         GUILayout.EndHorizontal();
-
-        if (oldLimit != levelData.limitAmount)
-            SaveLevel();
     }
 
     void GUIColorLimit()
@@ -187,18 +181,11 @@ public class LevelEditor : EditorWindow
         GUILayout.BeginHorizontal();
         GUILayout.Space(60);
 
-        int saveInt = levelData.allowedColorCount;
         GUILayout.Label("Color limit:", EditorStyles.label, new GUILayoutOption[] { GUILayout.Width(100) });
         levelData.allowedColorCount = (int)GUILayout.HorizontalSlider(levelData.allowedColorCount, 3, 5, new GUILayoutOption[] { GUILayout.Width(100) });
         levelData.allowedColorCount = EditorGUILayout.IntField("", levelData.allowedColorCount, new GUILayoutOption[] { GUILayout.Width(50) });
 
         GUILayout.EndHorizontal();
-
-        if (saveInt != levelData.allowedColorCount)
-        {
-            SaveLevel();
-        }
-
     }
 
     void GUIStars()
@@ -223,19 +210,16 @@ public class LevelEditor : EditorWindow
         if (s != levelData.starScores[0])
         {
             levelData.starScores[0] = s;
-            SaveLevel();
         }
         s = EditorGUILayout.IntField("", levelData.starScores[1], new GUILayoutOption[] { GUILayout.Width(100) });
         if (s != levelData.starScores[1])
         {
             levelData.starScores[1] = s;
-            SaveLevel();
         }
         s = EditorGUILayout.IntField("", levelData.starScores[2], new GUILayoutOption[] { GUILayout.Width(100) });
         if (s != levelData.starScores[2])
         {
             levelData.starScores[2] = s;
-            SaveLevel();
         }
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
@@ -251,13 +235,8 @@ public class LevelEditor : EditorWindow
         GUILayout.BeginHorizontal();
         GUILayout.Space(30);
         GUILayout.BeginVertical();
-        MissionType missionType = levelData.missionType;
         levelData.missionType = (MissionType) EditorGUILayout.EnumPopup(levelData.missionType, GUILayout.Width(100));
         GUILayout.EndVertical();
-        if (missionType != levelData.missionType)
-        {
-            SaveLevel();
-        }
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
 
@@ -274,14 +253,22 @@ public class LevelEditor : EditorWindow
 
         GUILayout.BeginVertical();
         GUILayout.Label("Tools:", EditorStyles.boldLabel);
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(30);
         if (GUILayout.Button("Clear", new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
         {
             for (int i = 0; i < levelData.map.Length; i++)
             {
                 levelData.map[i] = LevelData.ItemType.Empty;
             }
+        }
+        if (GUILayout.Button("Save", new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
+        {
             SaveLevel();
         }
+        GUILayout.EndHorizontal();
+        GUILayout.Space(30);
         GUILayout.EndVertical();
 
 
@@ -306,7 +293,6 @@ public class LevelEditor : EditorWindow
                     {
                         levelData.missionType = MissionType.RescueGhost;
                         checkAndBrushMap(LevelData.ItemType.CenterItem, LevelData.CenterItemRow, LevelData.CenterItemCol);
-                        SaveLevel();
                     }
                 }
             }
@@ -386,8 +372,6 @@ public class LevelEditor : EditorWindow
             {
                 checkAndBrushMap(brush, row, col);
             }
-
-            SaveLevel();
         }
     }
 
