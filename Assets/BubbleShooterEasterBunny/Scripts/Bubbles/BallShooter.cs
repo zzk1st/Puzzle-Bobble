@@ -25,24 +25,25 @@ public class BallShooter : MonoBehaviour {
     public float camOrthographicSizeX;
     public float camOrthographicSizeY;
 
-    public bool isFreezing
+    public bool isLocked
     {
-        get { return _isFreezing; }
+        get { return _isLocked; }
         set
         {
-            _isFreezing = value;
-            if (_isFreezing)
+            _isLocked = value;
+            if (_isLocked)
             {
                 SetStageCollidersMode(StageCollidersMode.FireMode);
             }
             else
             {
                 SetStageCollidersMode(StageCollidersMode.AimMode);
+                mainscript.Instance.OnBallShooterUnlocked();
             }
         }
     }
 
-    public bool _isFreezing;
+    public bool _isLocked;
 
     private GameObject catapultBall;
     private GameObject cartridgeBall;
@@ -81,8 +82,7 @@ public class BallShooter : MonoBehaviour {
     public void Initialize()
     {
         boostInPosition = false;
-        isFreezing = false;
-        mainscript.Instance.UpdateColorsInGame();
+        isLocked = false;
         CreateCartridgeBall();
         Reload();
     }
@@ -99,7 +99,7 @@ public class BallShooter : MonoBehaviour {
 
     void CheckAndFire()
     {
-        if (GameManager.Instance.gameStatus == GameStatus.Playing && !mainscript.Instance.gameOver && !isFreezing)
+        if (GameManager.Instance.gameStatus == GameStatus.Playing && !mainscript.Instance.gameOver && !isLocked)
         {
             Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // currentES.IsPointerOverGameObject()用来检测是否鼠标点击的是GUI
@@ -128,7 +128,7 @@ public class BallShooter : MonoBehaviour {
             boostInPosition = false;
         }
 
-        isFreezing = true;
+        isLocked = true;
         catapultBall = null;
     }
 

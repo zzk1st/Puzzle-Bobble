@@ -7,10 +7,16 @@ public class CenterItem : MonoBehaviour {
     public void Initialize()
     {
         _gameItem = GetComponent<GameItem>();
-        mainscript.Instance.onBallsDestroyed += new mainscript.DestroyBallsHandler(onBallsDestroyed);
+        _gameItem.ConnectToGrid();
+        mainscript.Instance.onBallsDestroyed += OnBallsDestroyed;
     }
 
-    void onBallsDestroyed()
+    void OnDestroy()
+    {
+        mainscript.Instance.onBallsDestroyed -= OnBallsDestroyed;
+    }
+
+    void OnBallsDestroyed()
     {
         bool adjacentGridsEmpty = true;
         foreach(Grid adjacentGrid in _gameItem.centerGrid.AdjacentGrids)

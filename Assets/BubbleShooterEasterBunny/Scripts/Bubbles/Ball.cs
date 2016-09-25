@@ -28,8 +28,6 @@ public class Ball : MonoBehaviour
 
     private GameItem _gameItem;
 
-    public Sprite[] colorSprites;
-    public Sprite[] boostSprites;
     public BallColor color;
 
     private int _number;
@@ -110,18 +108,8 @@ public class Ball : MonoBehaviour
     {
         color = (BallColor)itemType;
         gameObject.tag = "" + color;
-
-        foreach (Sprite item in colorSprites)
-        {
-            if (item.name == "" + color + "_ball")
-            {
-                ballPicGO.GetComponent<SpriteRenderer>().sprite = item;
-            }
-            else if (item.name == "" + color + "_hl")
-            {
-                ballHighlightGO.GetComponent<SpriteRenderer>().sprite = item;
-            }
-        }
+        ballPicGO.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.ballColorSprites[(int) color];
+        ballHighlightGO.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.ballColorHightlightSprites[(int) color];
     }
 
     public void Fire()
@@ -151,7 +139,7 @@ public class Ball : MonoBehaviour
         }
         if (state == BallState.Flying && gameObject.transform.position.y < destroyBoarderY)
         {
-            mainscript.Instance.ballShooter.isFreezing = false;
+            mainscript.Instance.ballShooter.isLocked = false;
             Destroy(gameObject);
         }
     }
@@ -397,7 +385,7 @@ public class Ball : MonoBehaviour
     {
         ScoreManager.Instance.lastStopBallPos = gameObject.transform.position;
 
-        mainscript.Instance.ballShooter.isFreezing = false;
+        mainscript.Instance.ballShooter.isLocked = false;
         state = BallState.Fixed;
         this.enabled = false;
         _gameItem.ConnectToGrid();
@@ -428,12 +416,15 @@ public class Ball : MonoBehaviour
 
     public void Explode(float delayedExplodeTime, int score)
     {
-        if (grid.Row == 0)
+        if (grid)
         {
-            MissionManager.Instance.GainTargetStar(grid);
-        }
+            if (grid.Row == 0)
+            {
+                MissionManager.Instance.GainTargetStar(grid);
+            }
 
-        _gameItem.DisconnectFromGrid();
+            _gameItem.DisconnectFromGrid();
+        }
         GetComponent<CircleCollider2D>().enabled = false;    //删掉CircleCollider，防止再碰撞检测
         gameObject.layer = LayerMask.NameToLayer("ExplodedBall");   // 从ball layer移除，防止之后connect nearball时候再连上
 

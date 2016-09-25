@@ -21,6 +21,7 @@ public class GameItem : MonoBehaviour {
         Ball,
         CenterItem,
         Animal,
+        BossPlace,
         RainbowBall,
         FireBall
     }

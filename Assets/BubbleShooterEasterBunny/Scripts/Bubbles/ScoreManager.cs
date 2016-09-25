@@ -121,12 +121,15 @@ public class ScoreManager : MonoBehaviour {
     // 在Combo时候跳出来的text
     public void PopupComboScore(int value, Vector3 pos)
     {
-        Transform parent = GameObject.Find("Canvas").transform;
-        GameObject poptxt = Instantiate(popupScore, pos, Quaternion.identity) as GameObject;
-        poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
-        poptxt.transform.SetParent(parent);
-        poptxt.transform.localScale = Vector3.one;
-        Destroy(poptxt, 1);
+        if (value != 0)
+        {
+            Transform parent = GameObject.Find("Canvas").transform;
+            GameObject poptxt = Instantiate(popupScore, pos, Quaternion.identity) as GameObject;
+            poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
+            poptxt.transform.SetParent(parent);
+            poptxt.transform.localScale = Vector3.one;
+            Destroy(poptxt, 1);
+        }
     }
 
     public void PopupFallingScore(int value, Vector3 pos)

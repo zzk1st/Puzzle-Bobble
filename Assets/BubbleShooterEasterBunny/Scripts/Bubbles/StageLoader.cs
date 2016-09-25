@@ -23,17 +23,18 @@ public class StageLoader
         mainscript.Instance.currentLevel = PlayerPrefs.GetInt("OpenLevel");// TargetHolder.level;
         if (mainscript.Instance.currentLevel == 0)
             mainscript.Instance.currentLevel = 1;
-        LoadMap();
+        LoadSceneFromLevelData();
 
         MissionManager.Instance.Initialize();
         GameManager.Instance.Demo();
-        mainscript.Instance.platformController.StartGameMoveUp();
+        mainscript.Instance.platformController.StartGameMove();
         // TODO: 写一个iniitalizeBorders(), 负责border的初始化创建，注意要创建bottom border
     }
 
-    static void LoadMap()
+    static void LoadSceneFromLevelData()
     {
         LevelData levelData = mainscript.Instance.levelData;
+        List<GameObject> bossPlaces = new List<GameObject>();
 
         for( int row = 0; row < levelData.rowCount; row++ )
         {
@@ -42,13 +43,26 @@ public class StageLoader
                 LevelData.ItemType mapValue = levelData.MapData(row, col);
                 if(mapValue != LevelData.ItemType.Empty)
                 {
-                    GameItemFactory.Instance.CreateGameItemFromMap(GridManager.Instance.Grid(row, col).transform.position, mapValue);
+                    GameObject go = GameItemFactory.Instance.CreateGameItemFromMap(GridManager.Instance.Grid(row, col).transform.position, mapValue);
+                    if (mapValue == LevelData.ItemType.BossPlace)
+                    {
+                        bossPlaces.Add(go);
+                    }
                 }
                 else if(mapValue == LevelData.ItemType.Empty && levelData.stageMoveMode == StageMoveMode.Vertical && row == 0)
                 {
                     //Instantiate( Resources.Load( "Prefabs/TargetStar" ), GetSquare( i, j ).transform.position, Quaternion.identity );
                 }
             }
+        }
+
+        // 在第一个bossplace开始生成防御颜色之前，更新当前关卡颜色
+        mainscript.Instance.UpdateColorsInGame();
+
+        if (levelData.missionType == MissionType.BossBattle)
+        {
+            mainscript.Instance.SetBossPlaces(bossPlaces);
+            bossPlaces.Last().GetComponent<BossPlace>().isAlive = true;
         }
     }
 }

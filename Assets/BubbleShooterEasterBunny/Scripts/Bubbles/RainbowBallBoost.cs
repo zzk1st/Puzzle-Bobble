@@ -72,7 +72,7 @@ public class RainbowBallBoost : MonoBehaviour
         // 转动圆形关卡
         Vector2 ballVelocity = GetComponent<Rigidbody2D>().velocity;
         mainscript.Instance.platformController.Rotate(transform.position, ballVelocity);
-        mainscript.Instance.ballShooter.isFreezing = false;
+        mainscript.Instance.ballShooter.isLocked = false;
 
         // 连接grid
         _gameItem.ConnectToGrid();

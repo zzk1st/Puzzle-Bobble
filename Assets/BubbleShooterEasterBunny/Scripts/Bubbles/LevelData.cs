@@ -39,11 +39,11 @@ public class LevelData
         Violet,
         Yellow,
         Random,
-        CenterItem,
+        CenterItem,     // 圆形模式下位于关卡中央的物体
         AnimalSingle,
         AnimalTriangle,
         AnimalHexagon,
-        Boss,
+        BossPlace,
         Occupied    // 这个item表示该区域是某个大型gameItem的一部分，但并不是其中心
     }
 
@@ -60,7 +60,7 @@ public class LevelData
         {ItemType.AnimalSingle, GameItemShapeType.Single},
         {ItemType.AnimalTriangle, GameItemShapeType.Triangle},
         {ItemType.AnimalHexagon, GameItemShapeType.Hexagon},
-        {ItemType.Boss, GameItemShapeType.Hexagon}
+        {ItemType.BossPlace, GameItemShapeType.Hexagon}
     };
 
     public static int VerticalModeMaxRows = 71;
@@ -191,7 +191,7 @@ public class LevelData
                             itemTypeCounts[(int)ItemType.AnimalHexagon];
             break;
         case MissionType.BossBattle:
-            missionPoints = itemTypeCounts[(int)ItemType.Boss];
+            missionPoints = itemTypeCounts[(int)ItemType.BossPlace];
             break;
         }
     }

@@ -34,7 +34,7 @@ public class FireBallBoost : MonoBehaviour {
         if (accumulatedCollisionTimes == 2 || other.gameObject == mainscript.Instance.topBorder)
         {
             //达到碰撞上限，毁掉，同时发射器可以发射啦～
-            mainscript.Instance.ballShooter.isFreezing = false;
+            mainscript.Instance.ballShooter.isLocked = false;
             Explode();
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("FixedBall"))

@@ -114,26 +114,39 @@ public class Grid : MonoBehaviour
         //      否则，继续递归调用
         List<Grid> controlGrids = GridManager.Instance.controlGrids;
 
-        switch(mainscript.Instance.levelData.stageMoveMode)
+        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
         {
-        case StageMoveMode.Vertical:
-            if (Row == 0)
+            if (mainscript.Instance.levelData.missionType == MissionType.BossBattle)
             {
-                AddFrom(grids, controlGrids);
-                grids.Clear();
-                return true;    /// don't destroy
+                if (attachedGameItem)
+                {
+                    if (attachedGameItem.GetComponent<GameItem>().itemType == GameItem.ItemType.BossPlace)
+                    {
+                        AddFrom(grids, controlGrids);
+                        grids.Clear();
+                        return true;    /// don't destroy
+                    }
+                }
             }
-            break;
-        case StageMoveMode.Rounded:
+            else
+            {
+                if (Row == 0)
+                {
+                    AddFrom(grids, controlGrids);
+                    grids.Clear();
+                    return true;    /// don't destroy
+                }
+            }
+
+        }
+        else // StageMoveMode.Rounded
+        {
             if (Row == LevelData.CenterItemRow && Col == LevelData.CenterItemCol)
             {
                 AddFrom(grids, controlGrids);
                 grids.Clear();
                 return true;    /// don't destroy
             }
-            break;
-        default:
-            throw new System.AccessViolationException("Unexpected GameMode");
         }
 
         if (controlGrids.Contains(this))

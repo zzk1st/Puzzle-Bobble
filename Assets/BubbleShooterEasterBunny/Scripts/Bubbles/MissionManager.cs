@@ -42,6 +42,17 @@ public class MissionManager : MonoBehaviour {
         }
     }
 
+    public void GainBossPoint()
+    {
+        if (mainscript.Instance.levelData.missionType == MissionType.BossBattle)
+        {
+            _currentMissionPoints++;
+            UpdateMissionPointCounter();
+
+            checkWin();
+        }
+    }
+
     public void GainTargetStar(Grid grid)
     {
         if (mainscript.Instance.levelData.missionType == MissionType.EliminateBalls)

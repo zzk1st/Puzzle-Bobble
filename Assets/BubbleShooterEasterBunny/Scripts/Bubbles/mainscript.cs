@@ -18,6 +18,9 @@ public class mainscript : MonoBehaviour {
 	public GameObject checkBall;
     public Color currentBallShooterColor = new Color(1,0,0,1);
 
+    public Sprite[] ballColorSprites;
+    public Sprite[] ballColorHightlightSprites;
+
     public Color[] BallRGB = new[] { new Color(24 / 255f, 121 / 255f, 1, 1),
                              new Color(19 / 255f, 161 / 255f, 30 / 255f, 1),
                              new Color(224 / 255f, 52 / 255f, 0, 1),
@@ -95,8 +98,12 @@ public class mainscript : MonoBehaviour {
 
     public float ballExplosionTimeInterval;
 
+    private List<GameObject> bossPlaces;
+
     public delegate void DestroyBallsHandler();
     public event DestroyBallsHandler onBallsDestroyed;
+    public delegate void BallShooterUnlocked();
+    public event BallShooterUnlocked onBallShooterUnlocked;
 
     void Awake()
     {
@@ -160,6 +167,11 @@ public class mainscript : MonoBehaviour {
 		}
 	}
 
+    public void SetBossPlaces(List<GameObject> bp)
+    {
+        bossPlaces = bp;
+    }
+
     void ConnectAndDestroyBalls()
     {
         // 找到同色的ball并将其销毁
@@ -194,7 +206,7 @@ public class mainscript : MonoBehaviour {
         }
 
         // 每次销毁任何颜色球都要检测是否有球掉落
-        DestroyDetachedGameItems();
+        FindAndDestroyDetachedGameItems();
     }
 
     void PlayBallExplodeAudio(int ballCount)
@@ -270,7 +282,7 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-    void DestroyDetachedGameItems()
+    void FindAndDestroyDetachedGameItems()
     {
         List<GameObject> gameItemsToDrop = GridManager.Instance.FindDetachedGameItems();
 
@@ -282,6 +294,13 @@ public class mainscript : MonoBehaviour {
 
         UpdateColorsInGame();
         ballShooter.UpdateBallColors();
+        if (levelData.missionType == MissionType.BossBattle)
+        {
+            if (bossPlaces.Count > 0)
+            {
+                bossPlaces.Last().GetComponent<BossPlace>().UpdateHitColor();
+            }
+        }
     }
 
     public void UpdateColorsInGame()
@@ -411,6 +430,34 @@ public class mainscript : MonoBehaviour {
             Ball ball = ballGO.GetComponent<Ball>();
             ball.Explode(delayedExplodeTime, score);
             delayedExplodeTime += ballExplosionTimeInterval;
+        }
+    }
+
+    public void OnBallShooterUnlocked()
+    {
+        if (!ballShooter.isLocked)
+        {
+            if (onBallShooterUnlocked != null)
+            {
+                onBallShooterUnlocked();
+            }
+        }
+    }
+
+    public BallColor GetRandomCurStageColor()
+    {
+        return curStageColors[Random.Range(0, mainscript.Instance.curStageColors.Count)];
+    }
+
+    public void BossMoveToNextPlace()
+    {
+        bossPlaces.Remove(bossPlaces.Last());
+        FindAndDestroyDetachedGameItems();
+        if (bossPlaces.Count > 0)
+        {
+            // TODO: boss从一个place飞到另一个place的动画
+            GameObject nextBossPlace = bossPlaces.Last();
+            nextBossPlace.GetComponent<BossPlace>().isAlive = true;
         }
     }
 }

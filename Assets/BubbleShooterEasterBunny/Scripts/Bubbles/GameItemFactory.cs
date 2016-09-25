@@ -20,6 +20,7 @@ public class GameItemFactory : MonoBehaviour {
     public GameObject animalSinglePrefab;
     public GameObject animalTrianglePrefab;
     public GameObject animalHexagonPrefab;
+    public GameObject bossPlacePrefab;
 
     void Awake()
     {
@@ -50,6 +51,9 @@ public class GameItemFactory : MonoBehaviour {
         case LevelData.ItemType.AnimalTriangle:
         case LevelData.ItemType.AnimalHexagon:
             result = CreateAnimal(vec, itemType);
+            break;
+        case LevelData.ItemType.BossPlace:
+            result = CreateBossPlace(vec, itemType);
             break;
         default:
             Debug.Log("ERROR: unknown itemType, itemType=" + itemType);
@@ -105,7 +109,7 @@ public class GameItemFactory : MonoBehaviour {
         }
         else
         {
-            itemType = (LevelData.ItemType)mainscript.Instance.curStageColors[Random.Range(0, mainscript.Instance.curStageColors.Count)];
+            itemType = (LevelData.ItemType) mainscript.Instance.GetRandomCurStageColor();
         }
 
         ball = Instantiate(ballPrefab, transform.position, transform.rotation) as GameObject;
@@ -164,16 +168,14 @@ public class GameItemFactory : MonoBehaviour {
         return ball;
     }
 
-    public GameObject CreateCenterItem(Vector3 vec, LevelData.ItemType itemType)
+    GameObject CreateCenterItem(Vector3 vec, LevelData.ItemType itemType)
     {
-        GameObject centerItem = Instantiate(centerItemPrefab, transform.position, transform.rotation) as GameObject;
-        centerItem.transform.position = vec;
-        centerItem.GetComponent<GameItem>().ConnectToGrid();
+        GameObject centerItem = Instantiate(centerItemPrefab, vec, transform.rotation) as GameObject;
         centerItem.GetComponent<CenterItem>().Initialize();
         return centerItem;
     }
 
-    public GameObject CreateAnimal(Vector3 vec, LevelData.ItemType itemType)
+    GameObject CreateAnimal(Vector3 vec, LevelData.ItemType itemType)
     {
         GameObject animalPrefab;
         switch(itemType)
@@ -191,10 +193,15 @@ public class GameItemFactory : MonoBehaviour {
             throw new System.AccessViolationException("未知的AnimalType!");
         }
 
-        GameObject animal = Instantiate(animalPrefab, transform.position, transform.rotation) as GameObject;
-        animal.transform.position = vec;
-        animal.GetComponent<GameItem>().ConnectToGrid();
+        GameObject animal = Instantiate(animalPrefab, vec, transform.rotation) as GameObject;
         animal.GetComponent<Animal>().Initialize();
         return animal;
+    }
+
+    GameObject CreateBossPlace(Vector3 vec, LevelData.ItemType itemType)
+    {
+        GameObject bossPlace = Instantiate(bossPlacePrefab, vec, transform.rotation) as GameObject;
+        bossPlace.GetComponent<BossPlace>().Initialize();
+        return bossPlace;
     }
 }

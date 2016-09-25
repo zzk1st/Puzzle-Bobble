@@ -175,7 +175,7 @@ public class PlatformController : MonoBehaviour
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.kreakWheel );
     }
 
-    public void StartGameMoveUp()
+    public void StartGameMove()
     {
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
         {
