@@ -38,6 +38,7 @@ public class Pot : MonoBehaviour {
 
         int potScore = ScoreManager.Instance.UpdatePotScore(score);
         ScoreManager.Instance.PopupPotScore( potScore, transform.position + Vector3.up );
+        SoundManager.Instance.Play(SoundSeqType.BallFallInPot);
         /*
         StartCoroutine( SoundsCounter() );
         if( mainscript.Instance.potSounds < 4 )
