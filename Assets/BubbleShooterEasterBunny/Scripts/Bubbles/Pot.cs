@@ -4,12 +4,15 @@ using UnityEngine.UI;
 
 public class Pot : MonoBehaviour {
     public int score;
-    private PotLight potLight;
-    public GameObject splashPrefab;
+    private Animation lightAnim;
+    private Animator splashAnimator;
+    private int idleStateHash = Animator.StringToHash("Base.Idle");
+    private int playHash = Animator.StringToHash("Play");
 
     void Start()
     {
-        potLight = transform.FindChild("Light").GetComponent<PotLight>();
+        lightAnim = transform.FindChild("Light").GetComponent<Animation>();
+        splashAnimator = transform.FindChild("Splash").GetComponent<Animator>();
     }
 
     void OnCollisionEnter2D(Collision2D coll)
@@ -34,7 +37,12 @@ public class Pot : MonoBehaviour {
     void PlaySplashAnim(Ball ball)
     {
         ball.SplashDestroy();
-        potLight.Flash();
+
+        if (!lightAnim.isPlaying && splashAnimator.GetCurrentAnimatorStateInfo(0).fullPathHash == idleStateHash)
+        {
+            lightAnim.Play();
+            splashAnimator.SetTrigger(playHash);
+        }
 
         int potScore = ScoreManager.Instance.UpdatePotScore(score);
         ScoreManager.Instance.PopupPotScore( potScore, transform.position + Vector3.up );
