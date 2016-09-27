@@ -89,13 +89,16 @@ public class Bug : MonoBehaviour {
         {
             StartCoroutine( SoundsCounter() );
             if( mainscript.Instance.bugSounds < 5)
+            {
                 SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.bug );
+            }
             col.collider.GetComponent<Ball>().HitBug++;
             int bugScore = ScoreManager.Instance.UpdateBugScore(col.collider.GetComponent<Ball>().HitBug * score * (color + 1));
             ScoreManager.Instance.PopupComboScore( bugScore, transform.position);
             StartCoroutine( StartAnim( col.collider.transform.position ) );
             if( color == 2 )
-            {SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[5]);
+            {
+                SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[5]);
                 ChangeColor( 1 );
                 GameObject ball = GameItemFactory.Instance.CreateFixedBall(transform.position + Vector3.up * 1);
                 ball.GetComponent<Ball>().StartFall();

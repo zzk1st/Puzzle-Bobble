@@ -4,31 +4,50 @@ using UnityEngine.UI;
 
 public class Pot : MonoBehaviour {
     public int score;
-    public Text label;
-    public GameObject splashPrefab;
+    private Animation lightAnim;
+    private Animator splashAnimator;
+    private int idleStateHash = Animator.StringToHash("Base.Idle");
+    private int playHash = Animator.StringToHash("Play");
 
-    // Use this for initialization
-    void Start () {
-	
-	}
-
-    void OnCollisionEnter2D(Collision2D col)
+    void Start()
     {
-        if (col.gameObject.name.Contains("ball"))
-        {
-            col.gameObject.GetComponent<Ball>().SplashDestroy();
-            // 只对掉落的球做加分和碰撞
-            if (col.gameObject.GetComponent<Ball>().state == Ball.BallState.Dropped)
-            {
-                col.gameObject.GetComponent<Rigidbody2D>().isKinematic = true;
-                col.gameObject.GetComponent<Collider2D>().enabled = false;
-                PlaySplash(col.contacts[0].point);
-            }
-        }
+        lightAnim = transform.FindChild("Light").GetComponent<Animation>();
+        splashAnimator = transform.FindChild("Splash").GetComponent<Animator>();
     }
 
-    void PlaySplash(Vector2 pos)
+    void OnCollisionEnter2D(Collision2D coll)
     {
+        OnTriggerEnter2D(coll.collider);
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        GameObject otherGO = other.gameObject;
+        if (otherGO.GetComponent<GameItem>().itemType == GameItem.ItemType.Ball)
+        {
+            Ball ball = otherGO.GetComponent<Ball>();
+            if (ball.state == Ball.BallState.Dropped)
+            {
+                PlaySplashAnim(ball);
+            }
+        }
+                
+    }
+
+    void PlaySplashAnim(Ball ball)
+    {
+        ball.SplashDestroy();
+
+        if (!lightAnim.isPlaying && splashAnimator.GetCurrentAnimatorStateInfo(0).fullPathHash == idleStateHash)
+        {
+            lightAnim.Play();
+            splashAnimator.SetTrigger(playHash);
+        }
+
+        int potScore = ScoreManager.Instance.UpdatePotScore(score);
+        ScoreManager.Instance.PopupPotScore( potScore, transform.position + Vector3.up );
+        SoundManager.Instance.Play(SoundSeqType.BallFallInPot);
+        /*
         StartCoroutine( SoundsCounter() );
         if( mainscript.Instance.potSounds < 4 )
             SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.pops );
@@ -36,8 +55,7 @@ public class Pot : MonoBehaviour {
         GameObject splash = (GameObject)Instantiate(splashPrefab, transform.position + Vector3.up * 0.9f + Vector3.left * 0.35f, Quaternion.identity);
         Destroy(splash, 2f);
 
-        int potScore = ScoreManager.Instance.UpdatePotScore(score);
-        ScoreManager.Instance.PopupPotScore( potScore, transform.position + Vector3.up );
+        */
     }
 
     IEnumerator SoundsCounter()
@@ -46,10 +64,4 @@ public class Pot : MonoBehaviour {
         yield return new WaitForSeconds( 0.2f );
         mainscript.Instance.potSounds--;
     }
-
-	
-	// Update is called once per frame
-	void Update () {
-        label.text = "" + score * ScoreManager.DoubleScore;
-	}
 }
