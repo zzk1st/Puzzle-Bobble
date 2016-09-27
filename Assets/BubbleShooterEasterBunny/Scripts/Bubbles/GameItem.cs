@@ -23,7 +23,8 @@ public class GameItem : MonoBehaviour {
         Animal,
         BossPlace,
         RainbowBall,
-        FireBall
+        FireBall,
+        MagicBall
     }
 
     public ItemType itemType;

@@ -58,6 +58,15 @@ public class BallShooter : MonoBehaviour {
         }
     }
 
+    public GameObject CartridgeBall
+    {
+        get { return cartridgeBall; }
+        set
+        {
+            cartridgeBall = value;
+        }
+    }
+
     float bottomBorderY;  //低于此线就不能发射球
     public float launchForce;   // 发射力度
 

@@ -16,6 +16,7 @@ public class GameItemFactory : MonoBehaviour {
     public GameObject ballPrefab;
     public GameObject rainbowBallPrefab;
     public GameObject fireBallPrefab;
+    public GameObject magicBallPrefab;
     public GameObject centerItemPrefab;
     public GameObject animalSinglePrefab;
     public GameObject animalTrianglePrefab;
@@ -71,6 +72,8 @@ public class GameItemFactory : MonoBehaviour {
             return CreateRainbowBallBoost(pos);
         case BoostType.FireBallBoost:
             return CreateFireBallBoost(pos);
+        case BoostType.MagicBallBoost:
+            return CreateMagicBallBoost(pos);
         }
 
         throw new System.AccessViolationException("未知特殊道具！");
@@ -95,6 +98,15 @@ public class GameItemFactory : MonoBehaviour {
         ball.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
         ball.GetComponent<FireBallBoost>().Initialize();
 
+        return ball;
+    }
+
+    GameObject CreateMagicBallBoost(Vector3 vec)
+    {
+        GameObject ball = null;
+
+        ball = Instantiate(magicBallPrefab, transform.position, transform.rotation) as GameObject;
+        ball.transform.position = new Vector3(vec.x, vec.y, ball.transform.position.z);
         return ball;
     }
 
