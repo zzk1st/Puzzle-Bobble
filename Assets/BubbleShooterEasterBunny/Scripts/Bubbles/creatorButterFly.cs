@@ -16,10 +16,12 @@ public class creatorButterFly : MonoBehaviour {
 	
 	}
 	
+    /*
 	public void createButterFly(int revertButterFly){
 		GameObject b = Instantiate(thePrefab, thePrefab.transform.position, transform.rotation) as GameObject;
 		b.GetComponent<butterfly>().revertButterFly = revertButterFly;
 		b.transform.Rotate(new Vector3(0f, 0f, 0f));
 	}
+*/
 
 }
