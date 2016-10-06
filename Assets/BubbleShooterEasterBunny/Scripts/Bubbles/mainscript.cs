@@ -34,6 +34,7 @@ public class mainscript : MonoBehaviour {
 	public bool isPaused;
 	public bool noSound;
 	public bool gameOver;
+    public bool scored;
 	public GameObject ElectricLiana;
 	public static bool ElectricBoost;
 
@@ -181,6 +182,7 @@ public class mainscript : MonoBehaviour {
 
         if (ballsToDelete.Count >= 3)
         {
+            scored = true;
             DestroyFixedBalls(ballsToDelete);
         }
         else

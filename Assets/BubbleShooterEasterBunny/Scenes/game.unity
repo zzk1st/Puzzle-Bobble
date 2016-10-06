@@ -435,6 +435,7 @@ MonoBehaviour:
   isPaused: 0
   noSound: 0
   gameOver: 0
+  scored: 0
   ElectricLiana: {fileID: 0}
   TopBorder: {fileID: 1502360742}
   curStageColors: 
@@ -4143,6 +4144,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1758604053}
   m_RootOrder: 1
+--- !u!1 &459605679 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 193970, guid: 12244117eb5901f4fac41d4006a6f471, type: 2}
+  m_PrefabInternal: {fileID: 1760191597}
+--- !u!95 &459605680
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 459605679}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0ca06ae6da25e5944be1df38ac3d6ac5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &468197576
 GameObject:
   m_ObjectHideFlags: 0
@@ -13595,6 +13617,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 1962547453}
   - 212: {fileID: 1962547454}
+  - 95: {fileID: 1962547455}
+  - 114: {fileID: 1962547456}
   m_Layer: 0
   m_Name: Bear
   m_TagString: Untagged
@@ -13645,6 +13669,34 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+--- !u!95 &1962547455
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1962547452}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5033f328af8bbf54b8ca7913a408d9cd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &1962547456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1962547452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ed687478a2953840b36fb94b0c7beb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1968998540
 GameObject:
   m_ObjectHideFlags: 0
