@@ -422,6 +422,22 @@ MonoBehaviour:
   - {fileID: 21300046, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   - {fileID: 21300028, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   - {fileID: 21300032, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
+  animalSingleSprites:
+  - {fileID: 21300018, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
+  - {fileID: 21300020, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
+  - {fileID: 21300022, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
+  - {fileID: 21300024, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
+  animalSingleShellSprite: {fileID: 21300010, guid: 008365a7baf27104799b3a24e8d34748,
+    type: 3}
+  animalHexSprites:
+  - {fileID: 21300026, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
+  - {fileID: 21300028, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
+  - {fileID: 21300030, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
+  - {fileID: 21300032, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
+  - {fileID: 21300034, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
+  - {fileID: 21300036, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
+  animalHexShellSprite: {fileID: 21300012, guid: 008365a7baf27104799b3a24e8d34748,
+    type: 3}
   BallRGB:
   - {r: 0.09411765, g: 0.4745098, b: 1, a: 1}
   - {r: 0.07450981, g: 0.6313726, b: 0.11764706, a: 1}
@@ -2816,9 +2832,9 @@ MonoBehaviour:
   fireBallPrefab: {fileID: 140768, guid: 879a060fccdb04ca4bd205c814cc92d6, type: 2}
   magicBallPrefab: {fileID: 117734, guid: bed8a9c9b765ee84f97d0a8ddb2ab2ee, type: 2}
   centerItemPrefab: {fileID: 185498, guid: 681dec1489c6349699a4a694785fe695, type: 2}
-  animalSinglePrefab: {fileID: 199126, guid: bdaaba8e6bcbc408993c6fe8f127eda1, type: 2}
+  animalSinglePrefab: {fileID: 116580, guid: 6742c9e10fba1db4ea86ff1e476711e8, type: 2}
   animalTrianglePrefab: {fileID: 116314, guid: 22f20f970f2fa4e30b25b27b4dd4a3b7, type: 2}
-  animalHexagonPrefab: {fileID: 193736, guid: 30538c41c087342e6b3d94bd9a13b2fc, type: 2}
+  animalHexagonPrefab: {fileID: 121700, guid: 1980d03490f1e004393030f86316f456, type: 2}
   bossPlacePrefab: {fileID: 113922, guid: 601b00cac45544c7295a704ab7347228, type: 2}
 --- !u!1 &151206853
 GameObject:
@@ -3036,7 +3052,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: m_RootOrder
-      value: 16
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 8200000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: panLevelCustomCurve.m_RotationOrder
@@ -3935,7 +3951,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 402878, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: m_RootOrder
-      value: 14
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.data[7]
@@ -7873,7 +7889,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22467632, guid: c7142a40a2133bd4685984d1f85e750c, type: 2}
       propertyPath: m_RootOrder
-      value: 18
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 22467632, guid: c7142a40a2133bd4685984d1f85e750c, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -9161,7 +9177,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 484928, guid: 7d028e4fec77cab4e926e4b65414b360, type: 2}
       propertyPath: m_RootOrder
-      value: 15
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 8280496, guid: 7d028e4fec77cab4e926e4b65414b360, type: 2}
       propertyPath: m_audioClip
@@ -12703,7 +12719,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22477102, guid: 12244117eb5901f4fac41d4006a6f471, type: 2}
       propertyPath: m_RootOrder
-      value: 17
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 22477102, guid: 12244117eb5901f4fac41d4006a6f471, type: 2}
       propertyPath: m_AnchoredPosition.x

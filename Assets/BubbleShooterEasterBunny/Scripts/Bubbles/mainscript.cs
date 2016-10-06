@@ -20,6 +20,10 @@ public class mainscript : MonoBehaviour {
 
     public Sprite[] ballColorSprites;
     public Sprite[] ballColorHightlightSprites;
+    public Sprite[] animalSingleSprites;
+    public Sprite animalSingleShellSprite;
+    public Sprite[] animalHexSprites;
+    public Sprite animalHexShellSprite;
 
     public Color[] BallRGB = new[] { new Color(24 / 255f, 121 / 255f, 1, 1),
                              new Color(19 / 255f, 161 / 255f, 30 / 255f, 1),

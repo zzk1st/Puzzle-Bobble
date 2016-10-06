@@ -10,6 +10,8 @@ public class StageLoader
     // Use this for initialization
     public static void Load()
     {
+        //YZH TODO: delete the following one line.
+        mainscript.Instance.currentLevel = 11;
         mainscript.Instance.levelData.LoadLevel(mainscript.Instance.currentLevel);
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
         {
