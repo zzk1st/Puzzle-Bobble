@@ -79,6 +79,7 @@ public class mainscript : MonoBehaviour {
     public GameObject[] boosts;
     public GameObject[] locksBoosts;
     public GameObject FireEffect;
+    public GameObject black_back;
 
     public GameObject arrows;
     private int maxCols;
