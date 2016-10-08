@@ -207,6 +207,7 @@ public class GameItemFactory : MonoBehaviour {
 
         GameObject animal = Instantiate(animalPrefab, vec, transform.rotation) as GameObject;
         animal.GetComponent<Animal>().Initialize();
+        animal.GetComponent<Animal>().SetSprite(itemType);
         return animal;
     }
 
