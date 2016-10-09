@@ -42,6 +42,8 @@ public class Ball : MonoBehaviour
         }
     }
 
+    public bool coveredBySmoke; // 一个smoke ball必须是fixed状态，本身在没露面之前不参加任何消色反应
+
     public Grid grid
     {
         get { return _gameItem.centerGrid; }
@@ -70,6 +72,7 @@ public class Ball : MonoBehaviour
     private float ballFallRotationSpeed = 0.0f;
     private float ballFallRotationSpeedRange = 600f;
 
+    public GameObject ballSmokePrefab;
 
     private int hitBug;
     public int HitBug
@@ -81,20 +84,76 @@ public class Ball : MonoBehaviour
         }
     }
 
+    private GameObject ballSmokeGO;
     private GameObject ballHighlightGO;
     private GameObject ballPicGO;
 
+    private int removeSmokeHash = Animator.StringToHash("RemoveSmoke");
+
     public PhysicsMaterial2D fallingBallMaterial;
 
-    // 初始化方法，在instantiate后手动调用
-    public void Initialize()
+    void SetupNewBall(LevelGameItem levelGameItem)
     {
+        GetComponent<CircleCollider2D>().radius = mainscript.Instance.BallColliderRadius;
+        GetComponent<CircleCollider2D>().isTrigger = false;
+        GetComponent<Ball>().number = UnityEngine.Random.Range(1, 6);
+        GetComponent<Ball>().coveredBySmoke = false;
+
+        // Rigidbody2D在createBall里程序化的被加入
+        gameObject.layer = LayerMask.NameToLayer("NewBall");
+        transform.parent = Camera.main.transform;
+        Rigidbody2D rig = gameObject.AddComponent<Rigidbody2D>();
+        rig.gravityScale = 0;
+        GetComponent<CircleCollider2D>().enabled = false;
+    }
+
+    void SetupFixedBall(LevelGameItem levelGameItem)
+    {
+        // 设置collider属性
+        CircleCollider2D coll = GetComponent<CircleCollider2D>();
+        coll.radius = mainscript.Instance.LineColliderRadius;
+        coll.offset = Vector2.zero;
+        coll.isTrigger = true;
+        // 设置ball属性
+        number = UnityEngine.Random.Range(1, 6);
+        state = Ball.BallState.Fixed;
+        enabled = false;
+        coveredBySmoke = levelGameItem.isCoveredBySmoke;
+
+        // 设置烟雾
+        if (coveredBySmoke)
+        {
+            GameObject ballSmoke = Instantiate(ballSmokePrefab, transform.position, transform.rotation) as GameObject;
+            ballSmoke.transform.parent = transform;
+            ballSmokeGO = ballSmoke;
+        }
+
+        GetComponent<GameItem>().ConnectToGrid();
+    }
+
+    // 初始化方法，在instantiate后手动调用
+    public void Initialize(LevelGameItem levelGameItem, bool newBall = false)
+    {
+        GameObject[] fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
+        gameObject.name = gameObject.name + fixedBalls.Length.ToString();
+
         // 初始化references
         _gameItem = gameObject.GetComponent<GameItem>();
         _gameItem.startFallFunc = StartFall;
         _gameItem.fireFunc = Fire;
-        ballHighlightGO = transform.GetChild(0).gameObject;
-        ballPicGO = transform.GetChild(1).gameObject;
+        ballHighlightGO = transform.FindChild("BallHighlight").gameObject;
+        ballPicGO = transform.FindChild("BallPic").gameObject;
+
+        if (newBall)
+        {
+            SetupNewBall(levelGameItem);
+        }
+        else
+        {
+            SetupFixedBall(levelGameItem);
+        }
+
+        SetTypeAndColor(levelGameItem.type);
     }
 
     // Use this for initialization
@@ -104,7 +163,7 @@ public class Ball : MonoBehaviour
         destroyBoarderY = GameObject.Find("DestroyBorder").transform.position.y; //获取生死线的Y坐标
     }
 
-    public void SetTypeAndColor(LevelData.ItemType itemType)
+    public void SetTypeAndColor(LevelItemType itemType)
     {
         color = (BallColor)itemType;
         gameObject.tag = "" + color;
@@ -175,14 +234,46 @@ public class Ball : MonoBehaviour
         return b2;
     }
 
+    public void RemoveAdjacentBallsSmoke()
+    {
+        if (state != BallState.Fixed)
+            return;
+        
+        foreach (GameObject nearbyGameItem in grid.GetAdjacentGameItems())
+        {
+            GameItem gameItem = nearbyGameItem.GetComponent<GameItem>();
+            if (gameItem.itemType == GameItem.ItemType.Ball)
+            {
+                nearbyGameItem.GetComponent<Ball>().RemoveSmoke();
+            }
+        }
+    }
+
+    void RemoveSmoke()
+    {
+        if (coveredBySmoke)
+        {
+            coveredBySmoke = false;
+            ballSmokeGO.transform.SetParent(transform.root);
+            ballSmokeGO.transform.GetChild(0).GetComponent<Animator>().SetTrigger(removeSmokeHash);
+            Destroy(ballSmokeGO, 1);
+        }
+    }
+
     public void CheckNextNearestColor(List<GameObject> results)
     {
-        foreach (GameObject nearbyBall in grid.GetAdjacentGameItems())
+        foreach (GameObject nearbyGameItem in grid.GetAdjacentGameItems())
         {
-            if (nearbyBall.tag == tag && !FindInArray(results, nearbyBall))
+            GameItem gameItem = nearbyGameItem.GetComponent<GameItem>();
+            if (gameItem.itemType == GameItem.ItemType.Ball)
             {
-                results.Add(nearbyBall);
-                nearbyBall.GetComponent<Ball>().CheckNextNearestColor(results);
+                Ball ball = nearbyGameItem.GetComponent<Ball>();
+                // 只有非烟雾彩球
+                if (!ball.coveredBySmoke && nearbyGameItem.tag == tag && !FindInArray(results, nearbyGameItem))
+                {
+                    results.Add(nearbyGameItem);
+                    ball.CheckNextNearestColor(results);
+                }
             }
         }
     }
@@ -241,6 +332,8 @@ public class Ball : MonoBehaviour
         coll.enabled = true;
         coll.radius = mainscript.Instance.BallRealRadius; // 这里我们要将ball碰撞半径扩大，增加和蜘蛛碰撞效果
         coll.isTrigger = false;
+
+        RemoveSmoke();
     }
 
     void PlayHitAnim()
@@ -416,6 +509,8 @@ public class Ball : MonoBehaviour
 
     public void Explode(float delayedExplodeTime, int score)
     {
+        // 只要是爆炸的球，就应该自动清楚周围球的烟雾
+        RemoveAdjacentBallsSmoke();
         if (grid)
         {
             if (grid.Row == 0)
@@ -459,8 +554,8 @@ public class Ball : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         // 播放完膨胀的动画之后让球及其高光都不再显示
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-        transform.GetChild(1).GetComponent<SpriteRenderer>().enabled = false;
+        ballHighlightGO.GetComponent<SpriteRenderer>().enabled = false;
+        ballPicGO.GetComponent<SpriteRenderer>().enabled = false;
 
         // TODO: 播放爆炸的动画，注意：1. 爆炸之后要销毁 2. 爆炸应挂在当前grid下面
 

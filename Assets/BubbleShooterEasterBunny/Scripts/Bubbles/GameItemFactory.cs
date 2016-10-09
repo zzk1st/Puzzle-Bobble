@@ -14,6 +14,7 @@ public class GameItemFactory : MonoBehaviour {
     static public GameItemFactory Instance;
 
     public GameObject ballPrefab;
+    public GameObject ballSmokePrefab;
     public GameObject rainbowBallPrefab;
     public GameObject fireBallPrefab;
     public GameObject magicBallPrefab;
@@ -28,36 +29,36 @@ public class GameItemFactory : MonoBehaviour {
         Instance = this;
     }
 
-    public GameObject CreateGameItemFromMap(Vector3 vec, LevelData.ItemType itemType)
+    public GameObject CreateGameItemFromMap(Vector3 vec, LevelGameItem levelGameItem)
     {
         GameObject result = null;
 
-        switch(itemType)
+        switch(levelGameItem.type)
         {
-        case LevelData.ItemType.Empty:
-        case LevelData.ItemType.Occupied:
+        case LevelItemType.Empty:
+        case LevelItemType.Occupied:
             break;
-        case LevelData.ItemType.Blue:
-        case LevelData.ItemType.Green:
-        case LevelData.ItemType.Red:
-        case LevelData.ItemType.Violet:
-        case LevelData.ItemType.Yellow:
-        case LevelData.ItemType.Random:
-            result = CreateFixedBall(vec, itemType);
+        case LevelItemType.Blue:
+        case LevelItemType.Green:
+        case LevelItemType.Red:
+        case LevelItemType.Violet:
+        case LevelItemType.Yellow:
+        case LevelItemType.Random:
+            result = CreateFixedBall(vec, levelGameItem);
             break;
-        case LevelData.ItemType.CenterItem:
-            result = CreateCenterItem(vec, itemType);
+        case LevelItemType.CenterItem:
+            result = CreateCenterItem(vec, levelGameItem);
             break;
-        case LevelData.ItemType.AnimalSingle:
-        case LevelData.ItemType.AnimalTriangle:
-        case LevelData.ItemType.AnimalHexagon:
-            result = CreateAnimal(vec, itemType);
+        case LevelItemType.AnimalSingle:
+        case LevelItemType.AnimalTriangle:
+        case LevelItemType.AnimalHexagon:
+            result = CreateAnimal(vec, levelGameItem);
             break;
-        case LevelData.ItemType.BossPlace:
-            result = CreateBossPlace(vec, itemType);
+        case LevelItemType.BossPlace:
+            result = CreateBossPlace(vec, levelGameItem);
             break;
         default:
-            Debug.Log("ERROR: unknown itemType, itemType=" + itemType);
+            Debug.Log("ERROR: unknown itemType, itemType=" + levelGameItem);
             break;
         }
 
@@ -114,34 +115,19 @@ public class GameItemFactory : MonoBehaviour {
     {
         GameObject ball = null;
 
-        LevelData.ItemType itemType = LevelData.ItemType.Empty;
+        LevelGameItem levelGameItem = new LevelGameItem(LevelItemType.Empty);
         if (GameManager.Instance.gameStatus == GameStatus.Win)
         {
-            itemType = mainscript.Instance.levelData.ballColors[Random.Range(0, mainscript.Instance.levelData.ballColors.Count)];
+            levelGameItem.type = mainscript.Instance.levelData.ballColors[Random.Range(0, mainscript.Instance.levelData.ballColors.Count)];
         }
         else
         {
-            itemType = (LevelData.ItemType) mainscript.Instance.GetRandomCurStageColor();
+            levelGameItem.type = (LevelItemType) mainscript.Instance.GetRandomCurStageColor();
         }
 
         ball = Instantiate(ballPrefab, transform.position, transform.rotation) as GameObject;
         ball.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
-        ball.GetComponent<Ball>().Initialize();
-
-        ball.GetComponent<CircleCollider2D>().radius = mainscript.Instance.BallColliderRadius;
-        ball.GetComponent<CircleCollider2D>().isTrigger = false;
-        ball.GetComponent<Ball>().SetTypeAndColor(itemType);
-        ball.GetComponent<Ball>().number = UnityEngine.Random.Range(1, 6);
-
-        GameObject[] fixedBalls = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
-        ball.name = ball.name + fixedBalls.Length.ToString();
-
-        // Rigidbody2D在createBall里程序化的被加入
-        ball.gameObject.layer = LayerMask.NameToLayer("NewBall");
-        ball.transform.parent = Camera.main.transform;
-        Rigidbody2D rig = ball.AddComponent<Rigidbody2D>();
-        ball.GetComponent<CircleCollider2D>().enabled = false;
-        rig.gravityScale = 0;
+        ball.GetComponent<Ball>().Initialize(levelGameItem, true);
 
         if(playAnimation)
         {
@@ -151,54 +137,37 @@ public class GameItemFactory : MonoBehaviour {
         return ball;
     }
 
-    public GameObject CreateFixedBall(Vector3 vec, LevelData.ItemType itemType = LevelData.ItemType.Random)
+    public GameObject CreateFixedBall(Vector3 vec, LevelGameItem levelGameItem)
     {
-        GameObject ball = null;
+        if( levelGameItem.type == LevelItemType.Random)
+            levelGameItem.type = (LevelItemType) mainscript.Instance.levelData.ballColors[UnityEngine.Random.Range(0, mainscript.Instance.levelData.ballColors.Count)];
 
-        if( itemType == LevelData.ItemType.Random)
-            itemType = (LevelData.ItemType) mainscript.Instance.levelData.ballColors[UnityEngine.Random.Range(0, mainscript.Instance.levelData.ballColors.Count)];
+        GameObject ballGO = Instantiate(ballPrefab, transform.position, transform.rotation) as GameObject;
+        ballGO.transform.position = new Vector3( vec.x, vec.y, ballGO.transform.position.z );
 
-        ball = Instantiate(ballPrefab, transform.position, transform.rotation) as GameObject;
-        ball.transform.position = new Vector3( vec.x, vec.y, ball.transform.position.z );
-        ball.GetComponent<Ball>().Initialize();
-
-        // 设置collider, state和其他基本属性
-        ball.GetComponent<CircleCollider2D>().radius = mainscript.Instance.LineColliderRadius;
-        ball.GetComponent<CircleCollider2D>().offset = Vector2.zero;
-        ball.GetComponent<CircleCollider2D>().isTrigger = true;
-        ball.GetComponent<Ball>().SetTypeAndColor(itemType);
-        ball.GetComponent<Ball>().number = UnityEngine.Random.Range(1, 6);
-        ball.GetComponent<Ball>().state = Ball.BallState.Fixed;
-        ball.GetComponent<Ball>().enabled = false;
-
-        // 设置名字
-        GameObject[] fixedBalls = GameObject.FindObjectsOfType( typeof( GameObject ) ) as GameObject[];
-        ball.name = ball.name + fixedBalls.Length.ToString();
-
-        ball.GetComponent<GameItem>().ConnectToGrid();
-
-        return ball;
+        ballGO.GetComponent<Ball>().Initialize(levelGameItem);
+        return ballGO;
     }
 
-    GameObject CreateCenterItem(Vector3 vec, LevelData.ItemType itemType)
+    GameObject CreateCenterItem(Vector3 vec, LevelGameItem levelGameItem)
     {
         GameObject centerItem = Instantiate(centerItemPrefab, vec, transform.rotation) as GameObject;
         centerItem.GetComponent<CenterItem>().Initialize();
         return centerItem;
     }
 
-    GameObject CreateAnimal(Vector3 vec, LevelData.ItemType itemType)
+    GameObject CreateAnimal(Vector3 vec, LevelGameItem levelGameItem)
     {
         GameObject animalPrefab;
-        switch(itemType)
+        switch(levelGameItem.type)
         {
-        case LevelData.ItemType.AnimalSingle:
+        case LevelItemType.AnimalSingle:
             animalPrefab = animalSinglePrefab;
             break;
-        case LevelData.ItemType.AnimalTriangle:
+        case LevelItemType.AnimalTriangle:
             animalPrefab = animalTrianglePrefab;
             break;
-        case LevelData.ItemType.AnimalHexagon:
+        case LevelItemType.AnimalHexagon:
             animalPrefab = animalHexagonPrefab;
             break;
         default:
@@ -207,11 +176,11 @@ public class GameItemFactory : MonoBehaviour {
 
         GameObject animal = Instantiate(animalPrefab, vec, transform.rotation) as GameObject;
         animal.GetComponent<Animal>().Initialize();
-        animal.GetComponent<Animal>().SetSprite(itemType);
+        animal.GetComponent<Animal>().SetSprite(levelGameItem.type);
         return animal;
     }
 
-    GameObject CreateBossPlace(Vector3 vec, LevelData.ItemType itemType)
+    GameObject CreateBossPlace(Vector3 vec, LevelGameItem levelGameItem)
     {
         GameObject bossPlace = Instantiate(bossPlacePrefab, vec, transform.rotation) as GameObject;
         bossPlace.GetComponent<BossPlace>().Initialize();

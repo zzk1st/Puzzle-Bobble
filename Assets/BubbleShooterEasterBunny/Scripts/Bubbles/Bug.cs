@@ -100,7 +100,7 @@ public class Bug : MonoBehaviour {
             {
                 SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[5]);
                 ChangeColor( 1 );
-                GameObject ball = GameItemFactory.Instance.CreateFixedBall(transform.position + Vector3.up * 1);
+                GameObject ball = GameItemFactory.Instance.CreateFixedBall(transform.position + Vector3.up * 1, new LevelGameItem(LevelItemType.Random));
                 ball.GetComponent<Ball>().StartFall();
             }
         }

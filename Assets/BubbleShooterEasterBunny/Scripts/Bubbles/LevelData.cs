@@ -28,39 +28,82 @@ public enum MissionType
     BossBattle
 }
 
-public class LevelData
+public enum LevelItemType
 {
-    public enum ItemType
+    Empty = 0,
+    Blue,
+    Green,
+    Red,
+    Violet,
+    Yellow,
+    Random,
+    CenterItem,     // 圆形模式下位于关卡中央的物体
+    AnimalSingle,
+    AnimalTriangle,
+    AnimalHexagon,
+    BossPlace,
+    Occupied    // 这个item表示该区域是某个大型gameItem的一部分，但并不是其中心
+}
+
+public class LevelGameItem
+{
+    public LevelGameItem(LevelItemType type, bool isCoverebBySmoke = false)
     {
-        Empty = 0,
-        Blue,
-        Green,
-        Red,
-        Violet,
-        Yellow,
-        Random,
-        CenterItem,     // 圆形模式下位于关卡中央的物体
-        AnimalSingle,
-        AnimalTriangle,
-        AnimalHexagon,
-        BossPlace,
-        Occupied    // 这个item表示该区域是某个大型gameItem的一部分，但并不是其中心
+        this.type = type;
+        this.isCoveredBySmoke = isCoverebBySmoke;
     }
 
-    public Dictionary<ItemType, GameItemShapeType> itemShapeTypes =  new Dictionary<ItemType, GameItemShapeType>
+    public LevelGameItem(string str)
     {
-        {ItemType.Empty, GameItemShapeType.Single},
-        {ItemType.Blue, GameItemShapeType.Single},
-        {ItemType.Green, GameItemShapeType.Single},
-        {ItemType.Red, GameItemShapeType.Single},
-        {ItemType.Violet, GameItemShapeType.Single},
-        {ItemType.Yellow, GameItemShapeType.Single},
-        {ItemType.Random, GameItemShapeType.Single},
-        {ItemType.CenterItem, GameItemShapeType.Single},
-        {ItemType.AnimalSingle, GameItemShapeType.Single},
-        {ItemType.AnimalTriangle, GameItemShapeType.Triangle},
-        {ItemType.AnimalHexagon, GameItemShapeType.Hexagon},
-        {ItemType.BossPlace, GameItemShapeType.Hexagon}
+        string[] fields = str.Trim().Split(',');
+        if (fields.Length > 2)
+        {
+            throw new System.AccessViolationException("LevelData game item doesn't have 2 fields!");
+        }
+        else if (fields.Length == 2)
+        {
+            this.type = (LevelItemType) int.Parse(fields[0]);
+            this.isCoveredBySmoke = bool.Parse(fields[1]);
+        }
+        else
+        {
+            this.type = (LevelItemType) int.Parse(str);
+            this.isCoveredBySmoke = false;
+        }
+    }
+
+    public string ToMapData()
+    {
+        if (isCoveredBySmoke)
+        {
+            return ((int) type).ToString() + "," + isCoveredBySmoke.ToString();
+        }
+        else
+        {
+            return ((int) type).ToString();
+        }
+    }
+
+    public LevelItemType type;
+    public bool isCoveredBySmoke;
+}
+
+public class LevelData
+{
+    public Dictionary<LevelItemType, GameItemShapeType> itemShapeTypes =  new Dictionary<LevelItemType, GameItemShapeType>
+    {
+        {LevelItemType.Empty, GameItemShapeType.Single},
+        {LevelItemType.Blue, GameItemShapeType.Single},
+        {LevelItemType.Green, GameItemShapeType.Single},
+        {LevelItemType.Red, GameItemShapeType.Single},
+        {LevelItemType.Violet, GameItemShapeType.Single},
+        {LevelItemType.Yellow, GameItemShapeType.Single},
+        {LevelItemType.Random, GameItemShapeType.Single},
+        {LevelItemType.CenterItem, GameItemShapeType.Single},
+        {LevelItemType.AnimalSingle, GameItemShapeType.Single},
+        {LevelItemType.AnimalTriangle, GameItemShapeType.Triangle},
+        {LevelItemType.AnimalHexagon, GameItemShapeType.Hexagon},
+        {LevelItemType.BossPlace, GameItemShapeType.Hexagon}
     };
 
     public static int VerticalModeMaxRows = 71;
@@ -75,7 +118,7 @@ public class LevelData
 
     // 没找到更好的解决方法，为了让编辑器能复用levelData，目前把所有成员变量设为public
     public int currentLevel;
-    public ItemType[] map = new ItemType[VerticalModeMaxRows * VerticalModeMaxCols];
+    public LevelGameItem[] map = new LevelGameItem[VerticalModeMaxRows * VerticalModeMaxCols];
     public int rowCount;
     public int colCount;
 
@@ -85,10 +128,10 @@ public class LevelData
     public int missionPoints;
     public int limitAmount = 40;
 
-    public List<ItemType> ballColors = new List<ItemType>();
+    public List<LevelItemType> ballColors = new List<LevelItemType>();
     public int allowedColorCount;
     public int[] starScores = new int[3];
-    private int[] itemTypeCounts = new int[System.Enum.GetValues(typeof(ItemType)).Length];
+    private int[] itemTypeCounts = new int[System.Enum.GetValues(typeof(LevelItemType)).Length];
 
     public Target GetTarget(int levelNumber)
     {
@@ -96,7 +139,7 @@ public class LevelData
         return (Target)stageMoveMode;
     }
 
-    public ItemType MapData(int row, int col)
+    public LevelGameItem MapData(int row, int col)
     {
         return map[row * colCount + col];
     }
@@ -105,7 +148,7 @@ public class LevelData
     {
         string[] lines = mapText.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
         ballColors.Clear();
-        map = new ItemType[VerticalModeMaxRows * VerticalModeMaxCols];
+        map = new LevelGameItem[VerticalModeMaxRows * VerticalModeMaxCols];
 
         int mapLine = 0;
         foreach (string line in lines)
@@ -151,15 +194,8 @@ public class LevelData
                 string[] st = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < st.Length; i++)
                 {
-                    int value = int.Parse(st[i]);
-                    itemTypeCounts[value]++;
-                    int ballColorCount = Enum.GetNames(typeof(BallColor)).Length;
-                    if (!ballColors.Contains((ItemType)value) && value > 0 && value <= ballColorCount)
-                    {
-                        ballColors.Add((ItemType)value);
-                    }
-
-                    map[mapLine * colCount + i] = (LevelData.ItemType) value;
+                    map[mapLine * colCount + i] = new LevelGameItem(st[i]);
+                    AddLevelItemTypeStats((int) map[mapLine * colCount + i].type);
                 }
                 mapLine++;
             }
@@ -170,8 +206,18 @@ public class LevelData
         {
             for (int i = 1; i <= allowedColorCount; ++i)
             {
-                ballColors.Add((ItemType) i);
+                ballColors.Add((LevelItemType) i);
             }
+        }
+    }
+
+    void AddLevelItemTypeStats(int itemType)
+    {
+        itemTypeCounts[itemType]++;
+        int ballColorCount = Enum.GetNames(typeof(BallColor)).Length;
+        if (!ballColors.Contains((LevelItemType) itemType) && itemType > 0 && itemType <= ballColorCount)
+        {
+            ballColors.Add((LevelItemType) itemType);
         }
     }
 
@@ -186,12 +232,12 @@ public class LevelData
             missionPoints = 1;
             break;
         case MissionType.SaveAnimals:
-            missionPoints = itemTypeCounts[(int)ItemType.AnimalSingle] + 
-                            itemTypeCounts[(int)ItemType.AnimalTriangle] +
-                            itemTypeCounts[(int)ItemType.AnimalHexagon];
+            missionPoints = itemTypeCounts[(int)LevelItemType.AnimalSingle] + 
+                            itemTypeCounts[(int)LevelItemType.AnimalTriangle] +
+                            itemTypeCounts[(int)LevelItemType.AnimalHexagon];
             break;
         case MissionType.BossBattle:
-            missionPoints = itemTypeCounts[(int)ItemType.BossPlace];
+            missionPoints = itemTypeCounts[(int)LevelItemType.BossPlace];
             break;
         }
     }
@@ -230,7 +276,7 @@ public class LevelData
         {
             for (int col = 0; col < colCount; col++)
             {
-                saveString += (int) map[row * colCount + col];
+                saveString += map[row * colCount + col].ToMapData();
                 //if this column not yet end of row, add space between them
                 if (col < (colCount - 1))
                     saveString += " ";
@@ -251,7 +297,7 @@ public class LevelData
         }
     }
 
-    public GameItemShapeType ShapeType(ItemType itemType)
+    public GameItemShapeType ShapeType(LevelItemType itemType)
     {
         return itemShapeTypes[itemType];
     }

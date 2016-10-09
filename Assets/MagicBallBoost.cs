@@ -40,8 +40,8 @@ public class MagicBallBoost : MonoBehaviour {
                 }
                 //更新颜色
                 mainscript.Instance.UpdateColorsInGame(newColor, currentColor);
-                mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>().SetTypeAndColor((LevelData.ItemType)newColor);
-                mainscript.Instance.ballShooter.CartridgeBall.GetComponent<Ball>().SetTypeAndColor((LevelData.ItemType)newColor);
+                mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>().SetTypeAndColor((LevelItemType)newColor);
+                mainscript.Instance.ballShooter.CartridgeBall.GetComponent<Ball>().SetTypeAndColor((LevelItemType)newColor);
             }
             else if (catapultColor == currentColor || catapultColor == cartridgeColor || cartridgeColor == currentColor)
             {
@@ -50,15 +50,15 @@ public class MagicBallBoost : MonoBehaviour {
                     mainscript.Instance.curStageColors.Remove(currentColor);
                     newColor = mainscript.Instance.curStageColors[Random.Range(0, mainscript.Instance.curStageColors.Count)];
                     mainscript.Instance.UpdateColorsInGame(newColor, currentColor);
-                    mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>().SetTypeAndColor((LevelData.ItemType)newColor);
+                    mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>().SetTypeAndColor((LevelItemType)newColor);
                 }
                 else
                 {
                     newColor = catapultColor;
                     //更新颜色
                     mainscript.Instance.UpdateColorsInGame(newColor, currentColor);
-                    mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>().SetTypeAndColor((LevelData.ItemType)newColor);
-                    mainscript.Instance.ballShooter.CartridgeBall.GetComponent<Ball>().SetTypeAndColor((LevelData.ItemType)newColor);
+                    mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>().SetTypeAndColor((LevelItemType)newColor);
+                    mainscript.Instance.ballShooter.CartridgeBall.GetComponent<Ball>().SetTypeAndColor((LevelItemType)newColor);
                 }
             }
             else
@@ -69,9 +69,9 @@ public class MagicBallBoost : MonoBehaviour {
                 //更新颜色
                 mainscript.Instance.UpdateColorsInGame(newColor, currentColor);
                 if (isCatapult>0)
-                    mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>().SetTypeAndColor((LevelData.ItemType)newColor);
+                    mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>().SetTypeAndColor((LevelItemType)newColor);
                 else
-                    mainscript.Instance.ballShooter.CartridgeBall.GetComponent<Ball>().SetTypeAndColor((LevelData.ItemType)newColor);
+                    mainscript.Instance.ballShooter.CartridgeBall.GetComponent<Ball>().SetTypeAndColor((LevelItemType)newColor);
             }
             setColor = true;
         }

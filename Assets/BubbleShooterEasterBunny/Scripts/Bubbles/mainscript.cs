@@ -194,6 +194,7 @@ public class mainscript : MonoBehaviour {
         {
             // 如果没爆超过3个，说明球只是撞上其他球，播撞球的音效
             // TODO: 如果撞了topBorder，周围又没有球怎么情况？
+            checkBall.GetComponent<Ball>().RemoveAdjacentBallsSmoke(); // 如果撞了什么也没发生，则单独除掉该球周围灰尘
             SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.hitBall);
             mainscript.Instance.bounceCounter++;
             ScoreManager.Instance.ComboCount = 0;
@@ -204,6 +205,7 @@ public class mainscript : MonoBehaviour {
     {
         PlayBallExplodeAudio(ballsToDelete.Count);
         ScoreManager.Instance.ComboCount++;
+
         // 在这里调用coroutine将其销毁
         ExplodeBalls(ballsToDelete);
 
@@ -245,11 +247,6 @@ public class mainscript : MonoBehaviour {
 			GetComponent<AudioSource>().volume = 0;
 		if (!noSound)
 			GetComponent<AudioSource>().volume = 0.5f;
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Application.Quit();
-            //			GameObject.Find("PauseButton").GetComponent<clickButton>().OnMouseDown();
-        }
 
         // 游戏中最重要的算法部分：检测ball是否连上，销毁，以及判断是否有其它drop的balls
         // checkBall在ball.cs中被赋值，当ball停住的时候，就说明需要判断连接了，这个值也就被设定了
@@ -339,7 +336,7 @@ public class mainscript : MonoBehaviour {
                 if (ball.color == deleteColor)
                 {
                     ball.color = newColor;
-                    ball.GetComponent<Ball>().SetTypeAndColor((LevelData.ItemType)newColor);
+                    ball.GetComponent<Ball>().SetTypeAndColor((LevelItemType)newColor);
                 }
                 if (!curStageColors.Contains(ball.color))
                 {

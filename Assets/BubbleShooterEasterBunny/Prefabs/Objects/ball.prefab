@@ -137,26 +137,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874c74a952017a44e9030e4a79ea43aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorSprites:
-  - {fileID: 21300044, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
-  - {fileID: 21300042, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
-  - {fileID: 21300052, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
-  - {fileID: 21300050, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
-  - {fileID: 21300048, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
-  - {fileID: 21300046, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
-  - {fileID: 21300034, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
-  - {fileID: 21300032, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
-  - {fileID: 21300030, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
-  - {fileID: 21300028, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
-  boostSprites:
-  - {fileID: 21300006, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
-  - {fileID: 21300004, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   color: 0
+  coveredBySmoke: 0
   state: 0
   dropFadeTime: 0.5
   swish: {fileID: 0}
   pops: {fileID: 0}
   join: {fileID: 0}
+  ballSmokePrefab: {fileID: 118002, guid: e7ea6cd54175c47988bb5584ca5c8979, type: 2}
   fallingBallMaterial: {fileID: 6200000, guid: 279503c44e4964e82b941c29c069319d, type: 2}
 --- !u!114 &11400002
 MonoBehaviour:

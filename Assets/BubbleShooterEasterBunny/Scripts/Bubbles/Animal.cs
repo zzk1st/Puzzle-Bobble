@@ -28,16 +28,16 @@ public class Animal : MonoBehaviour {
         escapeAnim = transform.FindChild("AnimalEscape").GetComponent<Animator>();
     }
 
-    public void SetSprite(LevelData.ItemType itemType)
+    public void SetSprite(LevelItemType itemType)
     {
-        if (itemType == LevelData.ItemType.AnimalSingle)
+        if (itemType == LevelItemType.AnimalSingle)
         {
             int idx = Random.Range(0, mainscript.Instance.animalSingleSprites.Length);
             animalShell.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.animalSingleShellSprite;
             animalBody.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.animalSingleSprites[idx];
             return;
         }
-        if (itemType == LevelData.ItemType.AnimalHexagon)
+        if (itemType == LevelItemType.AnimalHexagon)
         {
             int idx = Random.Range(0, mainscript.Instance.animalHexSprites.Length);
             animalShell.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.animalHexShellSprite;

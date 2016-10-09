@@ -14,7 +14,8 @@ public class LevelEditor : EditorWindow
     private Texture[] ballTex;
     int levelNumber = 1;
     private Vector2 scrollViewVector;
-    private LevelData.ItemType brush;
+    private bool isCoveredBySmoke;
+    private LevelItemType brush;
 
     [MenuItem("Window/Level editor")]
     static void Init()
@@ -260,7 +261,7 @@ public class LevelEditor : EditorWindow
         {
             for (int i = 0; i < levelData.map.Length; i++)
             {
-                levelData.map[i] = LevelData.ItemType.Empty;
+                levelData.map[i] = new LevelGameItem(LevelItemType.Empty);
             }
         }
         if (GUILayout.Button("Save", new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
@@ -271,28 +272,31 @@ public class LevelEditor : EditorWindow
         GUILayout.Space(30);
         GUILayout.EndVertical();
 
-
-        GUILayout.Label("Balls:", EditorStyles.boldLabel);
+        GUILayout.BeginVertical();
         GUILayout.BeginHorizontal();
-        GUILayout.Space(30);
+        GUILayout.Space(10);
+        GUILayout.Label("Balls:", EditorStyles.boldLabel);
+        isCoveredBySmoke = EditorGUILayout.Toggle("Smoke", isCoveredBySmoke);
+        GUILayout.EndHorizontal();
+
         GUILayout.BeginVertical();
         GUILayout.BeginHorizontal();
 
-        for (int i = 0; i < System.Enum.GetValues(typeof(LevelData.ItemType)).Length; i++)
+        for (int i = 0; i < System.Enum.GetValues(typeof(LevelItemType)).Length; i++)
         {
             // Occupied只由大型GameItem的放置和消除决定，不能手动设置
-            if (i != (int) LevelData.ItemType.Occupied)
+            if (i != (int) LevelItemType.Occupied)
             {
                 if (GUILayout.Button(ballTex[i], new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
                 {
-                    if ((LevelData.ItemType)i != LevelData.ItemType.CenterItem)
+                    if ((LevelItemType)i != LevelItemType.CenterItem)
                     {
-                        brush = (LevelData.ItemType)i;
+                        brush = (LevelItemType)i;
                     }
                     else
                     {
                         levelData.missionType = MissionType.RescueGhost;
-                        checkAndBrushMap(LevelData.ItemType.CenterItem, LevelData.CenterItemRow, LevelData.CenterItemCol);
+                        checkAndBrushMap(LevelItemType.CenterItem, false, LevelData.CenterItemRow, LevelData.CenterItemCol);
                     }
                 }
             }
@@ -300,14 +304,14 @@ public class LevelEditor : EditorWindow
 
         if (GUILayout.Button("  ", new GUILayoutOption[] { GUILayout.Width(50), GUILayout.Height(50) }))
         {
-            brush = LevelData.ItemType.Empty;
+            brush = LevelItemType.Empty;
         }
         //   GUILayout.Label(" - empty", EditorStyles.boldLabel);
 
 
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
-        GUILayout.EndHorizontal();
+        GUILayout.EndVertical();
 
         GUILayout.EndVertical();
         GUILayout.EndHorizontal();
@@ -330,16 +334,21 @@ public class LevelEditor : EditorWindow
             for (int col = 0; col < levelData.colCount; col++)
             {
                 var imageButton = new object();
-                if (levelData.MapData(row, col) == LevelData.ItemType.Empty)
+                string smokeStr = "";
+                if (levelData.MapData(row, col).type == LevelItemType.Empty)
                 {
                     imageButton = "X";
                 }
-                else if (levelData.MapData(row, col) != LevelData.ItemType.Empty)
+                else if (levelData.MapData(row, col).type != LevelItemType.Empty)
                 {
-                    imageButton = ballTex[(int)levelData.MapData(row, col)];
+                    imageButton = ballTex[(int)levelData.MapData(row, col).type];
+                }
+                if (levelData.MapData(row, col).isCoveredBySmoke)
+                {
+                    smokeStr = "S";
                 }
 
-                if (GUILayout.Button(imageButton as Texture, new GUILayoutOption[] {
+                if (GUILayout.Button(new GUIContent(smokeStr, imageButton as Texture), new GUILayoutOption[] {
                     GUILayout.Width (50),
                     GUILayout.Height (50)
                 }))
@@ -362,15 +371,15 @@ public class LevelEditor : EditorWindow
 
     void BrushOrRemoveItem(int row, int col)
     {
-        if (levelData.MapData(row, col) != LevelData.ItemType.Occupied)   // 凡事Occupied的地方一律由gameitem的center决定
+        if (levelData.MapData(row, col).type != LevelItemType.Occupied)   // 凡事Occupied的地方一律由gameitem的center决定
         {
-            if (brush == LevelData.ItemType.Empty)
+            if (brush == LevelItemType.Empty)
             {
                 RemoveItemFromMap(row, col);
             }
             else
             {
-                checkAndBrushMap(brush, row, col);
+                checkAndBrushMap(brush, isCoveredBySmoke, row, col);
             }
         }
     }
@@ -402,7 +411,7 @@ public class LevelEditor : EditorWindow
     }
 
     // 检测如果在row,col放置该item, 其shap是否出界，是否占其他已存在item
-    bool checkAndBrushMap(LevelData.ItemType itemType, int row, int col)
+    bool checkAndBrushMap(LevelItemType itemType, bool coveredBySmoke, int row, int col)
     {
         GameItemShapeType shapeType = levelData.ShapeType(itemType);
         List<GridCoord> gridCoords = GameItemShapes.Instance.ShapeGridCoords(shapeType, row, col);
@@ -414,7 +423,7 @@ public class LevelEditor : EditorWindow
                 return false;
             }
 
-            if (levelData.MapData(gridCoord.row, gridCoord.col) != LevelData.ItemType.Empty)
+            if (levelData.MapData(gridCoord.row, gridCoord.col).type != LevelItemType.Empty)
             {
                 return false;
             }
@@ -422,9 +431,9 @@ public class LevelEditor : EditorWindow
 
         foreach(GridCoord gridCoord in gridCoords)
         {
-            levelData.map[gridCoord.row * levelData.colCount + gridCoord.col] = LevelData.ItemType.Occupied;
+            levelData.map[gridCoord.row * levelData.colCount + gridCoord.col] = new LevelGameItem(LevelItemType.Occupied);
         }
-        levelData.map[row * levelData.colCount + col] = itemType;   // 最后把大型gameItem的中心刷上
+        levelData.map[row * levelData.colCount + col] = new LevelGameItem(itemType, coveredBySmoke);
 
         return true;
     }
@@ -432,8 +441,8 @@ public class LevelEditor : EditorWindow
     // 检测如果在row,col放置该item, 其shap是否出界，是否占其他已存在item
     bool RemoveItemFromMap(int row, int col)
     {
-        LevelData.ItemType itemType = levelData.MapData(row, col);
-        if (itemType == LevelData.ItemType.Occupied)
+        LevelItemType itemType = levelData.MapData(row, col).type;
+        if (itemType == LevelItemType.Occupied)
         {
             return false;
         }
@@ -443,7 +452,7 @@ public class LevelEditor : EditorWindow
 
         foreach(GridCoord gridCoord in gridCoords)
         {
-            levelData.map[gridCoord.row * levelData.colCount + gridCoord.col] = LevelData.ItemType.Empty;
+            levelData.map[gridCoord.row * levelData.colCount + gridCoord.col] = new LevelGameItem(LevelItemType.Empty);
         }
 
         return true;

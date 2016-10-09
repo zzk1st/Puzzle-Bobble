@@ -10,8 +10,6 @@ public class StageLoader
     // Use this for initialization
     public static void Load()
     {
-        //YZH TODO: delete the following one line.
-        mainscript.Instance.currentLevel = 11;
         mainscript.Instance.levelData.LoadLevel(mainscript.Instance.currentLevel);
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
         {
@@ -42,16 +40,16 @@ public class StageLoader
         {
             for( int col = 0; col < levelData.colCount; col++ )
             {
-                LevelData.ItemType mapValue = levelData.MapData(row, col);
-                if(mapValue != LevelData.ItemType.Empty)
+                LevelGameItem levelGameItem = levelData.MapData(row, col);
+                if(levelGameItem.type != LevelItemType.Empty)
                 {
-                    GameObject go = GameItemFactory.Instance.CreateGameItemFromMap(GridManager.Instance.Grid(row, col).transform.position, mapValue);
-                    if (mapValue == LevelData.ItemType.BossPlace)
+                    GameObject go = GameItemFactory.Instance.CreateGameItemFromMap(GridManager.Instance.Grid(row, col).transform.position, levelGameItem);
+                    if (levelGameItem.type == LevelItemType.BossPlace)
                     {
                         bossPlaces.Add(go);
                     }
                 }
-                else if(mapValue == LevelData.ItemType.Empty && levelData.stageMoveMode == StageMoveMode.Vertical && row == 0)
+                else if(levelGameItem.type == LevelItemType.Empty && levelData.stageMoveMode == StageMoveMode.Vertical && row == 0)
                 {
                     //Instantiate( Resources.Load( "Prefabs/TargetStar" ), GetSquare( i, j ).transform.position, Quaternion.identity );
                 }

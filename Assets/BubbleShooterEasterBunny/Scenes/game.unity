@@ -2829,6 +2829,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballPrefab: {fileID: 100000, guid: 7e53458cd03f1724f9442cb26f3a53a1, type: 2}
+  ballSmokePrefab: {fileID: 118002, guid: e7ea6cd54175c47988bb5584ca5c8979, type: 2}
   rainbowBallPrefab: {fileID: 170382, guid: 2bf4add6fb8314901bbe3f0acff74b34, type: 2}
   fireBallPrefab: {fileID: 140768, guid: 879a060fccdb04ca4bd205c814cc92d6, type: 2}
   magicBallPrefab: {fileID: 117734, guid: bed8a9c9b765ee84f97d0a8ddb2ab2ee, type: 2}
