@@ -15,7 +15,16 @@ public class mainscript : MonoBehaviour {
 	public static mainscript Instance;
 	GameObject ball;
 	public int bounceCounter = 0;
-	public GameObject checkBall;
+	private GameObject _checkBall;
+    public GameObject checkBall
+    {
+        get { return _checkBall; }
+        set
+        {
+            _checkBall = value;
+        }
+    }
+
     public Color currentBallShooterColor = new Color(1,0,0,1);
 
     public Sprite[] ballColorSprites;
@@ -472,6 +481,11 @@ public class mainscript : MonoBehaviour {
 
     public BallColor GetRandomCurStageColor()
     {
+        if (curStageColors.Count == 0)
+        {
+            return BallColor.blue;
+        }
+
         return curStageColors[Random.Range(0, mainscript.Instance.curStageColors.Count)];
     }
 
@@ -483,7 +497,7 @@ public class mainscript : MonoBehaviour {
         {
             // TODO: boss从一个place飞到另一个place的动画
             GameObject nextBossPlace = bossPlaces.Last();
-            nextBossPlace.GetComponent<BossPlace>().isAlive = true;
+            nextBossPlace.GetComponent<BossPlace>().SetAlive();
         }
     }
 }

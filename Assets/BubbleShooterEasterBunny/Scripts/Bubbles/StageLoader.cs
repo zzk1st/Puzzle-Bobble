@@ -62,7 +62,7 @@ public class StageLoader
         if (levelData.missionType == MissionType.BossBattle)
         {
             mainscript.Instance.SetBossPlaces(bossPlaces);
-            bossPlaces.Last().GetComponent<BossPlace>().isAlive = true;
+            bossPlaces.Last().GetComponent<BossPlace>().SetAlive();
         }
     }
 }

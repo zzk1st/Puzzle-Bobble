@@ -3,29 +3,33 @@ using System.Collections;
 
 public class BossPlace : MonoBehaviour {
     private GameItem _gameItem;
+
     private int curShootCount;
     private int changeColorShootCount;
+
     private BallColor hitBallColor;
-    public GameObject hitBall;
-    private bool _isAlive;
-    public bool isAlive
-    {
-        get { return _isAlive; }
-        set
-        {
-            _isAlive = value;
-            if (_isAlive)
-            {
-                ResetHitBallColor();
-            }
-        }
-    }
+
+    private GameObject hitBall;
+    private GameObject glass;
+    private GameObject boss;
+    private GameObject vortex;
+    private GameObject background;
+
+    public bool isAlive;
 
     public void Initialize()
     {
-        isAlive = false;
         _gameItem = gameObject.GetComponent<GameItem>();
         _gameItem.ConnectToGrid();
+
+        hitBall = transform.FindChild("HitBall").gameObject;
+        glass = transform.FindChild("HexagonForeground").gameObject;
+        vortex = transform.FindChild("Vortex").gameObject;
+        background = transform.FindChild("HexagonBackground").gameObject;
+
+        // 初始状态，要给bossplace设置成空的
+        SetEmptyPlace();
+
         mainscript.Instance.onBallShooterUnlocked += OnBallShooterUnlocked;
     }
 
@@ -47,22 +51,43 @@ public class BossPlace : MonoBehaviour {
         }
     }
 
+    public void SetAlive()
+    {
+        isAlive = true;
+
+        hitBall.SetActive(true);
+        vortex.SetActive(true);
+        background.SetActive(true);
+
+        ResetHitBallColor();
+    }
+
+    void SetEmptyPlace()
+    {
+        isAlive = false;
+
+        hitBall.SetActive(false);
+        vortex.SetActive(false);
+        background.SetActive(false);
+    }
+
     void ResetHitBallColor()
     {
-        if (this == null)
-        {
-            int a = 1;
-            Debug.Log(a);
-        }
-
         if (isAlive && this.gameObject)
         {
             curShootCount = 0;
-            changeColorShootCount = Random.Range(2,5);
+            changeColorShootCount = Random.Range(5,8);
             hitBallColor = mainscript.Instance.GetRandomCurStageColor();
-            hitBall.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.ballColorSprites[(int) hitBallColor];
+            SetBossPlaceColor(hitBallColor);
             // TODO: 更新boss颜色的动画
         }
+    }
+
+    void SetBossPlaceColor(BallColor newColor)
+    {
+        hitBall.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.ballColorSprites[(int) newColor];
+        vortex.GetComponent<SpriteRenderer>().color = ColorManager.Instance.ballColors[(int) newColor];
+        background.GetComponent<SpriteRenderer>().color = ColorManager.Instance.ballBackgroundColors[(int) newColor];
     }
 
     void OnCollisionEnter2D(Collision2D coll)
@@ -84,6 +109,10 @@ public class BossPlace : MonoBehaviour {
                 MissionManager.Instance.GainBossPoint();
                 Explode();
                 mainscript.Instance.BossMoveToNextPlace();
+            }
+            else
+            {
+                ResetHitBallColor();
             }
         }
     }
