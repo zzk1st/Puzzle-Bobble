@@ -69,6 +69,15 @@ public class MissionManager : MonoBehaviour {
         }
     }
 
+    public void DecreaseTargetStar(Grid grid)
+    {
+        if (mainscript.Instance.levelData.missionType == MissionType.EliminateBalls && _currentMissionPoints > 0)
+        {
+            _currentMissionPoints--;
+            UpdateMissionPointCounter();
+        }
+    }
+
     public void GainCenterItem()
     {
         if (mainscript.Instance.levelData.missionType == MissionType.RescueGhost)

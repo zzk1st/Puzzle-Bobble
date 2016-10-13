@@ -496,6 +496,14 @@ public class Ball : MonoBehaviour
         //iTween.MoveTo(gameObject, iTween.Hash("position", grid.pos, "speed", speedBeforeColl.magnitude));
         transform.position = grid.pos;
 
+        if (grid)
+        {
+            if (grid.Row == 0)
+            {
+                MissionManager.Instance.DecreaseTargetStar(grid);
+            }
+        }
+
         // 转动圆形关卡
         mainscript.Instance.platformController.Rotate(transform.position, ballVelocity);
 
