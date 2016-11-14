@@ -2,6 +2,10 @@
 using System.Collections;
 
 public class BossPlace : MonoBehaviour {
+    public float moveSpeed;
+    public bool isAlive;
+    public GameObject breakGlassParticle;
+
     private GameItem _gameItem;
 
     private int curShootCount;
@@ -15,7 +19,6 @@ public class BossPlace : MonoBehaviour {
     private GameObject vortex;
     private GameObject background;
 
-    public bool isAlive;
 
     public void Initialize()
     {
@@ -108,7 +111,6 @@ public class BossPlace : MonoBehaviour {
 
                 MissionManager.Instance.GainBossPoint();
                 Explode();
-                mainscript.Instance.BossMoveToNextPlace();
             }
             else
             {
@@ -120,7 +122,15 @@ public class BossPlace : MonoBehaviour {
     void Explode()
     {
         _gameItem.DisconnectFromGrid();
-        // TODO: 玻璃破碎特效等
+        BossManager.Instance.RemoveLastBossPlace();
+        // 创建玻璃
+        GameObject glassParticle = Instantiate(breakGlassParticle, transform.position, transform.rotation) as GameObject;
+        Destroy(glassParticle, 2f);
+        // 播放音效
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.bossHit);
+        // boss移动到下一个place
+        BossManager.Instance.BossMoveToLastPlace();
+
         Destroy(gameObject);
     }
 

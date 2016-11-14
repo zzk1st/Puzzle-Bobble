@@ -10,9 +10,10 @@ public enum GameStatus
     Pause,
     Win,
     GameOver,
-    Demo,       // Demo模式下播放动画，但不能使用任何操作
+    StageMovingUp,       // Demo模式下播放动画，但不能使用任何操作
     Tutorial,
-    PreTutorial
+    PreTutorial,
+    BossArriving,
 }
 
 /// <summary>
@@ -42,8 +43,27 @@ public class GameManager : MonoBehaviour
     {
     }
 	
+    public void PreTutorialDone()
+    {
+        if (mainscript.Instance.levelData.missionType == MissionType.BossBattle)
+        {
+            BossArriving();
+        }
+        else
+        {
+            Play();
+        }
+    }
+
+    public void BossArriving()
+    {
+        BossManager.Instance.GameStartBossMove();
+        setGameStatus(GameStatus.BossArriving);
+    }
+
     public void Play()
     {
+        mainscript.Instance.ballShooter.Initialize();
         setGameStatus(GameStatus.Playing);
     }
 
@@ -72,9 +92,9 @@ public class GameManager : MonoBehaviour
         StartCoroutine(LoseAction());
     }
 
-    public void Demo()
+    public void StageMovingUp()
     {
-        setGameStatus(GameStatus.Demo);
+        setGameStatus(GameStatus.StageMovingUp);
     }
 
     public void PreTutorial()

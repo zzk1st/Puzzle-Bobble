@@ -361,8 +361,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7cf5834445c290468fa6277f059d562, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slider: {fileID: 0}
-  maxWidth: 0
 --- !u!1 &53033704
 GameObject:
   m_ObjectHideFlags: 0
@@ -407,14 +405,8 @@ MonoBehaviour:
   currentLevel: 49
   currentGameMode: 0
   minConsecutiveNumberCount: 3
-  ball: {fileID: 0}
   bounceCounter: 0
-  _checkBall: {fileID: 0}
-  currentBallShooterColor:
-    r: 1
-    g: 0
-    b: 0
-    a: 1
+  currentBallShooterColor: {r: 1, g: 0, b: 0, a: 1}
   ballColorSprites:
   - {fileID: 0}
   - {fileID: 21300044, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
@@ -446,38 +438,14 @@ MonoBehaviour:
   animalHexShellSprite: {fileID: 21300012, guid: 008365a7baf27104799b3a24e8d34748,
     type: 3}
   BallRGB:
-  - r: 0.09411765
-    g: 0.4745098
-    b: 1
-    a: 1
-  - r: 0.07450981
-    g: 0.6313726
-    b: 0.11764706
-    a: 1
-  - r: 0.8784314
-    g: 0.20392157
-    b: 0
-    a: 1
-  - r: 0.7019608
-    g: 0
-    b: 0.87058824
-    a: 1
-  - r: 0.7372549
-    g: 0.24313726
-    b: 0
-    a: 1
-  - r: 1
-    g: 1
-    b: 1
-    a: 1
-  - r: 1
-    g: 1
-    b: 1
-    a: 1
-  - r: 0.8784314
-    g: 0.20392156
-    b: 0
-    a: 1
+  - {r: 0.09411765, g: 0.4745098, b: 1, a: 1}
+  - {r: 0.07450981, g: 0.6313726, b: 0.11764706, a: 1}
+  - {r: 0.8784314, g: 0.20392157, b: 0, a: 1}
+  - {r: 0.7019608, g: 0, b: 0.87058824, a: 1}
+  - {r: 0.7372549, g: 0.24313726, b: 0, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0.8784314, g: 0.20392156, b: 0, a: 1}
   controlGrids: []
   isPaused: 0
   noSound: 0
@@ -485,10 +453,7 @@ MonoBehaviour:
   scored: 0
   ElectricLiana: {fileID: 0}
   TopBorder: {fileID: 1502360742}
-  _ballShooter: {fileID: 0}
-  _platformController: {fileID: 0}
   curStageColors: 
-  TargetCounter: 0
   starsObject:
   - {fileID: 1586105610}
   - {fileID: 1492314227}
@@ -505,11 +470,6 @@ MonoBehaviour:
   FireEffect: {fileID: 1446054503}
   black_back: {fileID: 985342703}
   arrows: {fileID: 519754614}
-  maxCols: 0
-  maxRows: 0
-  limitType: 0
-  limit: 0
-  colorLimit: 0
   gridsNode: {fileID: 665245363}
   gameItemsNode: {fileID: 1817034612}
   BallColliderRadius: 0.2
@@ -521,7 +481,6 @@ MonoBehaviour:
   potSounds: 0
   bugSounds: 0
   ballExplosionTimeInterval: 0.07
-  bossPlaces: []
 --- !u!82 &53033707
 AudioSource:
   m_ObjectHideFlags: 0
@@ -785,8 +744,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayOnEnable: 1
-  WaitForPickupFriends: 0
-  WaitForAksFriends: 0
 --- !u!111 &63144155
 Animation:
   m_ObjectHideFlags: 0
@@ -2669,7 +2626,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!114 &109016225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2831,7 +2787,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!1 &139406728
 GameObject:
   m_ObjectHideFlags: 0
@@ -3098,7 +3053,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: m_RootOrder
-      value: 17
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 8200000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: panLevelCustomCurve.m_RotationOrder
@@ -3164,6 +3119,10 @@ Prefab:
       propertyPath: hitBall
       value: 
       objectReference: {fileID: 8300000, guid: 1424ebbb34ca849b898a09472343410d, type: 3}
+    - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
+      propertyPath: bossHit
+      value: 
+      objectReference: {fileID: 8300000, guid: b8718df5ef8094ebb8b6cdaf9c90dfb3, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
   m_IsPrefabParent: 0
@@ -3866,8 +3825,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayOnEnable: 0
-  WaitForPickupFriends: 0
-  WaitForAksFriends: 0
 --- !u!114 &354244038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3999,7 +3956,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 402878, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: m_RootOrder
-      value: 15
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.data[7]
@@ -4112,6 +4069,47 @@ BoxCollider2D:
   m_Offset: {x: -0.6505604, y: -0.04243645}
   serializedVersion: 2
   m_Size: {x: 1, y: 0.91512775}
+--- !u!1 &419612151
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 419612152}
+  - 114: {fileID: 419612153}
+  m_Layer: 0
+  m_Name: BossManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &419612152
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 419612151}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1372659631}
+  m_RootOrder: 8
+--- !u!114 &419612153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 419612151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2264df60695ef46bc8cb10c8434c550c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bossGO: {fileID: 1495113011}
 --- !u!1 &422990484
 GameObject:
   m_ObjectHideFlags: 0
@@ -4167,9 +4165,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc27629c4f722274fbe1531228757aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lastGameStatus: 0
-  winStarted: 0
-  _gameStatus: 0
 --- !u!4 &434912548
 Transform:
   m_ObjectHideFlags: 0
@@ -4255,7 +4250,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300004, guid: 121e480151b83484db4b372d1e8ff134, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -4358,7 +4353,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!114 &468197579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5307,7 +5301,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!1 &637827610
 GameObject:
   m_ObjectHideFlags: 0
@@ -5853,8 +5846,6 @@ MonoBehaviour:
   gridPrefab: {fileID: 100000, guid: e0240944f3bd27e449975ef82726c682, type: 2}
   rowCount: 0
   colCount: 0
-  offsetStep: 0.33
-  grids: []
   controlGrids: []
 --- !u!114 &665245367
 MonoBehaviour:
@@ -5871,9 +5862,6 @@ MonoBehaviour:
   platformBottomLowerLimit: -0.69
   platformBottomUpperLimit: 2.38
   topBorder: {fileID: 1502360742}
-  initialTopBorderPos: 0
-  _curFixedBallLocalMinY: 0
-  targetRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &680264187
 GameObject:
   m_ObjectHideFlags: 0
@@ -6485,8 +6473,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayOnEnable: 1
-  WaitForPickupFriends: 0
-  WaitForAksFriends: 0
 --- !u!111 &765486208
 Animation:
   m_ObjectHideFlags: 0
@@ -6838,16 +6824,10 @@ MonoBehaviour:
   camOrthographicSizeX: 0
   camOrthographicSizeY: 0
   _isLocked: 0
-  catapultBall: {fileID: 0}
-  cartridgeBall: {fileID: 0}
-  tempBall: {fileID: 0}
-  bottomBorderY: 0
   launchForce: 500
   topBorder: {fileID: 1502360742}
   leftBorder: {fileID: 1284974436}
   rightBorder: {fileID: 613025937}
-  currentES: {fileID: 0}
-  boostInPosition: 0
 --- !u!4 &821578620
 Transform:
   m_ObjectHideFlags: 0
@@ -7039,7 +7019,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationOffset: -90
-  bottomBoarderY: 0
 --- !u!1 &947221765
 GameObject:
   m_ObjectHideFlags: 0
@@ -7362,7 +7341,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!1 &996773668
 GameObject:
   m_ObjectHideFlags: 0
@@ -8093,7 +8071,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22467632, guid: c7142a40a2133bd4685984d1f85e750c, type: 2}
       propertyPath: m_RootOrder
-      value: 19
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 22467632, guid: c7142a40a2133bd4685984d1f85e750c, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -8504,7 +8482,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!1 &1206951055
 GameObject:
   m_ObjectHideFlags: 0
@@ -8658,55 +8635,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballColors:
-  - r: 0.18431373
-    g: 0.49803925
-    b: 0.9333334
-    a: 0
-  - r: 0.18431373
-    g: 0.49803925
-    b: 0.9333334
-    a: 0
-  - r: 0.28627452
-    g: 0.64705884
-    b: 0.07450981
-    a: 0
-  - r: 0.9490197
-    g: 0.039215688
-    b: 0
-    a: 0
-  - r: 0.48627454
-    g: 0.04705883
-    b: 1
-    a: 0
-  - r: 0.97647065
-    g: 0.39607847
-    b: 0
-    a: 0
+  - {r: 0.18431373, g: 0.49803925, b: 0.9333334, a: 0}
+  - {r: 0.18431373, g: 0.49803925, b: 0.9333334, a: 0}
+  - {r: 0.28627452, g: 0.64705884, b: 0.07450981, a: 0}
+  - {r: 0.9490197, g: 0.039215688, b: 0, a: 0}
+  - {r: 0.48627454, g: 0.04705883, b: 1, a: 0}
+  - {r: 0.97647065, g: 0.39607847, b: 0, a: 0}
   ballBackgroundColors:
-  - r: 0.5411765
-    g: 0.74509805
-    b: 1
-    a: 0.5019608
-  - r: 0.5411765
-    g: 0.74509805
-    b: 1
-    a: 0.5019608
-  - r: 0.65882355
-    g: 0.86666673
-    b: 0.39607847
-    a: 0.5019608
-  - r: 1
-    g: 0.59607846
-    b: 0.6156863
-    a: 0.5019608
-  - r: 0.9843138
-    g: 0.6431373
-    b: 0.9921569
-    a: 0.5019608
-  - r: 1
-    g: 0.77896523
-    b: 0.5955882
-    a: 0.5019608
+  - {r: 0.5411765, g: 0.74509805, b: 1, a: 0.5019608}
+  - {r: 0.5411765, g: 0.74509805, b: 1, a: 0.5019608}
+  - {r: 0.65882355, g: 0.86666673, b: 0.39607847, a: 0.5019608}
+  - {r: 1, g: 0.59607846, b: 0.6156863, a: 0.5019608}
+  - {r: 0.9843138, g: 0.6431373, b: 0.9921569, a: 0.5019608}
+  - {r: 1, g: 0.77896523, b: 0.5955882, a: 0.5019608}
 --- !u!1001 &1234028286
 Prefab:
   m_ObjectHideFlags: 0
@@ -8983,8 +8924,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayOnEnable: 1
-  WaitForPickupFriends: 0
-  WaitForAksFriends: 0
 --- !u!111 &1304868470
 Animation:
   m_ObjectHideFlags: 0
@@ -9218,7 +9157,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25dc43bb154527f44912cca74819acbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!1 &1319759506
 GameObject:
   m_ObjectHideFlags: 0
@@ -9324,7 +9262,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!1 &1354557069
 GameObject:
   m_ObjectHideFlags: 0
@@ -9476,7 +9413,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 484928, guid: 7d028e4fec77cab4e926e4b65414b360, type: 2}
       propertyPath: m_RootOrder
-      value: 16
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8280496, guid: 7d028e4fec77cab4e926e4b65414b360, type: 2}
       propertyPath: m_audioClip
@@ -9539,6 +9476,7 @@ Transform:
   - {fileID: 1386030709}
   - {fileID: 176035336}
   - {fileID: 1222547238}
+  - {fileID: 419612152}
   m_Father: {fileID: 0}
   m_RootOrder: 12
 --- !u!1 &1384680784
@@ -9649,8 +9587,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eea952ebb147446df81e4c816e2ce22e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentMissionPoints: 0
-  _stageMissionPoints: 0
   missionPointCounter: {fileID: 1737521033}
   targetStarPrefab: {fileID: 100002, guid: 45dc5ddc815c0c2479dde4c611c2993d, type: 2}
 --- !u!1 &1396709289
@@ -9947,8 +9883,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayOnEnable: 1
-  WaitForPickupFriends: 0
-  WaitForAksFriends: 0
 --- !u!4 &1446054506
 Transform:
   m_ObjectHideFlags: 0
@@ -10585,7 +10519,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!1 &1502360742
 GameObject:
   m_ObjectHideFlags: 0
@@ -11606,7 +11539,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!114 &1574761664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12108,7 +12040,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!1 &1623543571
 GameObject:
   m_ObjectHideFlags: 0
@@ -12199,7 +12130,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!114 &1636299366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12301,7 +12231,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!114 &1648255620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12606,8 +12535,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayOnEnable: 1
-  WaitForPickupFriends: 0
-  WaitForAksFriends: 0
 --- !u!111 &1697230677
 Animation:
   m_ObjectHideFlags: 0
@@ -12739,7 +12666,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!114 &1737521037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12960,7 +12886,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!114 &1753779052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13073,7 +12998,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22477102, guid: 12244117eb5901f4fac41d4006a6f471, type: 2}
       propertyPath: m_RootOrder
-      value: 18
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 22477102, guid: 12244117eb5901f4fac41d4006a6f471, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -13357,8 +13282,6 @@ MonoBehaviour:
   audioSource: {fileID: 1805988641}
   audios:
   - {fileID: 8300000, guid: ec091ee88150d4b388a90f6e5bc48470, type: 3}
-  curPlayingIndex: 0
-  lastPlayTime: 0
 --- !u!82 &1805988641
 AudioSource:
   m_ObjectHideFlags: 0
@@ -13800,7 +13723,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bug_hd: {fileID: 138872, guid: 46ff64f1caf1e274785760045609e1dc, type: 2}
   bug_ld: {fileID: 0}
-  bug: {fileID: 0}
 --- !u!1 &1949512147
 GameObject:
   m_ObjectHideFlags: 0
@@ -14070,8 +13992,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ed687478a2953840b36fb94b0c7beb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Anim: {fileID: 0}
-  timer: 0
 --- !u!1 &1968998540
 GameObject:
   m_ObjectHideFlags: 0
@@ -14189,7 +14109,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aef9e28f5daf49839d6d14fc5d240af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  readyForNextPop: 0
 --- !u!1001 &1981947635
 Prefab:
   m_ObjectHideFlags: 0
@@ -14395,7 +14314,6 @@ MonoBehaviour:
   title: {fileID: 680264189}
   description: {fileID: 328715525}
   price: {fileID: 1418180949}
-  curBoostType: 0
 --- !u!1 &2021966873
 GameObject:
   m_ObjectHideFlags: 0
@@ -14656,7 +14574,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d330405a8c2469d986e6097e8c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 0}
 --- !u!114 &2130914974
 MonoBehaviour:
   m_ObjectHideFlags: 0

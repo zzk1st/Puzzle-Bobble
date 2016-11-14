@@ -4,6 +4,7 @@ using System.Collections;
 public class SoundBase : MonoBehaviour {
 	public static SoundBase Instance;
 	public AudioClip click;
+    public AudioClip bossHit;
 	public AudioClip[] combo;
 	public AudioClip[] swish;
 	public AudioClip bug;

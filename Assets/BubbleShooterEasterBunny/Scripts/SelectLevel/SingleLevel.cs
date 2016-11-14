@@ -22,7 +22,9 @@ public class SingleLevel : MonoBehaviour {
 
         missionType = type;
         starCount = stars;
-        isUnlocked = PlayerPrefs.GetInt("Score" + (levelNumber-1)) > 0 || levelNumber == 1;
+        //DEBUG!!!!!!!!
+        //isUnlocked = PlayerPrefs.GetInt("Score" + (levelNumber-1)) > 0 || levelNumber == 1;
+        isUnlocked = true;
         levelNumberGO.GetComponent<TextMesh>().text = levelNumber.ToString();
         if (isUnlocked)
         {

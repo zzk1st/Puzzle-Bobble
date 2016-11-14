@@ -26,7 +26,7 @@ public class StageLoader
         LoadSceneFromLevelData();
 
         MissionManager.Instance.Initialize();
-        GameManager.Instance.Demo();
+        GameManager.Instance.StageMovingUp();
         mainscript.Instance.platformController.StartGameMove();
         // TODO: 写一个iniitalizeBorders(), 负责border的初始化创建，注意要创建bottom border
     }
@@ -61,8 +61,7 @@ public class StageLoader
 
         if (levelData.missionType == MissionType.BossBattle)
         {
-            mainscript.Instance.SetBossPlaces(bossPlaces);
-            bossPlaces.Last().GetComponent<BossPlace>().SetAlive();
+            BossManager.Instance.Iniaizlize(bossPlaces);
         }
     }
 }

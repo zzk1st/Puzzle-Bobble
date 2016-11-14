@@ -200,7 +200,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemType: 3
   shapeType: 2
-  centerGrid: {fileID: 0}
 --- !u!114 &11495966
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -212,6 +211,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4be9cdb8c4bd04187b0a7d8d459854fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 1
+  isAlive: 0
+  breakGlassParticle: {fileID: 158710, guid: 769f57b2bef874a88bfaacc03aa7433b, type: 2}
 --- !u!212 &21221038
 SpriteRenderer:
   m_ObjectHideFlags: 1

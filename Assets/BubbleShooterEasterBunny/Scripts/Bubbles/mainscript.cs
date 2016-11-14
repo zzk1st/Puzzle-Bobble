@@ -113,8 +113,6 @@ public class mainscript : MonoBehaviour {
 
     public float ballExplosionTimeInterval;
 
-    private List<GameObject> bossPlaces;
-
     public delegate void DestroyBallsHandler();
     public event DestroyBallsHandler onBallsDestroyed;
     public delegate void BallShooterUnlocked();
@@ -181,11 +179,6 @@ public class mainscript : MonoBehaviour {
 			ElectricLiana.SetActive(false);
 		}
 	}
-
-    public void SetBossPlaces(List<GameObject> bp)
-    {
-        bossPlaces = bp;
-    }
 
     void ConnectAndDestroyBalls()
     {
@@ -295,7 +288,7 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-    void FindAndDestroyDetachedGameItems()
+    public void FindAndDestroyDetachedGameItems()
     {
         List<GameObject> gameItemsToDrop = GridManager.Instance.FindDetachedGameItems();
 
@@ -309,10 +302,7 @@ public class mainscript : MonoBehaviour {
         ballShooter.UpdateBallColors();
         if (levelData.missionType == MissionType.BossBattle)
         {
-            if (bossPlaces.Count > 0)
-            {
-                bossPlaces.Last().GetComponent<BossPlace>().UpdateHitColor();
-            }
+            BossManager.Instance.UpdateBossPlaceHitColor();
         }
     }
 
@@ -487,17 +477,5 @@ public class mainscript : MonoBehaviour {
         }
 
         return curStageColors[Random.Range(0, mainscript.Instance.curStageColors.Count)];
-    }
-
-    public void BossMoveToNextPlace()
-    {
-        bossPlaces.Remove(bossPlaces.Last());
-        FindAndDestroyDetachedGameItems();
-        if (bossPlaces.Count > 0)
-        {
-            // TODO: boss从一个place飞到另一个place的动画
-            GameObject nextBossPlace = bossPlaces.Last();
-            nextBossPlace.GetComponent<BossPlace>().SetAlive();
-        }
     }
 }
