@@ -31,7 +31,15 @@ public class GameItem : MonoBehaviour {
     public GameItemShapeType shapeType;
 
     [HideInInspector]
-    public Grid centerGrid;
+    private Grid _centerGrid;
+    public Grid centerGrid
+    {
+        get { return _centerGrid; }
+        set
+        {
+            _centerGrid = value;
+        }
+    }
 
     public StartFallDelegate startFallFunc;
     public FireDelegate fireFunc;

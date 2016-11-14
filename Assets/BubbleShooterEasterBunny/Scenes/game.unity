@@ -406,7 +406,6 @@ MonoBehaviour:
   currentGameMode: 0
   minConsecutiveNumberCount: 3
   bounceCounter: 0
-  checkBall: {fileID: 0}
   currentBallShooterColor: {r: 1, g: 0, b: 0, a: 1}
   ballColorSprites:
   - {fileID: 0}
@@ -3054,7 +3053,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: m_RootOrder
-      value: 17
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 8200000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: panLevelCustomCurve.m_RotationOrder
@@ -3120,6 +3119,10 @@ Prefab:
       propertyPath: hitBall
       value: 
       objectReference: {fileID: 8300000, guid: 1424ebbb34ca849b898a09472343410d, type: 3}
+    - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
+      propertyPath: bossHit
+      value: 
+      objectReference: {fileID: 8300000, guid: b8718df5ef8094ebb8b6cdaf9c90dfb3, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
   m_IsPrefabParent: 0
@@ -3953,7 +3956,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 402878, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: m_RootOrder
-      value: 15
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 11469810, guid: a8a8c085200639a4faf330f7659ef8bd, type: 2}
       propertyPath: sprites.Array.data[7]
@@ -4066,6 +4069,47 @@ BoxCollider2D:
   m_Offset: {x: -0.6505604, y: -0.04243645}
   serializedVersion: 2
   m_Size: {x: 1, y: 0.91512775}
+--- !u!1 &419612151
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 419612152}
+  - 114: {fileID: 419612153}
+  m_Layer: 0
+  m_Name: BossManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &419612152
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 419612151}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1372659631}
+  m_RootOrder: 8
+--- !u!114 &419612153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 419612151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2264df60695ef46bc8cb10c8434c550c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bossGO: {fileID: 1495113011}
 --- !u!1 &422990484
 GameObject:
   m_ObjectHideFlags: 0
@@ -4134,6 +4178,83 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1372659631}
   m_RootOrder: 3
+--- !u!1 &440706745
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 440706746}
+  - 212: {fileID: 440706748}
+  - 95: {fileID: 440706747}
+  m_Layer: 0
+  m_Name: BossAnim
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &440706746
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 440706745}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1495113012}
+  m_RootOrder: 0
+--- !u!95 &440706747
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 440706745}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 187e171a48a6f4731808228e482cf262, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+--- !u!212 &440706748
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 440706745}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_ReflectionProbeUsage: 0
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 3
+  m_Sprite: {fileID: 21300004, guid: 121e480151b83484db4b372d1e8ff134, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
 --- !u!1 &448950884
 GameObject:
   m_ObjectHideFlags: 0
@@ -7950,7 +8071,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22467632, guid: c7142a40a2133bd4685984d1f85e750c, type: 2}
       propertyPath: m_RootOrder
-      value: 19
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 22467632, guid: c7142a40a2133bd4685984d1f85e750c, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -8473,6 +8594,60 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!1 &1222547237
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1222547238}
+  - 114: {fileID: 1222547239}
+  m_Layer: 0
+  m_Name: ' ColorManager'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1222547238
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1222547237}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1372659631}
+  m_RootOrder: 7
+--- !u!114 &1222547239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1222547237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b38b5a96359e44074af14ddd4fad7526, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ballColors:
+  - {r: 0.18431373, g: 0.49803925, b: 0.9333334, a: 0}
+  - {r: 0.18431373, g: 0.49803925, b: 0.9333334, a: 0}
+  - {r: 0.28627452, g: 0.64705884, b: 0.07450981, a: 0}
+  - {r: 0.9490197, g: 0.039215688, b: 0, a: 0}
+  - {r: 0.48627454, g: 0.04705883, b: 1, a: 0}
+  - {r: 0.97647065, g: 0.39607847, b: 0, a: 0}
+  ballBackgroundColors:
+  - {r: 0.5411765, g: 0.74509805, b: 1, a: 0.5019608}
+  - {r: 0.5411765, g: 0.74509805, b: 1, a: 0.5019608}
+  - {r: 0.65882355, g: 0.86666673, b: 0.39607847, a: 0.5019608}
+  - {r: 1, g: 0.59607846, b: 0.6156863, a: 0.5019608}
+  - {r: 0.9843138, g: 0.6431373, b: 0.9921569, a: 0.5019608}
+  - {r: 1, g: 0.77896523, b: 0.5955882, a: 0.5019608}
 --- !u!1001 &1234028286
 Prefab:
   m_ObjectHideFlags: 0
@@ -9238,7 +9413,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 484928, guid: 7d028e4fec77cab4e926e4b65414b360, type: 2}
       propertyPath: m_RootOrder
-      value: 16
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8280496, guid: 7d028e4fec77cab4e926e4b65414b360, type: 2}
       propertyPath: m_audioClip
@@ -9300,6 +9475,8 @@ Transform:
   - {fileID: 1884880417}
   - {fileID: 1386030709}
   - {fileID: 176035336}
+  - {fileID: 1222547238}
+  - {fileID: 419612152}
   m_Father: {fileID: 0}
   m_RootOrder: 12
 --- !u!1 &1384680784
@@ -10196,6 +10373,47 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!1 &1495113011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1495113012}
+  - 114: {fileID: 1495113013}
+  m_Layer: 0
+  m_Name: Boss
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1495113012
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1495113011}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5.47, y: 0, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 440706746}
+  m_Father: {fileID: 0}
+  m_RootOrder: 19
+--- !u!114 &1495113013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1495113011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65e3ab7cca70244f7908fb87bd3f1a6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1500986334
 GameObject:
   m_ObjectHideFlags: 0
@@ -12780,7 +12998,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22477102, guid: 12244117eb5901f4fac41d4006a6f471, type: 2}
       propertyPath: m_RootOrder
-      value: 18
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 22477102, guid: 12244117eb5901f4fac41d4006a6f471, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -14082,15 +14300,15 @@ MonoBehaviour:
   - {fileID: 21300006, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   - {fileID: 21300004, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   titles:
-  - Five New Balls
-  - Magic Ball
-  - Rainbow Ball
-  - Fire Ball
+  - 46697665204e65772042616c6c73
+  - 4d616769632042616c6c
+  - 5261696e626f772042616c6c
+  - 466972652042616c6c
   descriptions:
-  - Add five color balls
-  - Eliminate one color
-  - Can replace any color
-  - Destroy all balls in its way
+  - 416464206669766520636f6c6f722062616c6c73
+  - 456c696d696e617465206f6e6520636f6c6f72
+  - 43616e207265706c61636520616e7920636f6c6f72
+  - 44657374726f7920616c6c2062616c6c7320696e2069747320776179
   prices: 05000000050000000500000005000000
   icon: {fileID: 1997559163}
   title: {fileID: 680264189}

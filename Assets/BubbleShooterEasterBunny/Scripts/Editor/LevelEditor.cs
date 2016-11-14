@@ -183,7 +183,7 @@ public class LevelEditor : EditorWindow
         GUILayout.Space(60);
 
         GUILayout.Label("Color limit:", EditorStyles.label, new GUILayoutOption[] { GUILayout.Width(100) });
-        levelData.allowedColorCount = (int)GUILayout.HorizontalSlider(levelData.allowedColorCount, 3, 5, new GUILayoutOption[] { GUILayout.Width(100) });
+        levelData.allowedColorCount = (int)GUILayout.HorizontalSlider(levelData.allowedColorCount, 2, 5, new GUILayoutOption[] { GUILayout.Width(100) });
         levelData.allowedColorCount = EditorGUILayout.IntField("", levelData.allowedColorCount, new GUILayoutOption[] { GUILayout.Width(50) });
 
         GUILayout.EndHorizontal();
