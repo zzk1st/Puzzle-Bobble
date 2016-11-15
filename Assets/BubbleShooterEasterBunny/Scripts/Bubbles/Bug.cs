@@ -8,9 +8,14 @@ public class Bug : MonoBehaviour {
     public int color;
     int score = 25;
 	// Use this for initialization
+    private GameObject bugSprite;
+
+    void Awake () {
+        bugSprite = transform.FindChild("BugSprite").gameObject;
+    }
+
 	void Start () {
         spiders = GameObject.Find( "Spiders" ).transform;
-        transform.localScale = new Vector3(0.5f, 0.5f, 1);
         ChangeColor( 0 );
         if(ScoreManager.Instance.ComboCount % 3 == 0 && ScoreManager.Instance.ComboCount > 0 ) ChangeColor( 1 );
         if(ScoreManager.Instance.ComboCount % 5 == 0 && ScoreManager.Instance.ComboCount > 0 ) ChangeColor( 2 );
@@ -80,7 +85,7 @@ public class Bug : MonoBehaviour {
     public void ChangeColor( int i )
     {
         color = i;
-        GetComponent<SpriteRenderer>().sprite = textures[i];
+        bugSprite.GetComponent<SpriteRenderer>().sprite = textures[i];
     }
 
     void OnCollisionEnter2D( Collision2D col )
@@ -147,6 +152,5 @@ public class Bug : MonoBehaviour {
             transform.localScale = new Vector3( curveScaleReverseX.Evaluate( distCovered ), curveScaleReverse.Evaluate( distCovered ), 1 );
             yield return new WaitForEndOfFrame();
         }
-        transform.localScale = new Vector3(0.5f, 0.5f, 1);
     }
 }

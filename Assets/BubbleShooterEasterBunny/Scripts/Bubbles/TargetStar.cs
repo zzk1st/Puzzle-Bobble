@@ -24,7 +24,7 @@ public class TargetStar : MonoBehaviour
         Hashtable args = new Hashtable();
         args.Add("easeType", iTween.EaseType.easeInOutQuad);
         args.Add("path", paths);
-        args.Add("speed", 50f);
+        args.Add("speed", 200f);
         args.Add("onComplete", "onFlyingComplete");
         iTween.MoveTo(gameObject, args);
     }
