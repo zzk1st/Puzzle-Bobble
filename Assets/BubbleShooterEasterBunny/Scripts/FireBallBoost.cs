@@ -41,7 +41,7 @@ public class FireBallBoost : MonoBehaviour {
         {
             List<GameObject> ballsToDelete = new List<GameObject>();
             ballsToDelete.Add(other.gameObject);
-            mainscript.Instance.DestroyFixedBalls(ballsToDelete);
+            mainscript.Instance.DestroyGameItems(ballsToDelete);
         }
 
         return;

@@ -8,12 +8,12 @@ public class CenterItem : MonoBehaviour {
     {
         _gameItem = GetComponent<GameItem>();
         _gameItem.ConnectToGrid();
-        mainscript.Instance.onBallsDestroyed += OnBallsDestroyed;
+        mainscript.Instance.onGameItemsDestroyed += OnBallsDestroyed;
     }
 
     void OnDestroy()
     {
-        mainscript.Instance.onBallsDestroyed -= OnBallsDestroyed;
+        mainscript.Instance.onGameItemsDestroyed -= OnBallsDestroyed;
     }
 
     void OnBallsDestroyed()

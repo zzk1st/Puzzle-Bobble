@@ -104,7 +104,7 @@ public class RainbowBallBoost : MonoBehaviour
     void CollectAndDestroyNearbyBalls()
     {
         List<GameObject> ballsToDelete = CollectNearbyBalls();
-        mainscript.Instance.DestroyFixedBalls(ballsToDelete);
+        mainscript.Instance.DestroyGameItems(ballsToDelete);
     }
 
     void Explode()

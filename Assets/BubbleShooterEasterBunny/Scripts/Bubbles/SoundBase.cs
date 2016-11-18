@@ -24,8 +24,6 @@ public class SoundBase : MonoBehaviour {
  	public AudioClip Boom;
  	public AudioClip black_hole;
     public AudioClip ballExplode;
-    public AudioClip ballExplode5Hit;
-    public AudioClip ballExplode9Hit;
     public AudioClip shoot;
     public AudioClip hitBall;
     public AudioClip hitBorder;

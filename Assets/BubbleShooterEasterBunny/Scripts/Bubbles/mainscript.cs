@@ -114,7 +114,7 @@ public class mainscript : MonoBehaviour {
     public float ballExplosionTimeInterval;
 
     public delegate void DestroyBallsHandler();
-    public event DestroyBallsHandler onBallsDestroyed;
+    public event DestroyBallsHandler onGameItemsDestroyed;
     public delegate void BallShooterUnlocked();
     public event BallShooterUnlocked onBallShooterUnlocked;
 
@@ -190,7 +190,7 @@ public class mainscript : MonoBehaviour {
         if (ballsToDelete.Count >= 3)
         {
             scored = true;
-            DestroyFixedBalls(ballsToDelete);
+            DestroyGameItems(ballsToDelete);
         }
         else
         {
@@ -203,17 +203,17 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-    public void DestroyFixedBalls(List<GameObject> ballsToDelete)
+    public void DestroyGameItems(List<GameObject> gameItemsToDelete)
     {
-        PlayBallExplodeAudio(ballsToDelete.Count);
+        PlayBallExplodeAudio(gameItemsToDelete.Count);
         ScoreManager.Instance.ComboCount++;
 
         // 在这里调用coroutine将其销毁
-        ExplodeBalls(ballsToDelete);
+        ExplodeGameItems(gameItemsToDelete);
 
-        if (onBallsDestroyed != null)
+        if (onGameItemsDestroyed != null)
         {
-            onBallsDestroyed();
+            onGameItemsDestroyed();
         }
 
         // 每次销毁任何颜色球都要检测是否有球掉落
@@ -222,21 +222,9 @@ public class mainscript : MonoBehaviour {
 
     void PlayBallExplodeAudio(int ballCount)
     {
-        if (ballCount > 1 && ballCount < 5)
+        if (ballCount > 1)
         {
             SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.ballExplode);
-        }
-        else if (ballCount >= 5 && ballCount < 9)
-        {
-            SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.ballExplode5Hit);
-        }
-        else if (ballCount >= 9)
-        {
-            SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.ballExplode9Hit);
-        }
-        else    // 毁掉单个球，不放音效
-        {
-            
         }
     }
 
@@ -442,19 +430,22 @@ public class mainscript : MonoBehaviour {
         return ballsToDelete;
     }
 
-    void ExplodeBalls(List<GameObject> balls)
+    void ExplodeGameItems(List<GameObject> gameItems)
     {
         mainscript.Instance.bounceCounter = 0;
         //调用ScoreManager里爆炸球的分数更新函数
-        int score = ScoreManager.Instance.UpdateComboScore(balls.Count);
+        int score = ScoreManager.Instance.UpdateComboScore(gameItems.Count);
 
         float delayedExplodeTime = 0f;
-        foreach (GameObject ballGO in balls)
+        foreach (GameObject gameItem in gameItems)
         {
             // 让ball爆炸
-            Ball ball = ballGO.GetComponent<Ball>();
-            ball.Explode(delayedExplodeTime, score);
-            delayedExplodeTime += ballExplosionTimeInterval;
+            Ball ball = gameItem.GetComponent<Ball>();
+            if (ball)
+            {
+                ball.Explode(delayedExplodeTime, score);
+                delayedExplodeTime += ballExplosionTimeInterval;
+            }
         }
     }
 

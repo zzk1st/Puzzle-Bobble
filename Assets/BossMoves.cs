@@ -17,7 +17,7 @@ public class BossMoves : MonoBehaviour {
     public void MoveToBossPlace(BossPlace targetPlace)
     {
         transform.parent = transform.root;
-        if (targetPlace.transform.position.x > transform.position.x)
+        if (targetPlace.transform.position.x < transform.position.x)
         {
             transform.localScale = new Vector3(-initialScale.x, initialScale.y, initialScale.z);
         }

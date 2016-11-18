@@ -2834,7 +2834,7 @@ MonoBehaviour:
   magicBallPrefab: {fileID: 117734, guid: bed8a9c9b765ee84f97d0a8ddb2ab2ee, type: 2}
   centerItemPrefab: {fileID: 185498, guid: 681dec1489c6349699a4a694785fe695, type: 2}
   animalSinglePrefab: {fileID: 123106, guid: 6742c9e10fba1db4ea86ff1e476711e8, type: 2}
-  animalTrianglePrefab: {fileID: 116314, guid: 22f20f970f2fa4e30b25b27b4dd4a3b7, type: 2}
+  animalTrianglePrefab: {fileID: 123106, guid: af205263731714b1fa4b59b8cba07f31, type: 2}
   animalHexagonPrefab: {fileID: 112282, guid: 1980d03490f1e004393030f86316f456, type: 2}
   bossPlacePrefab: {fileID: 113922, guid: 601b00cac45544c7295a704ab7347228, type: 2}
 --- !u!1 &151206853
@@ -3098,7 +3098,7 @@ Prefab:
     - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: ballExplode
       value: 
-      objectReference: {fileID: 8300000, guid: 2c17be0542a59488cb3f966f935d692f, type: 3}
+      objectReference: {fileID: 8300000, guid: f4ff7cffad3fc4f249bf79353fe4da36, type: 3}
     - target: {fileID: 11400000, guid: c8003baa1f5c64645a6884376b315d2a, type: 2}
       propertyPath: ballExplode5Hit
       value: 
@@ -8635,12 +8635,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballColors:
-  - {r: 0.18431373, g: 0.49803925, b: 0.9333334, a: 0}
-  - {r: 0.18431373, g: 0.49803925, b: 0.9333334, a: 0}
-  - {r: 0.28627452, g: 0.64705884, b: 0.07450981, a: 0}
-  - {r: 0.9490197, g: 0.039215688, b: 0, a: 0}
-  - {r: 0.48627454, g: 0.04705883, b: 1, a: 0}
-  - {r: 0.97647065, g: 0.39607847, b: 0, a: 0}
+  - {r: 0.18431373, g: 0.49803925, b: 0.9333334, a: 1}
+  - {r: 0.18431373, g: 0.49803925, b: 0.9333334, a: 1}
+  - {r: 0.28627452, g: 0.64705884, b: 0.07450981, a: 1}
+  - {r: 0.9490197, g: 0.039215688, b: 0, a: 1}
+  - {r: 0.48627454, g: 0.04705883, b: 1, a: 1}
+  - {r: 0.97647065, g: 0.39607847, b: 0, a: 1}
   ballBackgroundColors:
   - {r: 0.5411765, g: 0.74509805, b: 1, a: 0.5019608}
   - {r: 0.5411765, g: 0.74509805, b: 1, a: 0.5019608}
