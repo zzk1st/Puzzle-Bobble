@@ -428,6 +428,10 @@ MonoBehaviour:
   - {fileID: 21300024, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
   animalSingleShellSprite: {fileID: 21300010, guid: 008365a7baf27104799b3a24e8d34748,
     type: 3}
+  animalTriangleSprites:
+  - {fileID: 21300032, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
+  animalTriangleShellSprite: {fileID: 21300010, guid: 008365a7baf27104799b3a24e8d34748,
+    type: 3}
   animalHexSprites:
   - {fileID: 21300026, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
   - {fileID: 21300028, guid: 008365a7baf27104799b3a24e8d34748, type: 3}

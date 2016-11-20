@@ -38,7 +38,14 @@ public class Animal : MonoBehaviour {
             animalBody.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.animalSingleSprites[idx];
             return;
         }
-        if (itemType == LevelItemType.AnimalHexagon)
+        else if (itemType == LevelItemType.AnimalTriangle)
+        {
+            int idx = Random.Range(0, mainscript.Instance.animalTriangleSprites.Length);
+            animalShell.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.animalTriangleShellSprite;
+            animalBody.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.animalTriangleSprites[idx];
+            return;
+        }
+        else if (itemType == LevelItemType.AnimalHexagon)
         {
             int idx = Random.Range(0, mainscript.Instance.animalHexSprites.Length);
             animalShell.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.animalHexShellSprite;

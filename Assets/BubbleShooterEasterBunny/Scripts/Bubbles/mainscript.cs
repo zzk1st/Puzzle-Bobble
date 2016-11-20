@@ -31,6 +31,8 @@ public class mainscript : MonoBehaviour {
     public Sprite[] ballColorHightlightSprites;
     public Sprite[] animalSingleSprites;
     public Sprite animalSingleShellSprite;
+    public Sprite[] animalTriangleSprites;
+    public Sprite animalTriangleShellSprite;
     public Sprite[] animalHexSprites;
     public Sprite animalHexShellSprite;
 
