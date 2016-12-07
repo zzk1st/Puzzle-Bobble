@@ -422,24 +422,21 @@ MonoBehaviour:
   - {fileID: 21300028, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   - {fileID: 21300032, guid: 1f86e71bf5a66554fb7353a3e36fd328, type: 3}
   animalSingleSprites:
-  - {fileID: 21300018, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
-  - {fileID: 21300020, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
-  - {fileID: 21300022, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
-  - {fileID: 21300024, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
-  animalSingleShellSprite: {fileID: 21300010, guid: 008365a7baf27104799b3a24e8d34748,
+  - {fileID: 21300024, guid: 466378a3a4a414cad856bcf1f2c8688f, type: 3}
+  - {fileID: 21300026, guid: 466378a3a4a414cad856bcf1f2c8688f, type: 3}
+  - {fileID: 21300028, guid: 466378a3a4a414cad856bcf1f2c8688f, type: 3}
+  - {fileID: 21300030, guid: 466378a3a4a414cad856bcf1f2c8688f, type: 3}
+  animalSingleShellSprite: {fileID: 21300010, guid: 466378a3a4a414cad856bcf1f2c8688f,
     type: 3}
   animalTriangleSprites:
-  - {fileID: 21300032, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
-  animalTriangleShellSprite: {fileID: 21300010, guid: 008365a7baf27104799b3a24e8d34748,
+  - {fileID: 21300032, guid: 466378a3a4a414cad856bcf1f2c8688f, type: 3}
+  - {fileID: 21300034, guid: 466378a3a4a414cad856bcf1f2c8688f, type: 3}
+  animalTriangleShellSprite: {fileID: 21300018, guid: 466378a3a4a414cad856bcf1f2c8688f,
     type: 3}
   animalHexSprites:
-  - {fileID: 21300026, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
-  - {fileID: 21300028, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
-  - {fileID: 21300030, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
-  - {fileID: 21300032, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
-  - {fileID: 21300034, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
-  - {fileID: 21300036, guid: 008365a7baf27104799b3a24e8d34748, type: 3}
-  animalHexShellSprite: {fileID: 21300012, guid: 008365a7baf27104799b3a24e8d34748,
+  - {fileID: 21300036, guid: 466378a3a4a414cad856bcf1f2c8688f, type: 3}
+  - {fileID: 21300042, guid: 466378a3a4a414cad856bcf1f2c8688f, type: 3}
+  animalHexShellSprite: {fileID: 21300014, guid: 466378a3a4a414cad856bcf1f2c8688f,
     type: 3}
   BallRGB:
   - {r: 0.09411765, g: 0.4745098, b: 1, a: 1}
@@ -4182,6 +4179,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1372659631}
   m_RootOrder: 3
+--- !u!1 &438716933
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 438716934}
+  m_Layer: 0
+  m_Name: BossAnimNode
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &438716934
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 438716933}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 440706746}
+  m_Father: {fileID: 1495113012}
+  m_RootOrder: 0
 --- !u!1 &440706745
 GameObject:
   m_ObjectHideFlags: 0
@@ -4210,7 +4236,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
-  m_Father: {fileID: 1495113012}
+  m_Father: {fileID: 438716934}
   m_RootOrder: 0
 --- !u!95 &440706747
 Animator:
@@ -4255,7 +4281,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: 21300004, guid: 121e480151b83484db4b372d1e8ff134, type: 3}
+  m_Sprite: {fileID: 21300052, guid: 466378a3a4a414cad856bcf1f2c8688f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -10401,10 +10427,10 @@ Transform:
   m_GameObject: {fileID: 1495113011}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5.47, y: 0, z: 1}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
+  m_LocalScale: {x: 0.35, y: 0.4, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 440706746}
+  - {fileID: 438716934}
   m_Father: {fileID: 0}
   m_RootOrder: 19
 --- !u!114 &1495113013
