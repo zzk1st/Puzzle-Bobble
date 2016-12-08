@@ -48,6 +48,8 @@ public class SelectLevelManager : MonoBehaviour {
             }
         }
 
+        // 在这里设置一下关卡数，方便game使用
+        PlayerPrefs.SetInt("LevelCount", GetLevelCount());
         SetSelectedLevel(FindOpenLevel());
     }
 
@@ -69,6 +71,13 @@ public class SelectLevelManager : MonoBehaviour {
         {
             throw new System.AccessViolationException("找不到OpenLevel对应的SingleLevel GameObject!");
         }
+
+        MoveCameraToSelectedLevel();
+    }
+
+    void MoveCameraToSelectedLevel()
+    {
+        Camera.main.GetComponent<SelectLevelCamera>().MoveTo(selectedLevel.transform.position);
     }
 
     SingleLevel GetSingleLevel(int levelNumber)
@@ -86,6 +95,11 @@ public class SelectLevelManager : MonoBehaviour {
         // 目前我们为了调试方便暂且只返回null
         //throw new System.AccessViolationException("在scene中找不到missiontypes文件中提到的关卡，未知levelNumber=" + levelNumber);
         return null;
+    }
+
+    int GetLevelCount()
+    {
+        return levels.transform.childCount;
     }
 
     public void StartLevel(GameObject selectedLevelGO)

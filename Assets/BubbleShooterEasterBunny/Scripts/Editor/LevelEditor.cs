@@ -47,7 +47,7 @@ public class LevelEditor : EditorWindow
         if (levelNumber < 1)
             levelNumber = 1;
 
-        scrollViewVector = GUI.BeginScrollView(new Rect(25, 45, position.width - 30, position.height), scrollViewVector, new Rect(0, 0, 400, 2000));
+        scrollViewVector = GUI.BeginScrollView(new Rect(25, 45, position.width - 30, position.height - 50), scrollViewVector, new Rect(0, 0, 400, 2300));
 
         GUILevelSelector();
         GUILayout.Space(10);

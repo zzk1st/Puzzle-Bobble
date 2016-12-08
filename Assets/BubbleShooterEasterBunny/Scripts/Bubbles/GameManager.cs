@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
     {
         setGameStatus(GameStatus.Win);
         if( !winStarted )
-            StartCoroutine( WinAction ());
+            StartCoroutine(WinAction());
     }
 
     public void Pause()
@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviour
     }
 
 	// Update is called once per frame
-	IEnumerator WinAction () 
+	IEnumerator WinAction() 
     {
         winStarted = true;
         InitScript.Instance.AddLife( 1 );

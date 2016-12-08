@@ -35,7 +35,7 @@ public class BossMoves : MonoBehaviour {
         float initDis = Vector3.Distance(targetPlace.gameObject.transform.position, gameObject.transform.position);
         float dis = initDis;
 
-        float speed = 0.2f;
+        float speed = 0.1f;
 
         while (dis > 0.1f)
         {

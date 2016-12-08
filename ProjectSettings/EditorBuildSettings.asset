@@ -11,3 +11,5 @@ EditorBuildSettings:
     path: Assets/BubbleShooterEasterBunny/Scenes/map.unity
   - enabled: 1
     path: Assets/BubbleShooterEasterBunny/Scenes/game.unity
+  - enabled: 1
+    path: Assets/BubbleShooterEasterBunny/Scenes/map2.unity

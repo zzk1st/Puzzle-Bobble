@@ -133,13 +133,9 @@ public class AnimationManager : MonoBehaviour
         {
             ShowGameOver();
         }
-        if( gameObject.name == "MenuComplete" )
+        else if( gameObject.name == "MenuComplete" || gameObject.name == "MenuGameOver")
         {
-            SceneManager.LoadScene("map");
-        }
-        if( gameObject.name == "MenuGameOver" )
-        {
-            SceneManager.LoadScene( "map" );
+            SceneManager.LoadScene("map2");
         }
 
         if( SceneManager.GetActiveScene().name == "game")
@@ -173,7 +169,7 @@ public class AnimationManager : MonoBehaviour
         }
         else if( gameObject.name == "MenuGameOver" )
         {
-            SceneManager.LoadScene( "map" );
+            SceneManager.LoadScene( "map2" );
         }
         else if( gameObject.name == "MenuPlay" )
         {
@@ -191,7 +187,7 @@ public class AnimationManager : MonoBehaviour
         }
         else if( gameObject.name == "PlayMain" )
         {
-            SceneManager.LoadScene( "map" );
+            SceneManager.LoadScene( "map2" );
         }
     }
 
@@ -202,10 +198,16 @@ public class AnimationManager : MonoBehaviour
 //        CloseMenu();
     }
 
-    public void Next()
+    public void NextLevel()
     {
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        CloseMenu();
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
+        //进入下一关
+        if (PlayerPrefs.GetInt("OpenLevel") <= PlayerPrefs.GetInt("LevelCount"))
+        {
+            PlayerPrefs.SetInt("OpenLevel", PlayerPrefs.GetInt("OpenLevel") + 1);
+        }
+
+        SceneManager.LoadScene("map2");
     }
     public void BuyGems()
     {
@@ -356,7 +358,7 @@ public class AnimationManager : MonoBehaviour
     public void Quit()
     {
         if( SceneManager.GetActiveScene().name == "game" )
-            SceneManager.LoadScene( "map" );
+            SceneManager.LoadScene( "map2" );
         else
             Application.Quit();
     }

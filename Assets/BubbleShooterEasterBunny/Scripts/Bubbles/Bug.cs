@@ -101,13 +101,15 @@ public class Bug : MonoBehaviour {
             int bugScore = ScoreManager.Instance.UpdateBugScore(col.collider.GetComponent<Ball>().HitBug * score * (color + 1));
             ScoreManager.Instance.PopupComboScore( bugScore, transform.position);
             StartCoroutine( StartAnim( col.collider.transform.position ) );
-            if( color == 2 )
-            {
-                SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[5]);
-                ChangeColor( 1 );
-                GameObject ball = GameItemFactory.Instance.CreateFixedBall(transform.position + Vector3.up * 1, new LevelGameItem(LevelItemType.Random));
-                ball.GetComponent<Ball>().StartFall();
-            }
+            // 这段代码是干啥用的？导致了exception，暂时注释掉
+            //if( color == 2 )
+            //{
+            //    SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[5]);
+            //    ChangeColor( 1 );
+            //    GameObject ball = GameItemFactory.Instance.CreateFixedBall(transform.position + Vector3.up * 1, new LevelGameItem(LevelItemType.Random));
+            //    ball.GetComponent<Ball>().StartFall();
+            //}
+
         }
     }
 

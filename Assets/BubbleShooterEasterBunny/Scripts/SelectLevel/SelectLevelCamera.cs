@@ -46,9 +46,7 @@ public class SelectLevelCamera : MonoBehaviour {
             transform.position += Diff;
         }
 
-        transform.position = new Vector3(Mathf.Clamp(transform.position.x, backgroundBounds.center.x - backgroundBounds.extents.x + cameraSizeX, backgroundBounds.center.x + backgroundBounds.extents.x - cameraSizeX),
-                                         Mathf.Clamp(transform.position.y, backgroundBounds.center.y - backgroundBounds.extents.y + cameraSizeY, backgroundBounds.center.y + backgroundBounds.extents.y - cameraSizeY),
-            0);
+        MoveTo(transform.position);
     }
     // return the position of the mouse in world coordinates (helper method)
     Vector3 MousePos()
@@ -63,5 +61,12 @@ public class SelectLevelCamera : MonoBehaviour {
         {
             SelectLevelManager.Instance.StartLevel(hitInfo.transform.gameObject);
         }
+    }
+
+    public void MoveTo(Vector3 pos)
+    {
+        transform.position = new Vector3(Mathf.Clamp(pos.x, backgroundBounds.center.x - backgroundBounds.extents.x + cameraSizeX, backgroundBounds.center.x + backgroundBounds.extents.x - cameraSizeX),
+                                         Mathf.Clamp(pos.y, backgroundBounds.center.y - backgroundBounds.extents.y + cameraSizeY, backgroundBounds.center.y + backgroundBounds.extents.y - cameraSizeY),
+                                         0);
     }
 }
