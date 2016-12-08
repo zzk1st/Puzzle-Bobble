@@ -35,7 +35,19 @@ public class Counter : MonoBehaviour {
         {
             label.text = "" + ScoreManager.Instance.Score;
         }
-        if( name == "Level" )
+        if (name == "PotScore1")
+        {
+            label.text = "" + GameObject.Find("Pot1").GetComponent<Pot>().score * ScoreManager.Instance.DoubleScore;
+        }
+        if (name == "PotScore2")
+        {
+            label.text = "" + GameObject.Find("Pot2").GetComponent<Pot>().score * ScoreManager.Instance.DoubleScore;
+        }
+        if (name == "PotScore3")
+        {
+            label.text = "" + GameObject.Find("Pot3").GetComponent<Pot>().score * ScoreManager.Instance.DoubleScore;
+        }
+        if ( name == "Level" )
         {
             label.text = "" + PlayerPrefs.GetInt("OpenLevel");
         }

@@ -35,7 +35,7 @@ public class ScoreManager : MonoBehaviour {
         }
     }
 
-    public static int DoubleScore
+    public int DoubleScore
     {
         get { return doubleScore; }
     }
@@ -121,6 +121,7 @@ public class ScoreManager : MonoBehaviour {
     // 在Combo时候跳出来的text
     public void PopupComboScore(int value, Vector3 pos)
     {
+        Debug.Log("comboscore:" + value);
         if (value != 0)
         {
             Transform parent = GameObject.Find("Canvas").transform;
@@ -134,6 +135,7 @@ public class ScoreManager : MonoBehaviour {
 
     public void PopupFallingScore(int value, Vector3 pos)
     {
+        Debug.Log("fallingscore:" + value);
         Transform parent = GameObject.Find("Canvas").transform;
         GameObject poptxt = Instantiate(fallingScore, pos, Quaternion.identity) as GameObject;
         poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
@@ -145,6 +147,7 @@ public class ScoreManager : MonoBehaviour {
 
     public void PopupPotScore(double value, Vector3 pos)
     {
+        Debug.Log("potscore:" + value);
         Transform parent = GameObject.Find("Canvas").transform;
         GameObject poptxt = Instantiate(popupScore, pos, Quaternion.identity) as GameObject;
         poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
