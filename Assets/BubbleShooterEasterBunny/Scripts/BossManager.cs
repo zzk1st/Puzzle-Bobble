@@ -37,6 +37,7 @@ public class BossManager : MonoBehaviour {
     {
         if (bossPlaces.Count > 0)
         {
+            GameManager.Instance.Demo();
             bossGO.GetComponent<BossMoves>().MoveToBossPlace(bossPlaces.Last().GetComponent<BossPlace>());
         }
     }

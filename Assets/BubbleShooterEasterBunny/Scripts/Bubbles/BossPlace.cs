@@ -106,7 +106,6 @@ public class BossPlace : MonoBehaviour {
             if (otherBall.color == hitBallColor)
             {
                 // 销毁掉碰撞的球
-                mainscript.Instance.ballShooter.isLocked = false;
                 Destroy(other.gameObject);
 
                 MissionManager.Instance.GainBossPoint();

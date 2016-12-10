@@ -80,7 +80,8 @@ public class ScoreManager : MonoBehaviour {
         string timeName = "Time" + currentLevel.ToString();
         if (PlayerPrefs.HasKey(timeName))
             fastestTime = PlayerPrefs.GetFloat(timeName);
-
+        comboCount = 0;
+        doubleScore = 1;
 	}
 
     public int UpdateComboScore(int numBalls)
@@ -121,7 +122,6 @@ public class ScoreManager : MonoBehaviour {
     // 在Combo时候跳出来的text
     public void PopupComboScore(int value, Vector3 pos)
     {
-        Debug.Log("comboscore:" + value);
         if (value != 0)
         {
             Transform parent = GameObject.Find("Canvas").transform;
@@ -147,7 +147,6 @@ public class ScoreManager : MonoBehaviour {
 
     public void PopupPotScore(double value, Vector3 pos)
     {
-        Debug.Log("potscore:" + value);
         Transform parent = GameObject.Find("Canvas").transform;
         GameObject poptxt = Instantiate(popupScore, pos, Quaternion.identity) as GameObject;
         poptxt.transform.GetComponentInChildren<Text>().text = "" + value;

@@ -59,6 +59,13 @@ public class BossMoves : MonoBehaviour {
         transform.localScale = new Vector3(initialScale.x, initialScale.y, initialScale.z);
         transform.parent = targetPlace.transform;
         bossAnimGO.GetComponent<Animator>().SetTrigger("Idle");
-        GameManager.Instance.Play();
+        if (GameManager.Instance.gameStatus == GameStatus.BossArriving)
+        {
+            GameManager.Instance.Play();
+        }
+        else
+        {
+            GameManager.Instance.Resume();
+        }
     }
 }

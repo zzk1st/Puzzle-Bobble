@@ -7,6 +7,7 @@ public enum GameStatus
 {
     None,
     Playing,
+    Demo,
     Pause,
     Win,
     GameOver,
@@ -67,6 +68,12 @@ public class GameManager : MonoBehaviour
         setGameStatus(GameStatus.Playing);
     }
 
+    public void Demo()
+    {
+        mainscript.Instance.ballShooter.isLocked = true;
+        setGameStatus(GameStatus.Demo);
+    }
+
     public void Win()
     {
         setGameStatus(GameStatus.Win);
@@ -83,6 +90,7 @@ public class GameManager : MonoBehaviour
     public void Resume()
     {
         setGameStatus(lastGameStatus);
+        mainscript.Instance.ballShooter.isLocked = false;
         Time.timeScale = 1;
     }
 
@@ -112,6 +120,9 @@ public class GameManager : MonoBehaviour
 	// Update is called once per frame
 	IEnumerator WinAction() 
     {
+        // 注意这步很关键，如果还保持Aim Mode，那么有的球会从左右边界外溜出去
+        mainscript.Instance.ballShooter.SetStageCollidersMode(BallShooter.StageCollidersMode.FireMode);
+
         winStarted = true;
         InitScript.Instance.AddLife( 1 );
         GameObject.Find( "Canvas" ).transform.Find( "LevelCleared" ).gameObject.SetActive( true );

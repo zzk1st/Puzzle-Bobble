@@ -197,7 +197,7 @@ public class BallShooter : MonoBehaviour {
         }
     }
 
-    void SetStageCollidersMode(StageCollidersMode mode)
+    public void SetStageCollidersMode(StageCollidersMode mode)
     {
         if (mode == StageCollidersMode.AimMode)
         {

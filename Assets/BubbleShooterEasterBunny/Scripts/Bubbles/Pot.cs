@@ -45,7 +45,7 @@ public class Pot : MonoBehaviour {
         }
 
         int potScore = ScoreManager.Instance.UpdatePotScore(score);
-        ScoreManager.Instance.PopupPotScore( potScore, transform.position + Vector3.up );
+        ScoreManager.Instance.PopupPotScore( potScore, transform.position);
         SoundManager.Instance.Play(SoundSeqType.BallFallInPot);
         /*
         StartCoroutine( SoundsCounter() );
