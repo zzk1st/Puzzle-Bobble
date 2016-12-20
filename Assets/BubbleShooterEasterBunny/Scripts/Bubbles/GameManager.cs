@@ -215,10 +215,12 @@ public class GameManager : MonoBehaviour
 
     IEnumerator LoseAction()
     {
+        mainscript.Instance.ballShooter.SetStageCollidersMode(BallShooter.StageCollidersMode.FireMode);
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.OutOfMoves );
         GameObject.Find( "Canvas" ).transform.Find( "OutOfMoves" ).gameObject.SetActive( true );
         yield return new WaitForSeconds( 1.5f );
         GameObject.Find( "Canvas" ).transform.Find( "OutOfMoves" ).gameObject.SetActive( false );
         yield return new WaitForSeconds( 0.1f );
+        GameObject.Find("Canvas").transform.Find("MenuGameOver").gameObject.SetActive(true);
     }
 }
