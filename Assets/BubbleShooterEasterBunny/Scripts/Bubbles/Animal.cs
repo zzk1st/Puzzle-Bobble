@@ -26,7 +26,7 @@ public class Animal : MonoBehaviour {
         animalBody = transform.GetChild(1).gameObject;
         _gameItem.ConnectToGrid();
         flyingMiddlePoint = new Vector3(0, 3, 0);
-        escapeAnim = transform.FindChild("AnimalEscape").GetComponent<Animator>();
+        escapeAnim = transform.Find("AnimalEscape").GetComponent<Animator>();
     }
 
     public void SetSprite(LevelItemType itemType)

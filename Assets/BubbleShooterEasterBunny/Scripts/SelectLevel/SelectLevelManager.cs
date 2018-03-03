@@ -56,7 +56,7 @@ public class SelectLevelManager : MonoBehaviour {
     GameObject FindOpenLevel()
     {
         int selectedLevelNumber = PlayerPrefs.GetInt("OpenLevel");
-        return levels.transform.FindChild("SingleLevel" + selectedLevelNumber.ToString()).gameObject;
+        return levels.transform.Find("SingleLevel" + selectedLevelNumber.ToString()).gameObject;
     }
 
     void SetSelectedLevel(GameObject level)

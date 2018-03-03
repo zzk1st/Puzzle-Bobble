@@ -7,13 +7,13 @@ STARS 10000/20000/30000
 6 6 6 6 6 6 6 6 6 6 0
 0 6 6 6 6 6 6 6 6 6 0
 0 6 6 6 6 6 6 6 6 0 0
-0 0 6 6 6,True 6,True 6,True 6 6 0 0
+0 0 6 6 6,Smoke 6,Smoke 6,Smoke 6 6 0 0
 0 6 6 6 6 6 6 6 6 0 0
 6 6 6 6 6 6 6 6 6 6 6
-0 6 6 6,True 6,True 6,True 6,True 6 6 0 0
+0 6 6 6,Smoke 6,Smoke 6,Smoke 6,Smoke 6 6 0 0
 0 0 6 0 6 0 6 0 6 0 0
 0 6 6 0 0 0 0 6 6 0 0
-0 6,True 6,True 0 0 0 0 0 6,True 6,True 0
+0 6,Smoke 6,Smoke 0 0 0 0 0 6,Smoke 6,Smoke 0
 0 0 0 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0 0 0 0

@@ -11,7 +11,7 @@ public class Bug : MonoBehaviour {
     private GameObject bugSprite;
 
     void Awake () {
-        bugSprite = transform.FindChild("BugSprite").gameObject;
+        bugSprite = transform.Find("BugSprite").gameObject;
     }
 
 	void Start () {

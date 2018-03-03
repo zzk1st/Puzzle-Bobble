@@ -16,9 +16,9 @@ public class SingleLevel : MonoBehaviour {
 
     public void Initialize(MissionType type, int stars)
     {
-        missionTypeGO = transform.FindChild("MissionType").gameObject;
-        levelNumberGO = transform.FindChild("LevelNumber").gameObject;
-        starsGO = transform.FindChild("Stars").gameObject;
+        missionTypeGO = transform.Find("MissionType").gameObject;
+        levelNumberGO = transform.Find("LevelNumber").gameObject;
+        starsGO = transform.Find("Stars").gameObject;
 
         missionType = type;
         starCount = stars;
@@ -38,7 +38,7 @@ public class SingleLevel : MonoBehaviour {
         // set stars
         for (int i = 1; i <= 3; i++)
         {
-            GameObject curStar = starsGO.transform.FindChild("Star" + i).gameObject;
+            GameObject curStar = starsGO.transform.Find("Star" + i).gameObject;
             if (i <= starCount)
             {
                 curStar.SetActive(true);

@@ -425,7 +425,7 @@ public class mainscript : MonoBehaviour {
 
         List<GameObject> ballsToDelete = new List<GameObject>();
         ballsToDelete.Add(checkBallGO);
-        checkBall.CheckNextNearestColor(ballsToDelete);
+        checkBall.CheckNextNearestColor(ballsToDelete, 0);
         // 去掉重复元素
         ballsToDelete = ballsToDelete.Distinct().ToList();
 

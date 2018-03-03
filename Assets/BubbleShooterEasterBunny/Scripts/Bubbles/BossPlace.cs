@@ -25,10 +25,10 @@ public class BossPlace : MonoBehaviour {
         _gameItem = gameObject.GetComponent<GameItem>();
         _gameItem.ConnectToGrid();
 
-        hitBall = transform.FindChild("HitBall").gameObject;
-        glass = transform.FindChild("HexagonForeground").gameObject;
-        vortex = transform.FindChild("Vortex").gameObject;
-        background = transform.FindChild("HexagonBackground").gameObject;
+        hitBall = transform.Find("HitBall").gameObject;
+        glass = transform.Find("HexagonForeground").gameObject;
+        vortex = transform.Find("Vortex").gameObject;
+        background = transform.Find("HexagonBackground").gameObject;
 
         // 初始状态，要给bossplace设置成空的
         SetEmptyPlace();

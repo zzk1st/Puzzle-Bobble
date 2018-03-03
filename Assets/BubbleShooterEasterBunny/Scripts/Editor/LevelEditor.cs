@@ -14,7 +14,7 @@ public class LevelEditor : EditorWindow
     private Texture[] ballTex;
     int levelNumber = 1;
     private Vector2 scrollViewVector;
-    private bool isCoveredBySmoke;
+	private BallCoverType ballCoverType;
     private LevelItemType brush;
 
     [MenuItem("Window/Level editor")]
@@ -274,9 +274,10 @@ public class LevelEditor : EditorWindow
 
         GUILayout.BeginVertical();
         GUILayout.BeginHorizontal();
-        GUILayout.Space(10);
+        GUILayout.Space(0);
         GUILayout.Label("Balls:", EditorStyles.boldLabel);
-        isCoveredBySmoke = EditorGUILayout.Toggle("Smoke", isCoveredBySmoke);
+		string[] ballCoverTypeStrings = new string[] {"None", "Smoke", "Ice"};
+		ballCoverType = (BallCoverType) GUILayout.Toolbar((int) ballCoverType, ballCoverTypeStrings);
         GUILayout.EndHorizontal();
 
         GUILayout.BeginVertical();
@@ -296,7 +297,7 @@ public class LevelEditor : EditorWindow
                     else
                     {
                         levelData.missionType = MissionType.RescueGhost;
-                        checkAndBrushMap(LevelItemType.CenterItem, false, LevelData.CenterItemRow, LevelData.CenterItemCol);
+						checkAndBrushMap(LevelItemType.CenterItem, BallCoverType.None, LevelData.CenterItemRow, LevelData.CenterItemCol);
                     }
                 }
             }
@@ -334,7 +335,7 @@ public class LevelEditor : EditorWindow
             for (int col = 0; col < levelData.colCount; col++)
             {
                 var imageButton = new object();
-                string smokeStr = "";
+                string coverStr = "";
                 if (levelData.MapData(row, col).type == LevelItemType.Empty)
                 {
                     imageButton = "X";
@@ -343,12 +344,16 @@ public class LevelEditor : EditorWindow
                 {
                     imageButton = ballTex[(int)levelData.MapData(row, col).type];
                 }
-                if (levelData.MapData(row, col).isCoveredBySmoke)
+				if (levelData.MapData(row, col).ballCoverType == BallCoverType.Smoke)
                 {
-                    smokeStr = "S";
+					coverStr = "S";
+                }
+				else if (levelData.MapData(row, col).ballCoverType == BallCoverType.Ice)
+                {
+					coverStr = "I";
                 }
 
-                if (GUILayout.Button(new GUIContent(smokeStr, imageButton as Texture), new GUILayoutOption[] {
+				if (GUILayout.Button(new GUIContent(coverStr, imageButton as Texture), new GUILayoutOption[] {
                     GUILayout.Width (50),
                     GUILayout.Height (50)
                 }))
@@ -379,7 +384,7 @@ public class LevelEditor : EditorWindow
             }
             else
             {
-                checkAndBrushMap(brush, isCoveredBySmoke, row, col);
+				checkAndBrushMap(brush, ballCoverType, row, col);
             }
         }
     }
@@ -411,7 +416,7 @@ public class LevelEditor : EditorWindow
     }
 
     // 检测如果在row,col放置该item, 其shap是否出界，是否占其他已存在item
-    bool checkAndBrushMap(LevelItemType itemType, bool coveredBySmoke, int row, int col)
+	bool checkAndBrushMap(LevelItemType itemType, BallCoverType ballCoverType, int row, int col)
     {
         GameItemShapeType shapeType = levelData.ShapeType(itemType);
         List<GridCoord> gridCoords = GameItemShapes.Instance.ShapeGridCoords(shapeType, row, col);
@@ -433,7 +438,7 @@ public class LevelEditor : EditorWindow
         {
             levelData.map[gridCoord.row * levelData.colCount + gridCoord.col] = new LevelGameItem(LevelItemType.Occupied);
         }
-        levelData.map[row * levelData.colCount + col] = new LevelGameItem(itemType, coveredBySmoke);
+		levelData.map[row * levelData.colCount + col] = new LevelGameItem(itemType, ballCoverType);
 
         return true;
     }

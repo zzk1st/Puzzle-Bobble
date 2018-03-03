@@ -42,7 +42,7 @@ public class Ball : MonoBehaviour
         }
     }
 
-    public bool coveredBySmoke; // 一个smoke ball必须是fixed状态，本身在没露面之前不参加任何消色反应
+	public BallCoverType ballCoverType; // 一个smoke ball必须是fixed状态，本身在没露面之前不参加任何消色反应
 
     public Grid grid
     {
@@ -73,6 +73,7 @@ public class Ball : MonoBehaviour
     private float ballFallRotationSpeedRange = 600f;
 
     public GameObject ballSmokePrefab;
+    public GameObject ballIcePrefab;
 
     private int hitBug;
     public int HitBug
@@ -85,6 +86,7 @@ public class Ball : MonoBehaviour
     }
 
     private GameObject ballSmokeGO;
+    private GameObject ballIceGO;
     private GameObject ballHighlightGO;
     private GameObject ballPicGO;
 
@@ -97,7 +99,7 @@ public class Ball : MonoBehaviour
         GetComponent<CircleCollider2D>().radius = mainscript.Instance.BallColliderRadius;
         GetComponent<CircleCollider2D>().isTrigger = false;
         GetComponent<Ball>().number = UnityEngine.Random.Range(1, 6);
-        GetComponent<Ball>().coveredBySmoke = false;
+		GetComponent<Ball>().ballCoverType = BallCoverType.None;
 
         // Rigidbody2D在createBall里程序化的被加入
         gameObject.layer = LayerMask.NameToLayer("NewBall");
@@ -118,14 +120,20 @@ public class Ball : MonoBehaviour
         number = UnityEngine.Random.Range(1, 6);
         state = Ball.BallState.Fixed;
         enabled = false;
-        coveredBySmoke = levelGameItem.isCoveredBySmoke;
+		ballCoverType = levelGameItem.ballCoverType;
 
         // 设置烟雾
-        if (coveredBySmoke)
+		if (ballCoverType == BallCoverType.Smoke)
         {
             GameObject ballSmoke = Instantiate(ballSmokePrefab, transform.position, transform.rotation) as GameObject;
             ballSmoke.transform.parent = transform;
             ballSmokeGO = ballSmoke;
+        }
+		else if (ballCoverType == BallCoverType.Ice)
+        {
+            GameObject ballIce = Instantiate(ballIcePrefab, transform.position, transform.rotation) as GameObject;
+			ballIce.transform.parent = transform;
+			ballIceGO = ballIce;
         }
 
         GetComponent<GameItem>().ConnectToGrid();
@@ -141,8 +149,8 @@ public class Ball : MonoBehaviour
         _gameItem = gameObject.GetComponent<GameItem>();
         _gameItem.startFallFunc = StartFall;
         _gameItem.fireFunc = Fire;
-        ballHighlightGO = transform.FindChild("BallHighlight").gameObject;
-        ballPicGO = transform.FindChild("BallPic").gameObject;
+        ballHighlightGO = transform.Find("BallHighlight").gameObject;
+        ballPicGO = transform.Find("BallPic").gameObject;
 
         if (newBall)
         {
@@ -251,16 +259,28 @@ public class Ball : MonoBehaviour
 
     void RemoveSmoke()
     {
-        if (coveredBySmoke)
+		if (ballCoverType == BallCoverType.Smoke)
         {
-            coveredBySmoke = false;
+			ballCoverType = BallCoverType.None;
             ballSmokeGO.transform.SetParent(transform.root);
             ballSmokeGO.transform.GetChild(0).GetComponent<Animator>().SetTrigger(removeSmokeHash);
             Destroy(ballSmokeGO, 1);
         }
     }
 
-    public void CheckNextNearestColor(List<GameObject> results)
+    void RemoveIce()
+    {
+		if (ballCoverType == BallCoverType.Ice)
+        {
+			ballCoverType = BallCoverType.None;
+			ballIceGO.transform.SetParent(transform.root);
+			// 简化，目前没有冰破动画，之后再说
+			//ballIceGO.transform.GetChild(0).GetComponent<Animator>().SetTrigger(removeSmokeHash);
+            Destroy(ballIceGO, 1);
+        }
+    }
+
+	public void CheckNextNearestColor(List<GameObject> results, int level)
     {
         foreach (GameObject nearbyGameItem in grid.GetAdjacentGameItems())
         {
@@ -269,11 +289,18 @@ public class Ball : MonoBehaviour
             {
                 Ball ball = nearbyGameItem.GetComponent<Ball>();
                 // 只有非烟雾彩球
-                if (!ball.coveredBySmoke && nearbyGameItem.tag == tag && !FindInArray(results, nearbyGameItem))
-                {
-                    results.Add(nearbyGameItem);
-                    ball.CheckNextNearestColor(results);
-                }
+				if (ball.ballCoverType == BallCoverType.None ||
+				    (ball.ballCoverType == BallCoverType.Ice && level != 0)) 
+				{
+					if (nearbyGameItem.tag == tag && 
+						!FindInArray(results, nearbyGameItem))
+	                {
+	                    results.Add(nearbyGameItem);
+						ball.CheckNextNearestColor(results, level+1);
+	                }
+				}
+
+
             }
         }
     }
@@ -334,6 +361,7 @@ public class Ball : MonoBehaviour
         coll.isTrigger = false;
 
         RemoveSmoke();
+		RemoveIce();
     }
 
     void PlayHitAnim()
@@ -519,6 +547,9 @@ public class Ball : MonoBehaviour
     {
         // 只要是爆炸的球，就应该自动清楚周围球的烟雾
         RemoveAdjacentBallsSmoke();
+		// 清除属于本身的冰块
+		RemoveIce();
+
         if (grid)
         {
             if (grid.Row == 0)

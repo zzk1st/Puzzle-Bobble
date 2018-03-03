@@ -11,8 +11,8 @@ public class Pot : MonoBehaviour {
 
     void Start()
     {
-        lightAnim = transform.FindChild("Light").GetComponent<Animation>();
-        splashAnimator = transform.FindChild("Splash").GetComponent<Animator>();
+        lightAnim = transform.Find("Light").GetComponent<Animation>();
+        splashAnimator = transform.Find("Splash").GetComponent<Animator>();
     }
 
     void OnCollisionEnter2D(Collision2D coll)

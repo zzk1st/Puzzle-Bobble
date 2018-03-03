@@ -89,7 +89,7 @@ public class RainbowBallBoost : MonoBehaviour
             {
                 List<GameObject> sameColorNearbyBalls = new List<GameObject>();
                 sameColorNearbyBalls.Add(nearbyGameItem);
-                nearbyGameItem.GetComponent<Ball>().CheckNextNearestColor(sameColorNearbyBalls);
+                nearbyGameItem.GetComponent<Ball>().CheckNextNearestColor(sameColorNearbyBalls, 1); // level设置成1，因为彩虹球能把冰球也消掉
 
                 results.AddRange(sameColorNearbyBalls);
             }

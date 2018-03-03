@@ -8,7 +8,7 @@ public class BossMoves : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
-        bossAnimGO = transform.FindChild("BossAnimNode").FindChild("BossAnim").gameObject;
+        bossAnimGO = transform.Find("BossAnimNode").Find("BossAnim").gameObject;
         // 先让boss移动到屏幕外
         transform.position = new Vector3(-5.5f, 0f, 0f);
         initialScale = transform.localScale;
