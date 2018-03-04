@@ -7631,7 +7631,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   platformBottomLowerLimit: -0.69
-  platformBottomUpperLimit: 2.38
+  platformBottomUpperLimit: 1.27
   topBorder: {fileID: 1502360742}
 --- !u!1 &680264187
 GameObject:

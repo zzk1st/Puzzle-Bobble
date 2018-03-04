@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using UnityEngine.SceneManagement;
+using UnityEngine.Profiling;
 
 public class StageLoader
 {
@@ -11,6 +12,7 @@ public class StageLoader
     public static void Load()
     {
         mainscript.Instance.levelData.LoadLevel(mainscript.Instance.currentLevel);
+
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
         {
             GridManager.Instance.CreateGrids(LevelData.VerticalModeMaxRows, LevelData.VerticalModeMaxCols, mainscript.Instance.levelData.stageMoveMode);
@@ -23,7 +25,9 @@ public class StageLoader
         mainscript.Instance.currentLevel = PlayerPrefs.GetInt("OpenLevel");// TargetHolder.level;
         if (mainscript.Instance.currentLevel == 0)
             mainscript.Instance.currentLevel = 1;
+        Profiler.BeginSample("Stage Load");
         LoadSceneFromLevelData();
+        Profiler.EndSample();
 
         MissionManager.Instance.Initialize();
         GameManager.Instance.StageMovingUp();

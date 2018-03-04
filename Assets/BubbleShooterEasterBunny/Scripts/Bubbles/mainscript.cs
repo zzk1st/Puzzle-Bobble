@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using InitScriptName;
 using System.Linq;
+using UnityEngine.Profiling;
 
 [RequireComponent(typeof(AudioSource))]
 public class mainscript : MonoBehaviour

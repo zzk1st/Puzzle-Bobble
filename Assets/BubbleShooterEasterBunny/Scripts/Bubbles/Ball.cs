@@ -4,6 +4,7 @@ using System.Threading;
 using InitScriptName;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using UnityEngine.Profiling;
 
 public enum BallColor
 {
@@ -111,6 +112,8 @@ public class Ball : MonoBehaviour
 
     void SetupFixedBall(LevelGameItem levelGameItem)
     {
+        Profiler.BeginSample("Fixed Ball Collider " + transform.name);
+
         // 设置collider属性
         CircleCollider2D coll = GetComponent<CircleCollider2D>();
         coll.radius = mainscript.Instance.LineColliderRadius;
@@ -122,6 +125,9 @@ public class Ball : MonoBehaviour
         enabled = false;
 		ballCoverType = levelGameItem.ballCoverType;
 
+        Profiler.EndSample();
+
+        Profiler.BeginSample("Fixed Ball Cover " + transform.name);
         // 设置烟雾
 		if (ballCoverType == BallCoverType.Smoke)
         {
@@ -136,7 +142,11 @@ public class Ball : MonoBehaviour
 			ballIceGO = ballIce;
         }
 
+        Profiler.EndSample();
+
+        Profiler.BeginSample("Fixed Ball Grid " + transform.name);
         GetComponent<GameItem>().ConnectToGrid();
+        Profiler.EndSample();
     }
 
     // 初始化方法，在instantiate后手动调用
