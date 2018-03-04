@@ -6,16 +6,16 @@ using InitScriptName;
 using System.Linq;
 
 [RequireComponent(typeof(AudioSource))]
-public class mainscript : MonoBehaviour {
+public class mainscript : MonoBehaviour
+{
     public int currentLevel;
-    public StageMoveMode currentGameMode;
     public LevelData levelData = new LevelData();
     public int minConsecutiveNumberCount;
 
-	public static mainscript Instance;
-	GameObject ball;
-	public int bounceCounter = 0;
-	private GameObject _checkBall;
+    public static mainscript Instance;
+    public int bounceCounter = 0;
+    private GameObject _checkBall;
+
     public GameObject checkBall
     {
         get { return _checkBall; }
@@ -25,7 +25,7 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-    public Color currentBallShooterColor = new Color(1,0,0,1);
+    public Color currentBallShooterColor = new Color(1, 0, 0, 1);
 
     public Sprite[] ballColorSprites;
     public Sprite[] ballColorHightlightSprites;
@@ -36,22 +36,24 @@ public class mainscript : MonoBehaviour {
     public Sprite[] animalHexSprites;
     public Sprite animalHexShellSprite;
 
-    public Color[] BallRGB = new[] { new Color(24 / 255f, 121 / 255f, 1, 1),
-                             new Color(19 / 255f, 161 / 255f, 30 / 255f, 1),
-                             new Color(224 / 255f, 52 / 255f, 0, 1),
-                             new Color(179 / 255f, 0, 222 / 255f, 1),
-                             new Color(188 / 255f, 62 / 255f, 0, 1),
-                             new Color(1.0f,1.0f,1.0f,1), //random color reserve
-                             new Color(1.0f, 1.0f, 1.0f,1), //white color for rainbow call
-                             new Color(224 / 255f, 52 / 255f, 0, 1) /*fire color*/};
+    public Color[] BallRGB = new[]
+    { new Color(24 / 255f, 121 / 255f, 1, 1),
+        new Color(19 / 255f, 161 / 255f, 30 / 255f, 1),
+        new Color(224 / 255f, 52 / 255f, 0, 1),
+        new Color(179 / 255f, 0, 222 / 255f, 1),
+        new Color(188 / 255f, 62 / 255f, 0, 1),
+        new Color(1.0f, 1.0f, 1.0f, 1), //random color reserve
+        new Color(1.0f, 1.0f, 1.0f, 1), //white color for rainbow call
+        new Color(224 / 255f, 52 / 255f, 0, 1) /*fire color*/
+    };
 
     public List<GameObject> controlGrids = new List<GameObject>();
-	public bool isPaused;
-	public bool noSound;
-	public bool gameOver;
+    public bool isPaused;
+    public bool noSound;
+    public bool gameOver;
     public bool scored;
-	public GameObject ElectricLiana;
-	public static bool ElectricBoost;
+    public GameObject ElectricLiana;
+    public static bool ElectricBoost;
 
     public GameObject TopBorder;
     public Hashtable animTable = new Hashtable();
@@ -69,6 +71,7 @@ public class mainscript : MonoBehaviour {
     */
 
     private PlatformController _platformController;
+
     public PlatformController platformController
     {
         get { return _platformController; }
@@ -116,18 +119,26 @@ public class mainscript : MonoBehaviour {
     public float ballExplosionTimeInterval;
 
     public delegate void DestroyBallsHandler();
+
     public event DestroyBallsHandler onGameItemsDestroyed;
+
     public delegate void BallShooterUnlocked();
+
     public event BallShooterUnlocked onBallShooterUnlocked;
 
     void Awake()
     {
         Instance = this;
-        if( InitScript.Instance == null ) gameObject.AddComponent<InitScript>();
+        if (InitScript.Instance == null)
+            gameObject.AddComponent<InitScript>();
 
-        currentLevel = PlayerPrefs.GetInt( "OpenLevel", 1 );
+        if (GameManager.Instance.gameMode == GameMode.Playing)
+            currentLevel = PlayerPrefs.GetInt("OpenLevel", 1);
+        else
+            currentLevel = 0;	//开场动画关卡是0
+
         animTable.Clear();
-	}
+    }
 
     void Start()
     {
@@ -138,7 +149,8 @@ public class mainscript : MonoBehaviour {
         _platformController = gridsNode.GetComponent<PlatformController>();
         //RandomizeWaitTime();
         ScoreManager.Instance.Score = 0;
-        if (PlayerPrefs.GetInt("noSound") == 1) noSound = true;
+        if (PlayerPrefs.GetInt("noSound") == 1)
+            noSound = true;
 
         StageLoader.Load();
         InitializeTopBorder();
@@ -157,30 +169,33 @@ public class mainscript : MonoBehaviour {
 
     IEnumerator ShowArrows()
     {
-        while( true )
+        while (true)
         {
 
-            yield return new WaitForSeconds( 30 );
-            if( GameManager.Instance.gameStatus == GameStatus.Playing )
+            yield return new WaitForSeconds(30);
+            if (GameManager.Instance.gameStatus == GameStatus.Playing)
             {
-                arrows.SetActive( true );
+                arrows.SetActive(true);
 
             }
-                yield return new WaitForSeconds( 3 );
-                arrows.SetActive( false );
+            yield return new WaitForSeconds(3);
+            arrows.SetActive(false);
         }
     }
 
-	public void SwitchLianaBoost(){
-		if(!ElectricBoost){
-			ElectricBoost = true;
-			ElectricLiana.SetActive(true);
-		}
-		else{
-			ElectricBoost = false;
-			ElectricLiana.SetActive(false);
-		}
-	}
+    public void SwitchLianaBoost()
+    {
+        if (!ElectricBoost)
+        {
+            ElectricBoost = true;
+            ElectricLiana.SetActive(true);
+        }
+        else
+        {
+            ElectricBoost = false;
+            ElectricLiana.SetActive(false);
+        }
+    }
 
     void ConnectAndDestroyBalls()
     {
@@ -230,15 +245,15 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-	// Update is called once per frame
-	void Update()
+    // Update is called once per frame
+    void Update()
     {
         CheckLosing();
 
-		if (noSound)
-			GetComponent<AudioSource>().volume = 0;
-		if (!noSound)
-			GetComponent<AudioSource>().volume = 0.5f;
+        if (noSound)
+            GetComponent<AudioSource>().volume = 0;
+        if (!noSound)
+            GetComponent<AudioSource>().volume = 0.5f;
 
         // 游戏中最重要的算法部分：检测ball是否连上，销毁，以及判断是否有其它drop的balls
         // checkBall在ball.cs中被赋值，当ball停住的时候，就说明需要判断连接了，这个值也就被设定了
@@ -257,9 +272,9 @@ public class mainscript : MonoBehaviour {
         for (int i = 0; i < stars; ++i)
             starsObject[i].SetActive(true);
         
-	}
+    }
 
-	public void CheckLosing()
+    public void CheckLosing()
     {
         if (GameManager.Instance.gameStatus == GameStatus.Playing)
         {
@@ -300,7 +315,7 @@ public class mainscript : MonoBehaviour {
     {
         curStageColors.Clear();
 
-        foreach(Transform gameItemTransform in gameItemsNode.transform)
+        foreach (Transform gameItemTransform in gameItemsNode.transform)
         {
             Ball ball = gameItemTransform.gameObject.GetComponent<Ball>();
             if (ball != null)
@@ -337,12 +352,14 @@ public class mainscript : MonoBehaviour {
 
     public bool FindInArray(List<GameObject> b, GameObject destObj)
     {
-		foreach(GameObject obj in b) {
+        foreach (GameObject obj in b)
+        {
 			
-			if(obj == destObj) return true;
-		}
-		return false;
-	}
+            if (obj == destObj)
+                return true;
+        }
+        return false;
+    }
 	
     // DropBalls, 注意和DestroyBalls并不相同，后者是让球爆炸，这个是让球落下
     public void DropGameItems(List<GameObject> gameItemsToDrop)
@@ -350,24 +367,36 @@ public class mainscript : MonoBehaviour {
         mainscript.Instance.bounceCounter = 0;
 
         // 这里的score累加似乎没用 先注释了
-		/*int scoreCounter = 0;
+        /*int scoreCounter = 0;
 		int rate = 0;*/
 
-        foreach(GameObject gameItem in gameItemsToDrop) {
-			/*if(scoreCounter > 3){
+        foreach (GameObject gameItem in gameItemsToDrop)
+        {
+            /*if(scoreCounter > 3){
 				rate +=3;
 				scoreCounter += rate;
 			}
 			scoreCounter ++;*/
 
-			// 让没接上的ball都掉落
+            // 让没接上的ball都掉落
             gameItem.GetComponent<GameItem>().StartFall();
-		}
+        }
         // 调用ScoreManager里针对掉落球的分数更新函数
         // 暂时注释掉因为女巫泡泡里没有掉落得分 (只有掉入pot的加分)
         //int val = ScoreManager.Instance.UpdateFallingScore(ballsToDrop.Count);
 
         //ScoreManager.Instance.PopupFallingScore(val, transform.position+(new Vector3(1,0,0)));
+    }
+
+    public void DropAllBalls()
+    {
+        Transform b = gameItemsNode.transform;
+        Ball[] balls = gameItemsNode.GetComponentsInChildren<Ball>();
+        foreach (Ball item in balls)
+        {
+            if (item.GetComponent<Ball>().state == Ball.BallState.Fixed)
+                item.StartFall();
+        }
     }
 
     List<GameObject> CheckNearbyConsecutiveNumberBalls(GameObject checkBallGO)
@@ -377,7 +406,7 @@ public class mainscript : MonoBehaviour {
         List<GameObject> longestIncreasePath = new List<GameObject>();
         List<GameObject> longestDecreasePath = new List<GameObject>();
 
-        foreach(GameObject adjacentBallGO in checkBallGO.GetComponent<Ball>().grid.GetAdjacentGameItems())
+        foreach (GameObject adjacentBallGO in checkBallGO.GetComponent<Ball>().grid.GetAdjacentGameItems())
         {
             Ball adjacentBall = adjacentBallGO.GetComponent<Ball>();
             if (adjacentBall.number == checkBall.number + 1)
@@ -410,7 +439,7 @@ public class mainscript : MonoBehaviour {
     string BallListNames(List<GameObject> balls)
     {
         string a = null;
-        foreach(GameObject ball in balls)
+        foreach (GameObject ball in balls)
         {
             a += ball.GetComponent<Ball>().number.ToString() + " ";
         }
@@ -451,6 +480,16 @@ public class mainscript : MonoBehaviour {
         }
     }
 
+    public BallColor GetRandomCurStageColor()
+    {
+        if (curStageColors.Count == 0)
+        {
+            return BallColor.blue;
+        }
+
+        return curStageColors[Random.Range(0, mainscript.Instance.curStageColors.Count)];
+    }
+
     public void OnBallShooterUnlocked()
     {
         if (!ballShooter.isLocked)
@@ -462,13 +501,4 @@ public class mainscript : MonoBehaviour {
         }
     }
 
-    public BallColor GetRandomCurStageColor()
-    {
-        if (curStageColors.Count == 0)
-        {
-            return BallColor.blue;
-        }
-
-        return curStageColors[Random.Range(0, mainscript.Instance.curStageColors.Count)];
-    }
 }

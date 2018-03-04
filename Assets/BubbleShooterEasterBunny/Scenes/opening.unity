@@ -5912,7 +5912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc27629c4f722274fbe1531228757aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameMode: 1
+  gameMode: 0
 --- !u!4 &434912548
 Transform:
   m_ObjectHideFlags: 0
@@ -7630,8 +7630,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  platformBottomLowerLimit: -0.69
-  platformBottomUpperLimit: 2.38
+  platformBottomLowerLimit: -0.76
+  platformBottomUpperLimit: 0.6
   topBorder: {fileID: 1502360742}
 --- !u!1 &680264187
 GameObject:

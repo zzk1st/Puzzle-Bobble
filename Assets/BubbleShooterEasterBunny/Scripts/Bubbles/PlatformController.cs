@@ -29,9 +29,9 @@ public class PlatformController : MonoBehaviour
     {
         get
         {
-            float platformMinYWorldSpace = transform.position.y 
-                                           + _curFixedBallLocalMinY
-                                           - mainscript.Instance.BallRealRadius;
+            float platformMinYWorldSpace = transform.position.y
+                                  + _curFixedBallLocalMinY
+                                  - mainscript.Instance.BallRealRadius;
             return platformMinYWorldSpace;
         }
     }
@@ -48,9 +48,9 @@ public class PlatformController : MonoBehaviour
     {
         // 该代码用来探测是否某个stage碰到了某个它不想碰的东西
         Debug.Log(String.Format("Unexpected collision! coll1.name={0}, coll2.name={1}", 
-                                coll.contacts[0].collider.name,
-                                coll.contacts[0].otherCollider.name)
-                 );
+                coll.contacts[0].collider.name,
+                coll.contacts[0].otherCollider.name)
+        );
     }
 
     void Update()
@@ -58,36 +58,39 @@ public class PlatformController : MonoBehaviour
         // 圆形模式下不进行更新
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
         {
-            if( transform.rotation != targetRotation )
-                transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime );
+            if (transform.rotation != targetRotation)
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime);
         }
-        else    // Vertical
-        {
+        else
+        {    // Vertical
             float deltaPos = 0.1f;
             bool arrived = false;
-            if (curPlatformTopPos - curPlatformBottomPos < initialTopBorderPos - platformBottomUpperLimit)    // 如果当前关卡高度太短
-            {
+            if (curPlatformTopPos - curPlatformBottomPos < initialTopBorderPos - platformBottomUpperLimit)
+            {    // 如果当前关卡高度太短
 
-                if (curPlatformTopPos < initialTopBorderPos - deltaPos)
+                if (GameManager.Instance.gameStatus == GameStatus.StageMovingUp)
                 {
-                    // 首要目标是让关卡顶部到达屏幕上端
-                    transform.Translate(0f, moveSpeed * Time.deltaTime, 0f);
-                }
-                else if (curPlatformTopPos > initialTopBorderPos + deltaPos)
-                {
-                    // 首要目标是让关卡顶部到达屏幕上端
-                    transform.Translate(0f, -moveSpeed * Time.deltaTime, 0f);
-                }
-                else
-                {
-                    arrived = true;
+                    if (curPlatformTopPos < initialTopBorderPos - deltaPos)
+                    {
+                        // 首要目标是让关卡顶部到达屏幕上端
+                        transform.Translate(0f, moveSpeed * Time.deltaTime, 0f);
+                    }
+                    else if (curPlatformTopPos > initialTopBorderPos + deltaPos)
+                    {
+                        // 首要目标是让关卡顶部到达屏幕上端
+                        transform.Translate(0f, -moveSpeed * Time.deltaTime, 0f);
+                    }
+                    else
+                    {
+                        arrived = true;
+                    }
                 }
             }
             else
             {
                 // 关卡高度足够，就看底部是不在合理区域内
-                if (GameManager.Instance.gameStatus == GameStatus.StageMovingUp)     // 注意游戏开始比较特殊，要保证关卡minPos高于upperlimit
-                {
+                if (GameManager.Instance.gameStatus == GameStatus.StageMovingUp)
+                {     // 注意游戏开始比较特殊，要保证关卡minPos高于upperlimit
                     if (curPlatformBottomPos < platformBottomUpperLimit)
                     {
                         transform.Translate(0f, moveSpeed * Time.deltaTime, 0f);
@@ -116,10 +119,7 @@ public class PlatformController : MonoBehaviour
 
             if (arrived)
             {
-                if (GameManager.Instance.gameStatus == GameStatus.StageMovingUp)
-                {
-                    GameManager.Instance.PreTutorial();
-                }
+                GameManager.Instance.OnStageMoveComplete();
             }
         }
     }
@@ -143,7 +143,7 @@ public class PlatformController : MonoBehaviour
 
         _curFixedBallLocalMinY = 9999f;
 
-        foreach( Transform item in mainscript.Instance.gameItemsNode.transform)
+        foreach (Transform item in mainscript.Instance.gameItemsNode.transform)
         {
             GameObject go = item.gameObject;
             if (go.GetComponent<GameItem>() != null)
@@ -156,7 +156,7 @@ public class PlatformController : MonoBehaviour
     float VectorAngle(Vector2 from, Vector2 to)
     {
         float angle;
-        Vector3 cross=Vector3.Cross(from, to);
+        Vector3 cross = Vector3.Cross(from, to);
         angle = Vector2.Angle(from, to);
         return cross.z > 0 ? -angle : angle;
     }
@@ -171,8 +171,8 @@ public class PlatformController : MonoBehaviour
 
         float angle = VectorAngle(-ballDir, ballPos - transform.position);
         //if(transform.position.x < ballPos.x) angle *= -1;
-        targetRotation = transform.rotation*Quaternion.AngleAxis(angle, Vector3.back);
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.kreakWheel );
+        targetRotation = transform.rotation * Quaternion.AngleAxis(angle, Vector3.back);
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.kreakWheel);
     }
 
     public void StartGameMove()

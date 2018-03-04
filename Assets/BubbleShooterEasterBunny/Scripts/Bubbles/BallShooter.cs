@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class BallShooter : MonoBehaviour {
+public class BallShooter : MonoBehaviour
+{
     public enum BallShooterState
     {
         ReadyToShoot,
@@ -13,8 +14,10 @@ public class BallShooter : MonoBehaviour {
 
     public enum StageCollidersMode
     {
-        AimMode,    // 用辅助线瞄准时候用，collider会根据LineRadius计算
-        FireMode    // 在发射球时候用，真正进行碰撞检测
+        AimMode,
+        // 用辅助线瞄准时候用，collider会根据LineRadius计算
+        FireMode
+        // 在发射球时候用，真正进行碰撞检测
     }
 
     public BallShooterState state;
@@ -47,7 +50,13 @@ public class BallShooter : MonoBehaviour {
 
     private GameObject catapultBall;
     private GameObject cartridgeBall;
-    private GameObject tempBall; // 在有道具球时暂时保存之前的cartridgeBall
+    private GameObject tempBall;
+
+    private float openingModeNextShootingTime = 0f;
+    private float openingModeInterval = 1f;
+    private int openingModeFireBallCount = 0;
+
+    // 在有道具球时暂时保存之前的cartridgeBall
 
     public GameObject CatapultBall
     {
@@ -67,8 +76,10 @@ public class BallShooter : MonoBehaviour {
         }
     }
 
-    float bottomBorderY;  //低于此线就不能发射球
-    public float launchForce;   // 发射力度
+    float bottomBorderY;
+    //低于此线就不能发射球
+    public float launchForce;
+    // 发射力度
 
     public GameObject topBorder;
     public GameObject leftBorder;
@@ -76,10 +87,11 @@ public class BallShooter : MonoBehaviour {
 
     UnityEngine.EventSystems.EventSystem currentES;
 
-    bool boostInPosition;   // 当boost准备发射时，不能切换球
+    bool boostInPosition;
+    // 当boost准备发射时，不能切换球
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start()
     {
         rootBall = GameObject.Find("-GameItems");
         bottomBorderY = GameObject.Find("BottomBorder").transform.position.y;
@@ -98,7 +110,14 @@ public class BallShooter : MonoBehaviour {
 
     void Update()
     {
-        CheckAndFire();
+        if (GameManager.Instance.gameMode == GameMode.Playing)
+        {
+            PlayingModeCheckAndFire();
+        }
+        else
+        {
+            OpeningModeCheckAndFire();
+        }
 
         if (GameManager.Instance.gameStatus == GameStatus.Win && catapultBall == null)
         {
@@ -106,7 +125,34 @@ public class BallShooter : MonoBehaviour {
         }
     }
 
-    void CheckAndFire()
+    void OpeningModeCheckAndFire()
+    {
+        // currentES.IsPointerOverGameObject()用来检测是否鼠标点击的是GUI
+        if (Time.time > openingModeNextShootingTime)
+        {
+            if (GameManager.Instance.gameStatus == GameStatus.Playing &&
+                !mainscript.Instance.gameOver &&
+                !isLocked &&
+                catapultBall != null)
+            {
+                openingModeFireBallCount++;
+                // 设置一个偏移值是为了防止bug（似乎如果射的很正会有问题）
+                Vector3 pos = new Vector3(0.2f, 0f, 0f);
+                Fire(pos);
+                Reload();
+
+                if (openingModeFireBallCount > 12)
+                {
+                    mainscript.Instance.DropAllBalls();
+                    openingModeFireBallCount = 0;
+                }
+            }
+
+            openingModeNextShootingTime = Time.time + openingModeInterval;
+        }
+    }
+
+    void PlayingModeCheckAndFire()
     {
         if (GameManager.Instance.gameStatus == GameStatus.Playing && !mainscript.Instance.gameOver && !isLocked)
         {
@@ -125,6 +171,12 @@ public class BallShooter : MonoBehaviour {
 
     void Fire(Vector3 pos)
     {
+        // 如果是opening模式，不减球数量
+        if (GameManager.Instance.gameMode != GameMode.Opening)
+        {
+            mainscript.Instance.levelData.limitAmount--;
+        }
+
         // 在这里给发射的ball赋予一个force，产生初速度
         Vector2 direction = pos - catapultBall.transform.position;
         catapultBall.GetComponent<Rigidbody2D>().AddForce(direction.normalized * launchForce, ForceMode2D.Force);
@@ -213,7 +265,8 @@ public class BallShooter : MonoBehaviour {
 
     void ChangeRadius(float r)
     {
-        if (rootBall == null) return;
+        if (rootBall == null)
+            return;
         foreach (Transform ball in rootBall.transform)
         {
             if (ball.gameObject.GetComponent<GameItem>().itemType == GameItem.ItemType.Ball)
@@ -247,8 +300,8 @@ public class BallShooter : MonoBehaviour {
         tempBall.SetActive(false);
         cartridgeBall = catapultBall;
         iTween.MoveTo(cartridgeBall, iTween.Hash("position", boxCartridge.transform.position,
-                                                 "time", 0.3 ,
-                                                 "easetype",iTween.EaseType.linear));
+                "time", 0.3,
+                "easetype", iTween.EaseType.linear));
 
         CreateBoost(boostType);
         mainscript.Instance.levelData.limitAmount++;
@@ -287,19 +340,19 @@ public class BallShooter : MonoBehaviour {
 
     public void SwapBalls()
     {
-        if (GameManager.Instance.gameStatus == GameStatus.Playing && ! boostInPosition)
+        if (GameManager.Instance.gameStatus == GameStatus.Playing && !boostInPosition)
         {
             if (state == BallShooterState.ReadyToShoot && cartridgeBall != null)
             {
                 state = BallShooterState.Swapping;
                 // stopped here
                 iTween.MoveTo(cartridgeBall, iTween.Hash("position", boxCatapult.transform.position,
-                                                         "time", 0.3 ,
-                                                         "easetype",iTween.EaseType.linear));
+                        "time", 0.3,
+                        "easetype", iTween.EaseType.linear));
                 iTween.MoveTo(catapultBall, iTween.Hash("position", boxCartridge.transform.position,
-                                                        "time", 0.3 ,
-                                                        "easetype",iTween.EaseType.linear,
-                                                        "onComplete", "OnSwapBallsComplete"));
+                        "time", 0.3,
+                        "easetype", iTween.EaseType.linear,
+                        "onComplete", "OnSwapBallsComplete"));
             }
         }
     }

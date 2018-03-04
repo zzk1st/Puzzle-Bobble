@@ -10,8 +10,6 @@ public class StageLoader
     // Use this for initialization
     public static void Load()
     {
-		//DEBUG!!!!!!!!!!!!!
-        mainscript.Instance.currentLevel = 33;
         mainscript.Instance.levelData.LoadLevel(mainscript.Instance.currentLevel);
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
         {

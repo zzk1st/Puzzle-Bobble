@@ -17,7 +17,7 @@ public enum GameItemShapeType
 {
     Single,
     Triangle,
-    Hexagon
+    Hexagon,
 }
 
 /// <summary>
@@ -27,23 +27,27 @@ public class GameItemShapes
 {
     public static GameItemShapes Instance = new GameItemShapes();
 
-    private List<GridCoord> single = new List<GridCoord> {
+    private List<GridCoord> single = new List<GridCoord>
+    {
         new GridCoord(0, 0)
     };
 
-    private List<GridCoord> triangleOdd = new List<GridCoord> {
+    private List<GridCoord> triangleOdd = new List<GridCoord>
+    {
         new GridCoord(0, 0),
         new GridCoord(1, 0),
         new GridCoord(1, 1)
     };
 
-    private List<GridCoord> triangleEven = new List<GridCoord>() {
+    private List<GridCoord> triangleEven = new List<GridCoord>()
+    {
         new GridCoord(0, 0),
         new GridCoord(1, -1),
         new GridCoord(1, 0)
     };
 
-    private List<GridCoord> hexagonOdd = new List<GridCoord>() {
+    private List<GridCoord> hexagonOdd = new List<GridCoord>()
+    {
         new GridCoord(0, 0),
         new GridCoord(-1, 0),
         new GridCoord(-1, 1),
@@ -53,7 +57,8 @@ public class GameItemShapes
         new GridCoord(1, 1)
     };
 
-    private  List<GridCoord>hexagonEven = new List<GridCoord>() {
+    private  List<GridCoord> hexagonEven = new List<GridCoord>()
+    {
         new GridCoord(0, 0),
         new GridCoord(-1, -1),
         new GridCoord(-1, 0),
@@ -97,7 +102,7 @@ public class GameItemShapes
         {
             result = new List<GridCoord>(_gameItemShapes[shapeType][1]);
         }
-        else 
+        else
         {
             result = new List<GridCoord>(_gameItemShapes[shapeType][0]);
         }

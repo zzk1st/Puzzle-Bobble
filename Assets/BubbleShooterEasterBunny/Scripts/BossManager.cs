@@ -3,15 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class BossManager : MonoBehaviour {
+public class BossManager : MonoBehaviour
+{
     public static BossManager Instance;
     private List<GameObject> bossPlaces;
     public GameObject bossGO;
-	// Use this for initialization
-	void Awake ()
+    // Use this for initialization
+    void Awake()
     {
         Instance = this;
-	}
+    }
 
     public void Iniaizlize(List<GameObject> bp)
     {

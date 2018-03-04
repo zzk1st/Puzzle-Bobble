@@ -37,14 +37,13 @@ public enum LevelItemType
 	Violet,
 	Yellow,
 	Random,
-	CenterItem,
-	// 圆形模式下位于关卡中央的物体
+	CenterItem,		// 圆形模式下位于关卡中央的物体
 	AnimalSingle,
 	AnimalTriangle,
 	AnimalHexagon,
 	BossPlace,
-	Occupied
-	// 这个item表示该区域是某个大型gameItem的一部分，但并不是其中心
+	Occupied, 		// 这个item表示该区域是某个大型gameItem的一部分，但并不是其中心
+	GameLogo,		// 表示游戏一开始的logo
 }
 
 public enum BallCoverType
@@ -103,7 +102,8 @@ public class LevelData
 		{ LevelItemType.AnimalSingle, GameItemShapeType.Single },
 		{ LevelItemType.AnimalTriangle, GameItemShapeType.Triangle },
 		{ LevelItemType.AnimalHexagon, GameItemShapeType.Hexagon },
-		{ LevelItemType.BossPlace, GameItemShapeType.Hexagon }
+		{ LevelItemType.BossPlace, GameItemShapeType.Hexagon },
+		{ LevelItemType.GameLogo, GameItemShapeType.Hexagon }
 	};
 
 	public static int VerticalModeMaxRows = 71;

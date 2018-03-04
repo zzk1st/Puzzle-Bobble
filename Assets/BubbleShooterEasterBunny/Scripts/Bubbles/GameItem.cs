@@ -15,7 +15,8 @@ public delegate void FireDelegate();
 ///     对各个delegate的管理
 /// 碰撞由各个特殊component自己检测，因为很可能不同道具使用不同的collider
 /// </summary>
-public class GameItem : MonoBehaviour {
+public class GameItem : MonoBehaviour
+{
     public enum ItemType
     {
         Ball,
@@ -32,6 +33,7 @@ public class GameItem : MonoBehaviour {
 
     [HideInInspector]
     private Grid _centerGrid;
+
     public Grid centerGrid
     {
         get { return _centerGrid; }

@@ -2,7 +2,8 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class Animal : MonoBehaviour {
+public class Animal : MonoBehaviour
+{
 
     private GameItem _gameItem;
 
@@ -85,7 +86,7 @@ public class Animal : MonoBehaviour {
         args_scale.Add("delay", 0.5f);
         iTween.ScaleTo(animalBody, args_scale);
         iTween.MoveTo(animalBody, args_move2);
-        iTween.FadeTo(animalBody, iTween.Hash("alpha", 0.0f, "delay", escape_time+0.5f, "onComplete", "onFlyingComplete", "onCompleteTarget", gameObject));
+        iTween.FadeTo(animalBody, iTween.Hash("alpha", 0.0f, "delay", escape_time + 0.5f, "onComplete", "onFlyingComplete", "onCompleteTarget", gameObject));
         
 
     }

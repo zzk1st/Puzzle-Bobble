@@ -3,6 +3,14 @@ using System.Collections;
 using InitScriptName;
 
 
+public enum GameMode
+{
+    Opening = 0,
+    // Opening模式下没有输入，游戏自动生成球并发射
+    Playing,
+    // Tutorial
+}
+
 public enum GameStatus
 {
     None,
@@ -11,7 +19,8 @@ public enum GameStatus
     Pause,
     Win,
     GameOver,
-    StageMovingUp,       // Demo模式下播放动画，但不能使用任何操作
+    StageMovingUp,
+    // Demo模式下播放动画，但不能使用任何操作
     Tutorial,
     PreTutorial,
     BossArriving,
@@ -24,26 +33,28 @@ public enum GameStatus
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    public GameMode gameMode;
     private GameStatus lastGameStatus;
     bool winStarted;
 
     private GameStatus _gameStatus;
+
     public GameStatus gameStatus
     {
         get { return _gameStatus; }
     }
 
-	// Use this for initialization
-	void Start () 
+    // Use this for initialization
+    void Awake()
     {
         Instance = this;
         setGameStatus(GameStatus.None);
-	}
+    }
 
     void Update()
     {
     }
-	
+
     public void PreTutorialDone()
     {
         if (mainscript.Instance.levelData.missionType == MissionType.BossBattle)
@@ -64,8 +75,11 @@ public class GameManager : MonoBehaviour
 
     public void Play()
     {
-        mainscript.Instance.ballShooter.Initialize();
-        setGameStatus(GameStatus.Playing);
+        if (this.gameStatus != GameStatus.Playing)
+        {
+            mainscript.Instance.ballShooter.Initialize();
+            setGameStatus(GameStatus.Playing);
+        }
     }
 
     public void Demo()
@@ -77,7 +91,7 @@ public class GameManager : MonoBehaviour
     public void Win()
     {
         setGameStatus(GameStatus.Win);
-        if( !winStarted )
+        if (!winStarted)
             StartCoroutine(WinAction());
     }
 
@@ -117,41 +131,41 @@ public class GameManager : MonoBehaviour
         _gameStatus = newStatus;
     }
 
-	// Update is called once per frame
-	IEnumerator WinAction() 
+    // Update is called once per frame
+    IEnumerator WinAction()
     {
         // 注意这步很关键，如果还保持Aim Mode，那么有的球会从左右边界外溜出去
         mainscript.Instance.ballShooter.SetStageCollidersMode(BallShooter.StageCollidersMode.FireMode);
 
         winStarted = true;
-        InitScript.Instance.AddLife( 1 );
-        GameObject.Find( "Canvas" ).transform.Find( "LevelCleared" ).gameObject.SetActive( true );
-  //       yield return new WaitForSeconds( 1f );
+        InitScript.Instance.AddLife(1);
+        GameObject.Find("Canvas").transform.Find("LevelCleared").gameObject.SetActive(true);
+        //       yield return new WaitForSeconds( 1f );
         //if( GameObject.Find( "Music" ) != null)
         //    GameObject.Find( "Music" ).SetActive( false );
         //    GameObject.Find( "CanvasPots" ).transform.Find( "Black" ).gameObject.SetActive( true );
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.winSound );
-         yield return new WaitForSeconds( 1f );
-        if( mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical )
-         {
-           //  SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.swish[0] );
-           //  GameObject.Find( "Canvas" ).transform.Find( "PreComplete" ).gameObject.SetActive( true );
-            yield return new WaitForSeconds( 1f );
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.winSound);
+        yield return new WaitForSeconds(1f);
+        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
+        {
+            //  SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.swish[0] );
+            //  GameObject.Find( "Canvas" ).transform.Find( "PreComplete" ).gameObject.SetActive( true );
+            yield return new WaitForSeconds(1f);
             //     SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.swish[0] );
-          //  yield return new WaitForSeconds( 1.5f );
-            yield return new WaitForSeconds( 0.5f );
-         }
+            //  yield return new WaitForSeconds( 1.5f );
+            yield return new WaitForSeconds(0.5f);
+        }
 
-        foreach( GameObject item in GameObject.FindGameObjectsWithTag("Ball") )
+        foreach (GameObject item in GameObject.FindGameObjectsWithTag("Ball"))
         {
             if (item.GetComponent<Ball>().state == Ball.BallState.Fixed)
                 item.GetComponent<GameItem>().StartFall();
                                    
         }
-       // StartCoroutine( PushRestBalls() );
+        // StartCoroutine( PushRestBalls() );
         Transform b = mainscript.Instance.gameItemsNode.transform;
         Ball[] balls = mainscript.Instance.gameItemsNode.GetComponentsInChildren<Ball>();
-        foreach( Ball item in balls )
+        foreach (Ball item in balls)
         {
             if (item.GetComponent<Ball>().state == Ball.BallState.Fixed)
                 item.StartFall();
@@ -187,40 +201,58 @@ public class GameManager : MonoBehaviour
                 item.StartFall();
         }
 
-        yield return new WaitForSeconds( 2f );
-        while( GameObject.FindGameObjectsWithTag( "Ball" ).Length > 0  )
+        yield return new WaitForSeconds(2f);
+        while (GameObject.FindGameObjectsWithTag("Ball").Length > 0)
         {
-            yield return new WaitForSeconds( 0.1f );
+            yield return new WaitForSeconds(0.1f);
         }
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.aplauds );
-        if( PlayerPrefs.GetInt( string.Format( "Level.{0:000}.StarsCount", mainscript.Instance.currentLevel ),0 ) < mainscript.Instance.stars )
-            PlayerPrefs.SetInt( string.Format( "Level.{0:000}.StarsCount", mainscript.Instance.currentLevel ), mainscript.Instance.stars );
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.aplauds);
+        if (PlayerPrefs.GetInt(string.Format("Level.{0:000}.StarsCount", mainscript.Instance.currentLevel), 0) < mainscript.Instance.stars)
+            PlayerPrefs.SetInt(string.Format("Level.{0:000}.StarsCount", mainscript.Instance.currentLevel), mainscript.Instance.stars);
 
 
-        if( PlayerPrefs.GetInt( "HighScore" + mainscript.Instance.currentLevel ) < ScoreManager.Instance.Score )
+        if (PlayerPrefs.GetInt("HighScore" + mainscript.Instance.currentLevel) < ScoreManager.Instance.Score)
         {
-            PlayerPrefs.SetInt( "HighScore" + mainscript.Instance.currentLevel, ScoreManager.Instance.Score );
+            PlayerPrefs.SetInt("HighScore" + mainscript.Instance.currentLevel, ScoreManager.Instance.Score);
 
         }
-        GameObject.Find( "Canvas" ).transform.Find( "LevelCleared" ).gameObject.SetActive( false );
-        GameObject.Find( "Canvas" ).transform.Find( "MenuComplete" ).gameObject.SetActive( true );
+        GameObject.Find("Canvas").transform.Find("LevelCleared").gameObject.SetActive(false);
+        GameObject.Find("Canvas").transform.Find("MenuComplete").gameObject.SetActive(true);
 
     }
 
     void ShowPreTutorial()
     {
-        GameObject.Find( "Canvas" ).transform.Find( "PreTutorial" ).gameObject.SetActive( true );
+        GameObject.Find("Canvas").transform.Find("PreTutorial").gameObject.SetActive(true);
 
     }
 
     IEnumerator LoseAction()
     {
         mainscript.Instance.ballShooter.SetStageCollidersMode(BallShooter.StageCollidersMode.FireMode);
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.OutOfMoves );
-        GameObject.Find( "Canvas" ).transform.Find( "OutOfMoves" ).gameObject.SetActive( true );
-        yield return new WaitForSeconds( 1.5f );
-        GameObject.Find( "Canvas" ).transform.Find( "OutOfMoves" ).gameObject.SetActive( false );
-        yield return new WaitForSeconds( 0.1f );
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.OutOfMoves);
+        GameObject.Find("Canvas").transform.Find("OutOfMoves").gameObject.SetActive(true);
+        yield return new WaitForSeconds(1.5f);
+        GameObject.Find("Canvas").transform.Find("OutOfMoves").gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.1f);
         GameObject.Find("Canvas").transform.Find("MenuGameOver").gameObject.SetActive(true);
+    }
+
+    //----------------------------------------------------------------------
+    // GameManager的外部UI component的回调方法
+    //----------------------------------------------------------------------
+    public void OnStageMoveComplete()
+    {
+        if (gameMode == GameMode.Playing)
+        {
+            if (gameStatus == GameStatus.StageMovingUp)
+            {
+                PreTutorial();
+            }
+        }
+        else // GameMode.Opening
+        {
+            Play();
+        }
     }
 }

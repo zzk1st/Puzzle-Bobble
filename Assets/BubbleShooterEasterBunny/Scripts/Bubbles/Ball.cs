@@ -187,7 +187,6 @@ public class Ball : MonoBehaviour
             GetComponent<CircleCollider2D> ().enabled = true;
             // TODO: 播放发射球的声音
             SoundBase.Instance.GetComponent<AudioSource> ().PlayOneShot(SoundBase.Instance.shoot);
-            mainscript.Instance.levelData.limitAmount--;
         }
     }
 

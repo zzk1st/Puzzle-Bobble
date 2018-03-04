@@ -12,7 +12,7 @@ public class LevelEditor : EditorWindow
     LevelData levelData = new LevelData();
 
     private Texture[] ballTex;
-    int levelNumber = 1;
+    int levelNumber = 1;	// 第0关是游戏opening
     private Vector2 scrollViewVector;
 	private BallCoverType ballCoverType;
     private LevelItemType brush;
@@ -44,8 +44,8 @@ public class LevelEditor : EditorWindow
 
     void OnGUI()
     {
-        if (levelNumber < 1)
-            levelNumber = 1;
+        if (levelNumber < 0)
+            levelNumber = 0;
 
         scrollViewVector = GUI.BeginScrollView(new Rect(25, 45, position.width - 30, position.height - 50), scrollViewVector, new Rect(0, 0, 400, 2300));
 
@@ -159,8 +159,8 @@ public class LevelEditor : EditorWindow
     void PreviousLevel()
     {
         levelNumber--;
-        if (levelNumber < 1)
-            levelNumber = 1;
+        if (levelNumber < 0)
+            levelNumber = 0;
         if (!LoadDataFromLocal(levelNumber))
             levelNumber++;
     }

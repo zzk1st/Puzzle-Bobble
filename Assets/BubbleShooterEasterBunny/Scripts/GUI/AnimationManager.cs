@@ -17,38 +17,38 @@ public class AnimationManager : MonoBehaviour
 
     void OnEnable()
     {
-        if( PlayOnEnable )
+        if (PlayOnEnable)
         {
-            SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.swish[0] );
+            SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.swish[0]);
 
             //if( !GetComponent<SequencePlayer>().sequenceArray[0].isPlaying )
             //    GetComponent<SequencePlayer>().Play();
-            if( name == "Fire" )
+            if (name == "Fire")
             {
 
 
             }
         }
-        if( name == "MenuPlay" )
+        if (name == "MenuPlay")
         {
-            for( int i = 1; i <= 3; i++ )
+            for (int i = 1; i <= 3; i++)
             {
-                transform.Find( "Image" ).Find( "Star" + i ).gameObject.SetActive( false );
+                transform.Find("Image").Find("Star" + i).gameObject.SetActive(false);
             }
-            int stars = PlayerPrefs.GetInt( string.Format( "Level.{0:000}.StarsCount", PlayerPrefs.GetInt( "OpenLevel" ) ), 0 );
-            if( stars > 0 )
+            int stars = PlayerPrefs.GetInt(string.Format("Level.{0:000}.StarsCount", PlayerPrefs.GetInt("OpenLevel")), 0);
+            if (stars > 0)
             {
-                for( int i = 1; i <= stars; i++ )
+                for (int i = 1; i <= stars; i++)
                 {
-                    transform.Find( "Image" ).Find( "Star" + i ).gameObject.SetActive( true );
+                    transform.Find("Image").Find("Star" + i).gameObject.SetActive(true);
                 }
 
             }
             else
             {
-                for( int i = 1; i <= 3; i++ )
+                for (int i = 1; i <= 3; i++)
                 {
-                    transform.Find( "Image" ).Find( "Star" + i ).gameObject.SetActive( false );
+                    transform.Find("Image").Find("Star" + i).gameObject.SetActive(false);
                 }
 
             }
@@ -70,6 +70,7 @@ public class AnimationManager : MonoBehaviour
         }
 
     }
+
     void OnDisable()
     {
         //if( PlayOnEnable )
@@ -81,35 +82,36 @@ public class AnimationManager : MonoBehaviour
 
     public void OnFinished()
     {
-        if( name == "MenuComplete" )
+        if (name == "MenuComplete")
         {
-            StartCoroutine( MenuComplete() );
-            StartCoroutine( MenuCompleteScoring() );
+            StartCoroutine(MenuComplete());
+            StartCoroutine(MenuCompleteScoring());
         }
-        if( name == "MenuPlay" )
+        if (name == "MenuPlay")
         {
-            InitScript.Instance.currentTarget = mainscript.Instance.levelData.GetTarget(PlayerPrefs.GetInt( "OpenLevel" ));
+            InitScript.Instance.currentTarget = mainscript.Instance.levelData.GetTarget(PlayerPrefs.GetInt("OpenLevel"));
         }
     }
 
     IEnumerator MenuComplete()
     {
-        for( int i = 1; i <= mainscript.Instance.stars; i++ )
+        for (int i = 1; i <= mainscript.Instance.stars; i++)
         {
             //  SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.scoringStar );
-            transform.Find( "Image" ).Find( "Star" + i ).gameObject.SetActive( true );
-            yield return new WaitForSeconds( 0.5f );
-            SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.hit );
+            transform.Find("Image").Find("Star" + i).gameObject.SetActive(true);
+            yield return new WaitForSeconds(0.5f);
+            SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.hit);
         }
     }
+
     IEnumerator MenuCompleteScoring()
     {
-        Text scores = transform.Find( "Image" ).Find( "Scores" ).GetComponent<Text>();
-        for( int i = 0; i <= ScoreManager.Instance.Score; i += 500 )
+        Text scores = transform.Find("Image").Find("Scores").GetComponent<Text>();
+        for (int i = 0; i <= ScoreManager.Instance.Score; i += 500)
         {
             scores.text = "" + i;
             // SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.scoring );
-            yield return new WaitForSeconds( 0.00001f );
+            yield return new WaitForSeconds(0.00001f);
         }
         scores.text = "" + ScoreManager.Instance.Score;
     }
@@ -117,49 +119,49 @@ public class AnimationManager : MonoBehaviour
 
     public void PlaySoundButton()
     {
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
 
     }
 
     public IEnumerator Close()
     {
-        yield return new WaitForSeconds( 0.5f );
+        yield return new WaitForSeconds(0.5f);
     }
 
     public void CloseMenu()
     {
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        if( gameObject.name == "MenuPreGameOver" )
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
+        if (gameObject.name == "MenuPreGameOver")
         {
             ShowGameOver();
         }
-        else if( gameObject.name == "MenuComplete" || gameObject.name == "MenuGameOver")
+        else if (gameObject.name == "MenuComplete" || gameObject.name == "MenuGameOver")
         {
             SceneManager.LoadScene("map2");
         }
 
-        if( SceneManager.GetActiveScene().name == "game")
+        if (SceneManager.GetActiveScene().name == "game")
         {
-            if( GameManager.Instance.gameStatus == GameStatus.Pause )
+            if (GameManager.Instance.gameStatus == GameStatus.Pause)
             {
                 GameManager.Instance.Resume();
 
             }
         }
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.swish[1] );
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.swish[1]);
 
-        gameObject.SetActive( false );
+        gameObject.SetActive(false);
     }
 
     public void Play()
     {
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        if( gameObject.name == "MenuPreGameOver" )
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
+        if (gameObject.name == "MenuPreGameOver")
         {
-            if( InitScript.Gems >= 12 )
+            if (InitScript.Gems >= 12)
             {
-                InitScript.Instance.SpendGems( 12 );
-                gameObject.SetActive( false );
+                InitScript.Instance.SpendGems(12);
+                gameObject.SetActive(false);
 
             }
             else
@@ -167,17 +169,17 @@ public class AnimationManager : MonoBehaviour
                 BuyGems();
             }
         }
-        else if( gameObject.name == "MenuGameOver" )
+        else if (gameObject.name == "MenuGameOver")
         {
-            SceneManager.LoadScene( "map2" );
+            SceneManager.LoadScene("map2");
         }
-        else if( gameObject.name == "MenuPlay" )
+        else if (gameObject.name == "MenuPlay")
         {
-            if( InitScript.Lifes > 0 )
+            if (InitScript.Lifes > 0)
             {
-                InitScript.Instance.SpendLife( 1 );
+                InitScript.Instance.SpendLife(1);
 
-                SceneManager.LoadScene( "game" );
+                SceneManager.LoadScene("game");
             }
             else
             {
@@ -185,9 +187,9 @@ public class AnimationManager : MonoBehaviour
             }
 
         }
-        else if( gameObject.name == "PlayMain" )
+        else if (gameObject.name == "PlayMain")
         {
-            SceneManager.LoadScene( "map2" );
+            SceneManager.LoadScene("map2");
         }
     }
 
@@ -209,82 +211,85 @@ public class AnimationManager : MonoBehaviour
 
         SceneManager.LoadScene("map2");
     }
+
     public void BuyGems()
     {
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        GameObject.Find( "Canvas" ).transform.Find( "GemsShop" ).gameObject.SetActive( true );
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
+        GameObject.Find("Canvas").transform.Find("GemsShop").gameObject.SetActive(true);
     }
 
-    public void Buy( GameObject pack )
+    public void Buy(GameObject pack)
     {
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        if( pack.name == "Pack1" )
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
+        if (pack.name == "Pack1")
         {
-            InitScript.waitedPurchaseGems = int.Parse( pack.transform.Find( "Count" ).GetComponent<Text>().text.Replace( "x ", "" ) );
+            InitScript.waitedPurchaseGems = int.Parse(pack.transform.Find("Count").GetComponent<Text>().text.Replace("x ", ""));
 #if UNITY_WEBPLAYER
             InitScript.Instance.PurchaseSucceded();
             CloseMenu();
             return;
 #endif
-            INAPP.Instance.purchaseProduct( "pack1" );
+            INAPP.Instance.purchaseProduct("pack1");
             //	INAPP.Instance.purchaseProduct("android.test.refunded");
         }
 
-        if( pack.name == "Pack2" )
+        if (pack.name == "Pack2")
         {
-            InitScript.waitedPurchaseGems = int.Parse( pack.transform.Find( "Count" ).GetComponent<Text>().text.Replace( "x ", "" ) );
+            InitScript.waitedPurchaseGems = int.Parse(pack.transform.Find("Count").GetComponent<Text>().text.Replace("x ", ""));
 #if UNITY_WEBPLAYER
             InitScript.Instance.PurchaseSucceded();
             CloseMenu();
             return;
 #endif
-            INAPP.Instance.purchaseProduct( "pack2" );
+            INAPP.Instance.purchaseProduct("pack2");
             //	INAPP.Instance.purchaseProduct("android.test.refunded");
         }
-        if( pack.name == "Pack3" )
+        if (pack.name == "Pack3")
         {
-            InitScript.waitedPurchaseGems = int.Parse( pack.transform.Find( "Count" ).GetComponent<Text>().text.Replace( "x ", "" ) );
+            InitScript.waitedPurchaseGems = int.Parse(pack.transform.Find("Count").GetComponent<Text>().text.Replace("x ", ""));
 #if UNITY_WEBPLAYER
             InitScript.Instance.PurchaseSucceded();
             CloseMenu();
             return;
 #endif
-            INAPP.Instance.purchaseProduct( "pack3" );
+            INAPP.Instance.purchaseProduct("pack3");
             //	INAPP.Instance.purchaseProduct("android.test.refunded");
         }
-        if( pack.name == "Pack4" )
+        if (pack.name == "Pack4")
         {
-            InitScript.waitedPurchaseGems = int.Parse( pack.transform.Find( "Count" ).GetComponent<Text>().text.Replace( "x ", "" ) );
+            InitScript.waitedPurchaseGems = int.Parse(pack.transform.Find("Count").GetComponent<Text>().text.Replace("x ", ""));
 #if UNITY_WEBPLAYER
             InitScript.Instance.PurchaseSucceded();
             CloseMenu();
             return;
 #endif
-            INAPP.Instance.purchaseProduct( "pack4" );
+            INAPP.Instance.purchaseProduct("pack4");
             //	INAPP.Instance.purchaseProduct("android.test.refunded");
         }
         CloseMenu();
 
     }
+
     public void BuyLifeShop()
     {
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        if( InitScript.Lifes < InitScript.CapOfLife )
-            GameObject.Find( "Canvas" ).transform.Find( "LiveShop" ).gameObject.SetActive( true );
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
+        if (InitScript.Lifes < InitScript.CapOfLife)
+            GameObject.Find("Canvas").transform.Find("LiveShop").gameObject.SetActive(true);
 
     }
-    public void BuyLife( GameObject button )
+
+    public void BuyLife(GameObject button)
     {
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        if( InitScript.Gems >= int.Parse( button.transform.Find( "Price" ).GetComponent<Text>().text ) )
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
+        if (InitScript.Gems >= int.Parse(button.transform.Find("Price").GetComponent<Text>().text))
         {
-            InitScript.Instance.SpendGems( int.Parse( button.transform.Find( "Price" ).GetComponent<Text>().text ) );
+            InitScript.Instance.SpendGems(int.Parse(button.transform.Find("Price").GetComponent<Text>().text));
             InitScript.Instance.RestoreLifes();
             CloseMenu();
         }
         else
         {
-            GameObject.Find( "Canvas" ).transform.Find( "GemsShop" ).gameObject.SetActive( true );
+            GameObject.Find("Canvas").transform.Find("GemsShop").gameObject.SetActive(true);
         }
 
     }
@@ -293,72 +298,75 @@ public class AnimationManager : MonoBehaviour
 
     void ShowGameOver()
     {
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.gameOver );
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.gameOver);
 
-        GameObject.Find( "Canvas" ).transform.Find( "MenuGameOver" ).gameObject.SetActive( true );
-        gameObject.SetActive( false );
+        GameObject.Find("Canvas").transform.Find("MenuGameOver").gameObject.SetActive(true);
+        gameObject.SetActive(false);
 
     }
 
     #region Settings
-    public void ShowSettings( GameObject menuSettings )
+
+    public void ShowSettings(GameObject menuSettings)
     {
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        if( !menuSettings.activeSelf )
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
+        if (!menuSettings.activeSelf)
         {
-            menuSettings.SetActive( true );
- //           menuSettings.GetComponent<SequencePlayer>().Play();
+            menuSettings.SetActive(true);
+            //           menuSettings.GetComponent<SequencePlayer>().Play();
         }
-        else menuSettings.SetActive( false );
+        else
+            menuSettings.SetActive(false);
     }
 
-    public void SoundOff( GameObject Off )
+    public void SoundOff(GameObject Off)
     {
-        if( !Off.activeSelf )
+        if (!Off.activeSelf)
         {
             SoundBase.Instance.GetComponent<AudioSource>().volume = 0;
             InitScript.sound = false;
 
-            Off.SetActive( true );
+            Off.SetActive(true);
         }
         else
         {
             SoundBase.Instance.GetComponent<AudioSource>().volume = 1;
             InitScript.sound = true;
 
-            Off.SetActive( false );
+            Off.SetActive(false);
 
         }
-        PlayerPrefs.SetInt( "Sound", (int)SoundBase.Instance.GetComponent<AudioSource>().volume );
+        PlayerPrefs.SetInt("Sound", (int)SoundBase.Instance.GetComponent<AudioSource>().volume);
         PlayerPrefs.Save();
 
     }
-    public void MusicOff( GameObject Off )
+
+    public void MusicOff(GameObject Off)
     {
-        if( !Off.activeSelf )
+        if (!Off.activeSelf)
         {
-            GameObject.Find( "Music" ).GetComponent<AudioSource>().volume = 0;
+            GameObject.Find("Music").GetComponent<AudioSource>().volume = 0;
             InitScript.music = false;
 
-            Off.SetActive( true );
+            Off.SetActive(true);
         }
         else
         {
-            GameObject.Find( "Music" ).GetComponent<AudioSource>().volume = 1;
+            GameObject.Find("Music").GetComponent<AudioSource>().volume = 1;
             InitScript.music = true;
 
-            Off.SetActive( false );
+            Off.SetActive(false);
 
         }
-        PlayerPrefs.SetInt( "Music", (int)GameObject.Find( "Music" ).GetComponent<AudioSource>().volume );
+        PlayerPrefs.SetInt("Music", (int)GameObject.Find("Music").GetComponent<AudioSource>().volume);
         PlayerPrefs.Save();
 
     }
 
     public void Quit()
     {
-        if( SceneManager.GetActiveScene().name == "game" )
-            SceneManager.LoadScene( "map2" );
+        if (SceneManager.GetActiveScene().name == "game")
+            SceneManager.LoadScene("map2");
         else
             Application.Quit();
     }
@@ -371,62 +379,67 @@ public class AnimationManager : MonoBehaviour
 
     public void MagicBallBoost()
     {
-        if( GameManager.Instance.gameStatus != GameStatus.Playing ) return;
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        if( InitScript.Instance.MagicBallBoost > 0 )
+        if (GameManager.Instance.gameStatus != GameStatus.Playing)
+            return;
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
+        if (InitScript.Instance.MagicBallBoost > 0)
         {
-            if( GameManager.Instance.gameStatus == GameStatus.Playing )
-                InitScript.Instance.SpendBoost( BoostType.MagicBallBoost );
+            if (GameManager.Instance.gameStatus == GameStatus.Playing)
+                InitScript.Instance.SpendBoost(BoostType.MagicBallBoost);
         }
         else
         {
-            OpenBoostShop( BoostType.MagicBallBoost );
+            OpenBoostShop(BoostType.MagicBallBoost);
         }
     }
+
     public void ColorBallBoost()
     {
-        if( GameManager.Instance.gameStatus != GameStatus.Playing ) return;
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        if( InitScript.Instance.ColorBallBoost > 0 )
+        if (GameManager.Instance.gameStatus != GameStatus.Playing)
+            return;
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
+        if (InitScript.Instance.ColorBallBoost > 0)
         {
-            if( GameManager.Instance.gameStatus == GameStatus.Playing )
-                InitScript.Instance.SpendBoost( BoostType.RainbowBallBoost );
+            if (GameManager.Instance.gameStatus == GameStatus.Playing)
+                InitScript.Instance.SpendBoost(BoostType.RainbowBallBoost);
         }
         else
         {
-            OpenBoostShop( BoostType.RainbowBallBoost );
+            OpenBoostShop(BoostType.RainbowBallBoost);
         }
 
     }
+
     public void FireBallBoost()
     {
-        if( GameManager.Instance.gameStatus != GameStatus.Playing ) return;
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        if( InitScript.Instance.FireBallBoost > 0 )
+        if (GameManager.Instance.gameStatus != GameStatus.Playing)
+            return;
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
+        if (InitScript.Instance.FireBallBoost > 0)
         {
-            if( GameManager.Instance.gameStatus == GameStatus.Playing )
-                InitScript.Instance.SpendBoost( BoostType.FireBallBoost );
+            if (GameManager.Instance.gameStatus == GameStatus.Playing)
+                InitScript.Instance.SpendBoost(BoostType.FireBallBoost);
         }
         else
         {
-            OpenBoostShop( BoostType.FireBallBoost );
+            OpenBoostShop(BoostType.FireBallBoost);
         }
 
     }
 
-    public void OpenBoostShop( BoostType boostType )
+    public void OpenBoostShop(BoostType boostType)
     {
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        GameObject.Find( "Canvas" ).transform.Find( "NewBoostShop" ).gameObject.GetComponent<NewBoostShop>().SetBoost(boostType);
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
+        GameObject.Find("Canvas").transform.Find("NewBoostShop").gameObject.GetComponent<NewBoostShop>().SetBoost(boostType);
     }
 
-    public void BuyBoost( BoostType boostType, int price )
+    public void BuyBoost(BoostType boostType, int price)
     {
-        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
-        if( InitScript.Gems >= price )
+        SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
+        if (InitScript.Gems >= price)
         {
-            InitScript.Instance.BuyBoost( boostType, 1, price );
-            InitScript.Instance.SpendBoost( boostType );
+            InitScript.Instance.BuyBoost(boostType, 1, price);
+            InitScript.Instance.SpendBoost(boostType);
             CloseMenu();
         }
         else
