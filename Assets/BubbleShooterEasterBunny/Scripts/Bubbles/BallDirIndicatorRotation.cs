@@ -7,9 +7,10 @@ public class BallDirIndicatorRotation : MonoBehaviour
     public int rotationOffset = 90;
     float bottomBoarderY;  //为了美观 把这个indicator永远指向高于此线的方向
 
+    public GameObject bottomBorderGO;
     void Start()
     {
-        bottomBoarderY = GameObject.Find("BottomBorder").transform.position.y; //获取生死线的Y坐标
+        bottomBoarderY = bottomBorderGO.transform.position.y; //获取生死线的Y坐标
     }
 
     // Update is called once per frame

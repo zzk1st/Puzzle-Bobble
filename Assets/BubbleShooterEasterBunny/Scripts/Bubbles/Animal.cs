@@ -58,7 +58,7 @@ public class Animal : MonoBehaviour
     public void Fly()
     {
         targetImage = GameObject.Find("MissionTypeImage");
-        mainscript.Instance.black_back.SetActive(true);
+        mainscript.Instance.BlackCover.SetActive(true);
 
         Destroy(animalShell);
         playEscapeAnim();
@@ -103,7 +103,7 @@ public class Animal : MonoBehaviour
 
     void onFlyingComplete()
     {
-        mainscript.Instance.black_back.SetActive(false);
+        mainscript.Instance.BlackCover.SetActive(false);
         Destroy(gameObject);
     }
 

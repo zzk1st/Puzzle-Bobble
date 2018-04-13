@@ -94,7 +94,7 @@ public class mainscript : MonoBehaviour
     public GameObject[] boosts;
     public GameObject[] locksBoosts;
     public GameObject FireEffect;
-    public GameObject black_back;
+    public GameObject BlackCover;
 
     public GameObject arrows;
     private int maxCols;
@@ -382,11 +382,6 @@ public class mainscript : MonoBehaviour
             // 让没接上的ball都掉落
             gameItem.GetComponent<GameItem>().StartFall();
         }
-        // 调用ScoreManager里针对掉落球的分数更新函数
-        // 暂时注释掉因为女巫泡泡里没有掉落得分 (只有掉入pot的加分)
-        //int val = ScoreManager.Instance.UpdateFallingScore(ballsToDrop.Count);
-
-        //ScoreManager.Instance.PopupFallingScore(val, transform.position+(new Vector3(1,0,0)));
     }
 
     public void DropAllBalls()

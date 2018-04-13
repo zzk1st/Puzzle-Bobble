@@ -24,6 +24,7 @@ public class BallShooter : MonoBehaviour
     public GameObject boxCatapult;
     public GameObject boxCartridge;
     public GameObject rootBall;
+    public GameObject bottomBorderGO;
 
     public float camOrthographicSizeX;
     public float camOrthographicSizeY;
@@ -94,7 +95,7 @@ public class BallShooter : MonoBehaviour
     void Start()
     {
         rootBall = GameObject.Find("-GameItems");
-        bottomBorderY = GameObject.Find("BottomBorder").transform.position.y;
+        bottomBorderY = bottomBorderGO.transform.position.y;
         currentES = UnityEngine.EventSystems.EventSystem.current;
         camOrthographicSizeY = Camera.main.orthographicSize;
         camOrthographicSizeX = Camera.main.orthographicSize / Screen.height * Screen.width;

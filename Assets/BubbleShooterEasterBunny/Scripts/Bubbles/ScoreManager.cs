@@ -18,7 +18,6 @@ public class ScoreManager : MonoBehaviour {
     public static int playedTime = 0;
 
     public GameObject popupScore;
-    public GameObject fallingScore;
     public GameObject perfect;
     public GameObject scoreText;
     public GameObject canvas;
@@ -92,13 +91,6 @@ public class ScoreManager : MonoBehaviour {
         return singleBallScore;
     }
 
-    public int UpdateFallingScore(int numBalls)
-    {
-        int val = numBalls * numBalls * 10;
-        Score += val;
-        return val;
-    }
-
     public int UpdatePlayedTimeScore(int playedTime)
     {
         int val = (int)(timeScoreLowerBound + (fastestTime / playedTime) * (timeScoreUpperBound - timeScoreLowerBound));
@@ -131,18 +123,6 @@ public class ScoreManager : MonoBehaviour {
             poptxt.transform.localScale = Vector3.one;
             Destroy(poptxt, 1);
         }
-    }
-
-    public void PopupFallingScore(int value, Vector3 pos)
-    {
-        Debug.Log("fallingscore:" + value);
-        Transform parent = GameObject.Find("Canvas").transform;
-        GameObject poptxt = Instantiate(fallingScore, pos, Quaternion.identity) as GameObject;
-        poptxt.transform.GetComponentInChildren<Text>().text = "" + value;
-        poptxt.transform.SetParent(parent);
-        poptxt.transform.localScale = Vector3.one;
-        Destroy(poptxt, 1);
-        perfect.SetActive(true);
     }
 
     public void PopupPotScore(double value, Vector3 pos)

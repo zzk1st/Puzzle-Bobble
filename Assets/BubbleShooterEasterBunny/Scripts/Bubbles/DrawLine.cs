@@ -16,10 +16,12 @@ public class DrawLine : MonoBehaviour
     Vector3 lastMousePos;
     private bool startAnim;
 
+    public GameObject bottomBorderGO;
+
     // Use this for initialization
     void Start()
     {
-        bottomY = GameObject.Find("BottomBorder").transform.position.y;
+        bottomY = bottomBorderGO.transform.position.y;
         line = GetComponent<LineRenderer>();
         GeneratePoints();
         GeneratePositionsPoints();

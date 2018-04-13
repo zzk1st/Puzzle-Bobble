@@ -20,14 +20,6 @@ public class AnimationManager : MonoBehaviour
         if (PlayOnEnable)
         {
             SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.swish[0]);
-
-            //if( !GetComponent<SequencePlayer>().sequenceArray[0].isPlaying )
-            //    GetComponent<SequencePlayer>().Play();
-            if (name == "Fire")
-            {
-
-
-            }
         }
         if (name == "MenuPlay")
         {
