@@ -65,6 +65,9 @@ public class LevelEditor : EditorWindow
         GUIStars();
         GUILayout.Space(10);
 
+        GUIFreeBoostScore();
+        GUILayout.Space(10);
+
         GUIBlocks();
         GUILayout.Space(20);
 
@@ -224,6 +227,18 @@ public class LevelEditor : EditorWindow
         }
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
+        GUILayout.EndHorizontal();
+    }
+
+    void GUIFreeBoostScore()
+    {
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(60);
+
+        GUILayout.Label("Free boost score:", EditorStyles.label, new GUILayoutOption[] { GUILayout.Width(100) });
+
+        levelData.freeBoostScore = EditorGUILayout.IntField("", levelData.starScores[1], new GUILayoutOption[] { GUILayout.Width(100) });
+
         GUILayout.EndHorizontal();
     }
 

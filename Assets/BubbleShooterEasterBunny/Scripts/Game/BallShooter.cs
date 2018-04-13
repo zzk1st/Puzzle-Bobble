@@ -224,7 +224,7 @@ public class BallShooter : MonoBehaviour
         {
             GameObject topRowLeftGrid = GridManager.Instance.Grid(0, 0);
             leftBorder.transform.position = new Vector3(topRowLeftGrid.transform.position.x, 0f, 0f);
-            GameObject topRowRightGrid = GridManager.Instance.Grid(0, GridManager.Instance.colCount - 1);
+            GameObject topRowRightGrid = GridManager.Instance.Grid(1, GridManager.Instance.colCount - 1);
             rightBorder.transform.position = new Vector3(topRowRightGrid.transform.position.x, 0f, 0f);
         }
     }
@@ -245,7 +245,7 @@ public class BallShooter : MonoBehaviour
             float borderOffset = CoreManager.Instance.BallColliderRadius;
             GameObject topRowLeftGrid = GridManager.Instance.Grid(0, 0);
             leftBorder.transform.position = new Vector3(topRowLeftGrid.transform.position.x - borderOffset, 0f, 0f);
-            GameObject topRowRightGrid = GridManager.Instance.Grid(0, GridManager.Instance.colCount - 1);
+            GameObject topRowRightGrid = GridManager.Instance.Grid(1, GridManager.Instance.colCount - 1);
             rightBorder.transform.position = new Vector3(topRowRightGrid.transform.position.x + borderOffset, 0f, 0f);
         }
     }
