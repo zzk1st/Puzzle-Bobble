@@ -35,6 +35,6 @@ public class Level : MonoBehaviour {
 
     public void StartLevel()
     {
-        InitScriptName.InitScript.Instance.OnLevelClicked( number );
+        PlayerPrefsManager.Instance.OnLevelClicked( number );
     }
 }

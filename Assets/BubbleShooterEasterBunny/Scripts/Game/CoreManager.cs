@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using InitScriptName;
 using System.Linq;
 using UnityEngine.Profiling;
 
@@ -130,8 +129,8 @@ public class CoreManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        if (InitScript.Instance == null)
-            gameObject.AddComponent<InitScript>();
+        if (PlayerPrefsManager.Instance == null)
+            gameObject.AddComponent<PlayerPrefsManager>();
 
         if (UIManager.Instance.gameMode == GameMode.Playing)
             currentLevel = PlayerPrefs.GetInt("OpenLevel", 1);

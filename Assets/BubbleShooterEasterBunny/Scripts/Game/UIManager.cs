@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using InitScriptName;
 
 
 public enum GameMode
@@ -144,7 +143,7 @@ public class UIManager : MonoBehaviour
         CoreManager.Instance.ballShooter.SetStageCollidersMode(BallShooter.StageCollidersMode.FireMode);
 
         winStarted = true;
-        InitScript.Instance.AddLife(1);
+        PlayerPrefsManager.Instance.AddLife(1);
         levelClearedGO.SetActive(true);
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.winSound);
         yield return new WaitForSeconds(1f);

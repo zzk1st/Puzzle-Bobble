@@ -186,7 +186,7 @@ public class INAPP : MonoBehaviour {
 		PlayerPrefs.SetInt("WasInApp", 1);
 		PlayerPrefs.Save();
 		_purchaseDone = true;
-		InitScriptName.InitScript.Instance.PurchaseSucceded();
+		PlayerPrefsManager.Instance.PurchaseSucceded();
 		OpenIAB.consumeProduct(purchase);
 		if (!VerifyDeveloperPayload(purchase.DeveloperPayload)) {
 			return;

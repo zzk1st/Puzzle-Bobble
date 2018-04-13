@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Threading;
-using InitScriptName;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using UnityEngine.Profiling;

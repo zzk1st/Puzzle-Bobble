@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using InitScriptName;
 
 public class NewBoostShop : MonoBehaviour {
     public Sprite[] icons;
@@ -34,10 +33,10 @@ public class NewBoostShop : MonoBehaviour {
     {
         int boostPrice = int.Parse(price.text);
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
-        if( InitScript.Gems >= boostPrice)
+        if( PlayerPrefsManager.Gems >= boostPrice)
         {
-            InitScript.Instance.BuyBoost(curBoostType, 1, boostPrice);
-            InitScript.Instance.SpendBoost(curBoostType);
+            PlayerPrefsManager.Instance.BuyBoost(curBoostType, 1, boostPrice);
+            PlayerPrefsManager.Instance.SpendBoost(curBoostType);
             CloseMenu();
         }
         else

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using InitScriptName;
 
 public class BoostBarView : MonoBehaviour {
 
@@ -10,10 +9,10 @@ public class BoostBarView : MonoBehaviour {
         if (UIManager.Instance.gameStatus != GameStatus.Playing)
             return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
-        if (InitScript.Instance.MagicBallBoost > 0)
+        if (PlayerPrefsManager.Instance.MagicBallBoost > 0)
         {
             if (UIManager.Instance.gameStatus == GameStatus.Playing)
-                InitScript.Instance.SpendBoost(BoostType.MagicBallBoost);
+                PlayerPrefsManager.Instance.SpendBoost(BoostType.MagicBallBoost);
         }
         else
         {
@@ -26,10 +25,10 @@ public class BoostBarView : MonoBehaviour {
         if (UIManager.Instance.gameStatus != GameStatus.Playing)
             return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
-        if (InitScript.Instance.ColorBallBoost > 0)
+        if (PlayerPrefsManager.Instance.ColorBallBoost > 0)
         {
             if (UIManager.Instance.gameStatus == GameStatus.Playing)
-                InitScript.Instance.SpendBoost(BoostType.RainbowBallBoost);
+                PlayerPrefsManager.Instance.SpendBoost(BoostType.RainbowBallBoost);
         }
         else
         {
@@ -43,10 +42,10 @@ public class BoostBarView : MonoBehaviour {
         if (UIManager.Instance.gameStatus != GameStatus.Playing)
             return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
-        if (InitScript.Instance.FireBallBoost > 0)
+        if (PlayerPrefsManager.Instance.FireBallBoost > 0)
         {
             if (UIManager.Instance.gameStatus == GameStatus.Playing)
-                InitScript.Instance.SpendBoost(BoostType.FireBallBoost);
+                PlayerPrefsManager.Instance.SpendBoost(BoostType.FireBallBoost);
         }
         else
         {

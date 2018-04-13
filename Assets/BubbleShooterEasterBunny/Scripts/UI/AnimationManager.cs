@@ -2,7 +2,6 @@
 using System.Collections;
 using System;
 using UnityEngine.UI;
-using InitScriptName;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
@@ -81,7 +80,7 @@ public class AnimationManager : MonoBehaviour
         }
         if (name == "MenuPlay")
         {
-            InitScript.Instance.currentTarget = CoreManager.Instance.levelData.GetTarget(PlayerPrefs.GetInt("OpenLevel"));
+            PlayerPrefsManager.Instance.currentTarget = CoreManager.Instance.levelData.GetTarget(PlayerPrefs.GetInt("OpenLevel"));
         }
     }
 
@@ -150,9 +149,9 @@ public class AnimationManager : MonoBehaviour
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
         if (gameObject.name == "MenuPreGameOver")
         {
-            if (InitScript.Gems >= 12)
+            if (PlayerPrefsManager.Gems >= 12)
             {
-                InitScript.Instance.SpendGems(12);
+                PlayerPrefsManager.Instance.SpendGems(12);
                 gameObject.SetActive(false);
 
             }
@@ -167,9 +166,9 @@ public class AnimationManager : MonoBehaviour
         }
         else if (gameObject.name == "MenuPlay")
         {
-            if (InitScript.Lifes > 0)
+            if (PlayerPrefsManager.Lifes > 0)
             {
-                InitScript.Instance.SpendLife(1);
+                PlayerPrefsManager.Instance.SpendLife(1);
 
                 SceneManager.LoadScene("game");
             }
@@ -215,7 +214,7 @@ public class AnimationManager : MonoBehaviour
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
         if (pack.name == "Pack1")
         {
-            InitScript.waitedPurchaseGems = int.Parse(pack.transform.Find("Count").GetComponent<Text>().text.Replace("x ", ""));
+            PlayerPrefsManager.waitedPurchaseGems = int.Parse(pack.transform.Find("Count").GetComponent<Text>().text.Replace("x ", ""));
 #if UNITY_WEBPLAYER
             InitScript.Instance.PurchaseSucceded();
             CloseMenu();
@@ -227,7 +226,7 @@ public class AnimationManager : MonoBehaviour
 
         if (pack.name == "Pack2")
         {
-            InitScript.waitedPurchaseGems = int.Parse(pack.transform.Find("Count").GetComponent<Text>().text.Replace("x ", ""));
+            PlayerPrefsManager.waitedPurchaseGems = int.Parse(pack.transform.Find("Count").GetComponent<Text>().text.Replace("x ", ""));
 #if UNITY_WEBPLAYER
             InitScript.Instance.PurchaseSucceded();
             CloseMenu();
@@ -238,7 +237,7 @@ public class AnimationManager : MonoBehaviour
         }
         if (pack.name == "Pack3")
         {
-            InitScript.waitedPurchaseGems = int.Parse(pack.transform.Find("Count").GetComponent<Text>().text.Replace("x ", ""));
+            PlayerPrefsManager.waitedPurchaseGems = int.Parse(pack.transform.Find("Count").GetComponent<Text>().text.Replace("x ", ""));
 #if UNITY_WEBPLAYER
             InitScript.Instance.PurchaseSucceded();
             CloseMenu();
@@ -249,7 +248,7 @@ public class AnimationManager : MonoBehaviour
         }
         if (pack.name == "Pack4")
         {
-            InitScript.waitedPurchaseGems = int.Parse(pack.transform.Find("Count").GetComponent<Text>().text.Replace("x ", ""));
+            PlayerPrefsManager.waitedPurchaseGems = int.Parse(pack.transform.Find("Count").GetComponent<Text>().text.Replace("x ", ""));
 #if UNITY_WEBPLAYER
             InitScript.Instance.PurchaseSucceded();
             CloseMenu();
@@ -265,7 +264,7 @@ public class AnimationManager : MonoBehaviour
     public void BuyLifeShop()
     {
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
-        if (InitScript.Lifes < InitScript.CapOfLife)
+        if (PlayerPrefsManager.Lifes < PlayerPrefsManager.CapOfLife)
             GameObject.Find("Canvas").transform.Find("LiveShop").gameObject.SetActive(true);
 
     }
@@ -273,10 +272,10 @@ public class AnimationManager : MonoBehaviour
     public void BuyLife(GameObject button)
     {
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
-        if (InitScript.Gems >= int.Parse(button.transform.Find("Price").GetComponent<Text>().text))
+        if (PlayerPrefsManager.Gems >= int.Parse(button.transform.Find("Price").GetComponent<Text>().text))
         {
-            InitScript.Instance.SpendGems(int.Parse(button.transform.Find("Price").GetComponent<Text>().text));
-            InitScript.Instance.RestoreLifes();
+            PlayerPrefsManager.Instance.SpendGems(int.Parse(button.transform.Find("Price").GetComponent<Text>().text));
+            PlayerPrefsManager.Instance.RestoreLifes();
             CloseMenu();
         }
         else
@@ -316,14 +315,14 @@ public class AnimationManager : MonoBehaviour
         if (!Off.activeSelf)
         {
             SoundBase.Instance.GetComponent<AudioSource>().volume = 0;
-            InitScript.sound = false;
+            PlayerPrefsManager.sound = false;
 
             Off.SetActive(true);
         }
         else
         {
             SoundBase.Instance.GetComponent<AudioSource>().volume = 1;
-            InitScript.sound = true;
+            PlayerPrefsManager.sound = true;
 
             Off.SetActive(false);
 
@@ -338,14 +337,14 @@ public class AnimationManager : MonoBehaviour
         if (!Off.activeSelf)
         {
             GameObject.Find("Music").GetComponent<AudioSource>().volume = 0;
-            InitScript.music = false;
+            PlayerPrefsManager.music = false;
 
             Off.SetActive(true);
         }
         else
         {
             GameObject.Find("Music").GetComponent<AudioSource>().volume = 1;
-            InitScript.music = true;
+            PlayerPrefsManager.music = true;
 
             Off.SetActive(false);
 

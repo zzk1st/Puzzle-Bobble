@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using InitScriptName;
 using UnityEngine.SceneManagement;
 
 public class Counter : MonoBehaviour {
@@ -61,24 +60,24 @@ public class Counter : MonoBehaviour {
 
         if( name == "Lifes" )
         {
-            label.text = "" + InitScript.Instance.GetLife();
+            label.text = "" + PlayerPrefsManager.Instance.GetLife();
         }
 
         if( name == "Gems" )
         {
-            label.text = "" + InitScript.Gems;
+            label.text = "" + PlayerPrefsManager.Gems;
         }
         if( name == "MagicBallBoost" )
         {
-            label.text = "" + GetPlus(InitScript.Instance.MagicBallBoost);
+            label.text = "" + GetPlus(PlayerPrefsManager.Instance.MagicBallBoost);
         }
         if( name == "ColorBallBoost" )
         {
-            label.text = "" + GetPlus(InitScript.Instance.ColorBallBoost);
+            label.text = "" + GetPlus(PlayerPrefsManager.Instance.ColorBallBoost);
         }
         if( name == "FireBallBoost" )
         {
-            label.text = "" + GetPlus(InitScript.Instance.FireBallBoost);
+            label.text = "" + GetPlus(PlayerPrefsManager.Instance.FireBallBoost);
         }
         if( name == "TargetDescription" )
         {
@@ -96,8 +95,8 @@ public class Counter : MonoBehaviour {
     {
         if( SceneManager.GetActiveScene().name == "map" )
         {
-            if( InitScript.Instance.currentTarget == Target.Top ) return "Clear the top";
-            else if( InitScript.Instance.currentTarget == Target.Chicken ) return "Rescue the chicken";
+            if( PlayerPrefsManager.Instance.currentTarget == Target.Top ) return "Clear the top";
+            else if( PlayerPrefsManager.Instance.currentTarget == Target.Chicken ) return "Rescue the chicken";
 
         }
         else
