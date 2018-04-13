@@ -30,7 +30,7 @@ public class StageLoader
         Profiler.EndSample();
 
         MissionManager.Instance.Initialize();
-        GameManager.Instance.StageMovingUp();
+        UIManager.Instance.StageMovingUp();
         mainscript.Instance.platformController.StartGameMove();
         // TODO: 写一个iniitalizeBorders(), 负责border的初始化创建，注意要创建bottom border
     }

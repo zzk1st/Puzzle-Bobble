@@ -27,12 +27,12 @@ public class BearAnimController : MonoBehaviour {
             }
         }
 
-        if (GameManager.Instance.gameStatus == GameStatus.GameOver)
+        if (UIManager.Instance.gameStatus == GameStatus.GameOver)
         {
             m_Anim.SetInteger("GameStatus", 1);
         }
 
-        if (GameManager.Instance.gameStatus == GameStatus.Win)
+        if (UIManager.Instance.gameStatus == GameStatus.Win)
         {
             m_Anim.SetInteger("GameStatus", 2);
         }

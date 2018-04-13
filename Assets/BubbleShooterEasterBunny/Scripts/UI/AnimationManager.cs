@@ -134,9 +134,9 @@ public class AnimationManager : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == "game")
         {
-            if (GameManager.Instance.gameStatus == GameStatus.Pause)
+            if (UIManager.Instance.gameStatus == GameStatus.Pause)
             {
-                GameManager.Instance.Resume();
+                UIManager.Instance.Resume();
 
             }
         }
@@ -188,7 +188,7 @@ public class AnimationManager : MonoBehaviour
     public void PlayTutorial()
     {
 //        SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.click );
-        GameManager.Instance.Play();
+        UIManager.Instance.Play();
 //        CloseMenu();
     }
 

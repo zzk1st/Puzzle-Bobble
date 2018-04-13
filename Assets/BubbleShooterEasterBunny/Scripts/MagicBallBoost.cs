@@ -10,7 +10,7 @@ public class MagicBallBoost : MonoBehaviour {
     // Use this for initialization
     void Start () {
         // 游戏进入暂停状态
-        GameManager.Instance.Pause();
+        UIManager.Instance.Pause();
     }
 	
 
@@ -79,7 +79,7 @@ public class MagicBallBoost : MonoBehaviour {
         if (Input.GetMouseButtonUp(0) && setColor)
         {
             //游戏状态改回Play
-            GameManager.Instance.Resume();
+            UIManager.Instance.Resume();
             //销毁自己
             Destroy(gameObject);
         }

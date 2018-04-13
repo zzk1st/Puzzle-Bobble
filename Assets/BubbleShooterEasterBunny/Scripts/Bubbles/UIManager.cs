@@ -30,9 +30,9 @@ public enum GameStatus
 /// Game manager: 主要控制游戏进程，停止／继续，和游戏输赢后的各种动作
 ///               对GameStatus，我们应该只调用它读取当前状态，而不应该通过其直接修改游戏状态
 /// </summary>
-public class GameManager : MonoBehaviour
+public class UIManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    public static UIManager Instance;
     public GameMode gameMode;
     private GameStatus lastGameStatus;
     bool winStarted;

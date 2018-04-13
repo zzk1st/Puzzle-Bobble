@@ -123,8 +123,8 @@ public class GameItemFactory : MonoBehaviour
 
         LevelGameItem levelGameItem = new LevelGameItem(LevelItemType.Empty);
         // 如果已经赢了，或者是开场，就生成随机彩球
-        if (GameManager.Instance.gameStatus == GameStatus.Win ||
-            GameManager.Instance.gameMode == GameMode.Opening)
+        if (UIManager.Instance.gameStatus == GameStatus.Win ||
+            UIManager.Instance.gameMode == GameMode.Opening)
         {
             levelGameItem.type = mainscript.Instance.levelData.ballColors[Random.Range(0, mainscript.Instance.levelData.ballColors.Count)];
         }

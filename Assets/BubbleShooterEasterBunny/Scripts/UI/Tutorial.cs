@@ -44,7 +44,7 @@ public class Tutorial : MonoBehaviour {
         }
         else
         {
-            GameManager.Instance.Play();
+            UIManager.Instance.Play();
             gameObject.SetActive( false );
 
         }

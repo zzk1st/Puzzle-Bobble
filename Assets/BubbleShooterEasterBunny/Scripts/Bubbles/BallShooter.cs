@@ -111,7 +111,7 @@ public class BallShooter : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance.gameMode == GameMode.Playing)
+        if (UIManager.Instance.gameMode == GameMode.Playing)
         {
             PlayingModeCheckAndFire();
         }
@@ -120,7 +120,7 @@ public class BallShooter : MonoBehaviour
             OpeningModeCheckAndFire();
         }
 
-        if (GameManager.Instance.gameStatus == GameStatus.Win && catapultBall == null)
+        if (UIManager.Instance.gameStatus == GameStatus.Win && catapultBall == null)
         {
             Reload();
         }
@@ -131,7 +131,7 @@ public class BallShooter : MonoBehaviour
         // currentES.IsPointerOverGameObject()用来检测是否鼠标点击的是GUI
         if (Time.time > openingModeNextShootingTime)
         {
-            if (GameManager.Instance.gameStatus == GameStatus.Playing &&
+            if (UIManager.Instance.gameStatus == GameStatus.Playing &&
                 !mainscript.Instance.gameOver &&
                 !isLocked &&
                 catapultBall != null)
@@ -155,7 +155,7 @@ public class BallShooter : MonoBehaviour
 
     void PlayingModeCheckAndFire()
     {
-        if (GameManager.Instance.gameStatus == GameStatus.Playing && !mainscript.Instance.gameOver && !isLocked)
+        if (UIManager.Instance.gameStatus == GameStatus.Playing && !mainscript.Instance.gameOver && !isLocked)
         {
             Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // currentES.IsPointerOverGameObject()用来检测是否鼠标点击的是GUI
@@ -173,7 +173,7 @@ public class BallShooter : MonoBehaviour
     void Fire(Vector3 pos)
     {
         // 如果是opening模式，不减球数量
-        if (GameManager.Instance.gameMode != GameMode.Opening)
+        if (UIManager.Instance.gameMode != GameMode.Opening)
         {
             mainscript.Instance.levelData.limitAmount--;
         }
@@ -341,7 +341,7 @@ public class BallShooter : MonoBehaviour
 
     public void SwapBalls()
     {
-        if (GameManager.Instance.gameStatus == GameStatus.Playing && !boostInPosition)
+        if (UIManager.Instance.gameStatus == GameStatus.Playing && !boostInPosition)
         {
             if (state == BallShooterState.ReadyToShoot && cartridgeBall != null)
             {

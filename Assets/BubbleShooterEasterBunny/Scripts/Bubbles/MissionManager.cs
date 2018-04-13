@@ -96,14 +96,14 @@ public class MissionManager : MonoBehaviour {
 
     void checkWin()
     {
-        if (GameManager.Instance.gameStatus != GameStatus.Playing)
+        if (UIManager.Instance.gameStatus != GameStatus.Playing)
         {
             return;
         }
 
         if (currentMissionPoints >= stageMissionPoints)
         {
-            GameManager.Instance.Win();
+            UIManager.Instance.Win();
         }
     }
 }

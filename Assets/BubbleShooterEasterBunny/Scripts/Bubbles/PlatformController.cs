@@ -68,7 +68,7 @@ public class PlatformController : MonoBehaviour
             if (curPlatformTopPos - curPlatformBottomPos < initialTopBorderPos - platformBottomUpperLimit)
             {    // 如果当前关卡高度太短
 
-                if (GameManager.Instance.gameStatus == GameStatus.StageMovingUp)
+                if (UIManager.Instance.gameStatus == GameStatus.StageMovingUp)
                 {
                     if (curPlatformTopPos < initialTopBorderPos - deltaPos)
                     {
@@ -89,7 +89,7 @@ public class PlatformController : MonoBehaviour
             else
             {
                 // 关卡高度足够，就看底部是不在合理区域内
-                if (GameManager.Instance.gameStatus == GameStatus.StageMovingUp)
+                if (UIManager.Instance.gameStatus == GameStatus.StageMovingUp)
                 {     // 注意游戏开始比较特殊，要保证关卡minPos高于upperlimit
                     if (curPlatformBottomPos < platformBottomUpperLimit)
                     {
@@ -119,7 +119,7 @@ public class PlatformController : MonoBehaviour
 
             if (arrived)
             {
-                GameManager.Instance.OnStageMoveComplete();
+                UIManager.Instance.OnStageMoveComplete();
             }
         }
     }
@@ -180,9 +180,9 @@ public class PlatformController : MonoBehaviour
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
         {
             transform.position = new Vector3(0f, 1.6f, 0f);
-            if (GameManager.Instance.gameStatus == GameStatus.StageMovingUp)
+            if (UIManager.Instance.gameStatus == GameStatus.StageMovingUp)
             {
-                GameManager.Instance.PreTutorial();
+                UIManager.Instance.PreTutorial();
             }
         }
     }

@@ -20,7 +20,7 @@ public class Counter : MonoBehaviour {
                 label.text = "" + mainscript.Instance.levelData.limitAmount;
             else
                 label.text = "0";
-            if (mainscript.Instance.levelData.limitAmount < 5 && GameManager.Instance.gameStatus == GameStatus.Playing)
+            if (mainscript.Instance.levelData.limitAmount < 5 && UIManager.Instance.gameStatus == GameStatus.Playing)
             {
                 label.color = Color.red;
                 if (!GetComponent<Animation>().isPlaying)

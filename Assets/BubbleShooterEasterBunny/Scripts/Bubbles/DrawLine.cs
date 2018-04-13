@@ -119,7 +119,7 @@ public class DrawLine : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetMouseButtonDown(0) && GameManager.Instance.gameStatus == GameStatus.Playing)
+        if (Input.GetMouseButtonDown(0) && UIManager.Instance.gameStatus == GameStatus.Playing)
         {
             draw = true;
         }

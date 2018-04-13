@@ -26,7 +26,7 @@ public class NewBoostShop : MonoBehaviour {
         description.text = descriptions[index];
         price.text = prices[index].ToString();
 
-        GameManager.Instance.Pause();
+        UIManager.Instance.Pause();
         gameObject.SetActive( true );
     }
 
@@ -50,9 +50,9 @@ public class NewBoostShop : MonoBehaviour {
     {
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.click );
 
-        if( GameManager.Instance.gameStatus == GameStatus.Pause )
+        if( UIManager.Instance.gameStatus == GameStatus.Pause )
         {
-            GameManager.Instance.Resume();
+            UIManager.Instance.Resume();
         }
 
         gameObject.SetActive( false );

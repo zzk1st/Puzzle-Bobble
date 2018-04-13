@@ -133,7 +133,7 @@ public class mainscript : MonoBehaviour
         if (InitScript.Instance == null)
             gameObject.AddComponent<InitScript>();
 
-        if (GameManager.Instance.gameMode == GameMode.Playing)
+        if (UIManager.Instance.gameMode == GameMode.Playing)
             currentLevel = PlayerPrefs.GetInt("OpenLevel", 1);
         else
             currentLevel = 0;	//开场动画关卡是0
@@ -174,7 +174,7 @@ public class mainscript : MonoBehaviour
         {
 
             yield return new WaitForSeconds(30);
-            if (GameManager.Instance.gameStatus == GameStatus.Playing)
+            if (UIManager.Instance.gameStatus == GameStatus.Playing)
             {
                 arrows.SetActive(true);
 
@@ -258,7 +258,7 @@ public class mainscript : MonoBehaviour
 
         // 游戏中最重要的算法部分：检测ball是否连上，销毁，以及判断是否有其它drop的balls
         // checkBall在ball.cs中被赋值，当ball停住的时候，就说明需要判断连接了，这个值也就被设定了
-        if (checkBall != null && GameManager.Instance.gameStatus == GameStatus.Playing)
+        if (checkBall != null && UIManager.Instance.gameStatus == GameStatus.Playing)
         {
             ConnectAndDestroyBalls();
             checkBall = null;
@@ -277,11 +277,11 @@ public class mainscript : MonoBehaviour
 
     public void CheckLosing()
     {
-        if (GameManager.Instance.gameStatus == GameStatus.Playing)
+        if (UIManager.Instance.gameStatus == GameStatus.Playing)
         {
             if (levelData.limitAmount < 0)
             {
-                GameManager.Instance.GameOver();
+                UIManager.Instance.GameOver();
             }
             /*
             float stageMinYWorldSpace = platformController.curPlatformMinY;

@@ -7,12 +7,12 @@ public class BoostBarView : MonoBehaviour {
 
     public void MagicBallBoost()
     {
-        if (GameManager.Instance.gameStatus != GameStatus.Playing)
+        if (UIManager.Instance.gameStatus != GameStatus.Playing)
             return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
         if (InitScript.Instance.MagicBallBoost > 0)
         {
-            if (GameManager.Instance.gameStatus == GameStatus.Playing)
+            if (UIManager.Instance.gameStatus == GameStatus.Playing)
                 InitScript.Instance.SpendBoost(BoostType.MagicBallBoost);
         }
         else
@@ -23,12 +23,12 @@ public class BoostBarView : MonoBehaviour {
 
     public void ColorBallBoost()
     {
-        if (GameManager.Instance.gameStatus != GameStatus.Playing)
+        if (UIManager.Instance.gameStatus != GameStatus.Playing)
             return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
         if (InitScript.Instance.ColorBallBoost > 0)
         {
-            if (GameManager.Instance.gameStatus == GameStatus.Playing)
+            if (UIManager.Instance.gameStatus == GameStatus.Playing)
                 InitScript.Instance.SpendBoost(BoostType.RainbowBallBoost);
         }
         else
@@ -40,12 +40,12 @@ public class BoostBarView : MonoBehaviour {
 
     public void FireBallBoost()
     {
-        if (GameManager.Instance.gameStatus != GameStatus.Playing)
+        if (UIManager.Instance.gameStatus != GameStatus.Playing)
             return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
         if (InitScript.Instance.FireBallBoost > 0)
         {
-            if (GameManager.Instance.gameStatus == GameStatus.Playing)
+            if (UIManager.Instance.gameStatus == GameStatus.Playing)
                 InitScript.Instance.SpendBoost(BoostType.FireBallBoost);
         }
         else
