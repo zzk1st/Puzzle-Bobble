@@ -16,11 +16,11 @@ public class Counter : MonoBehaviour {
 	void Update () {
         if (name == "Moves")
         {
-            if (mainscript.Instance.levelData.limitAmount >= 0)
-                label.text = "" + mainscript.Instance.levelData.limitAmount;
+            if (CoreManager.Instance.levelData.limitAmount >= 0)
+                label.text = "" + CoreManager.Instance.levelData.limitAmount;
             else
                 label.text = "0";
-            if (mainscript.Instance.levelData.limitAmount < 5 && UIManager.Instance.gameStatus == GameStatus.Playing)
+            if (CoreManager.Instance.levelData.limitAmount < 5 && UIManager.Instance.gameStatus == GameStatus.Playing)
             {
                 label.color = Color.red;
                 if (!GetComponent<Animation>().isPlaying)
@@ -53,10 +53,10 @@ public class Counter : MonoBehaviour {
         }
         if( name == "Target" )
         {
-            if(mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
-                label.text = "" + Mathf.Clamp( mainscript.Instance.TargetCounter1, 0, 6 ) + "/6";
-            else if(mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
-                label.text = "" + Mathf.Clamp(mainscript.Instance.TargetCounter1, 0, 1)+ "/1";
+            if(CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
+                label.text = "" + Mathf.Clamp( CoreManager.Instance.TargetCounter1, 0, 6 ) + "/6";
+            else if(CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+                label.text = "" + Mathf.Clamp(CoreManager.Instance.TargetCounter1, 0, 1)+ "/1";
         }
 
         if( name == "Lifes" )
@@ -102,8 +102,8 @@ public class Counter : MonoBehaviour {
         }
         else
         {
-            if( mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical ) return "Clear the top";
-            else if( mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded ) return "Rescue the chicken";
+            if( CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Vertical ) return "Clear the top";
+            else if( CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Rounded ) return "Rescue the chicken";
 
         }
         return "";

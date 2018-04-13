@@ -63,7 +63,7 @@ public class UIManager : MonoBehaviour
 
     public void PreTutorialDone()
     {
-        if (mainscript.Instance.levelData.missionType == MissionType.BossBattle)
+        if (CoreManager.Instance.levelData.missionType == MissionType.BossBattle)
         {
             BossArriving();
         }
@@ -83,14 +83,14 @@ public class UIManager : MonoBehaviour
     {
         if (this.gameStatus != GameStatus.Playing)
         {
-            mainscript.Instance.ballShooter.Initialize();
+            CoreManager.Instance.ballShooter.Initialize();
             setGameStatus(GameStatus.Playing);
         }
     }
 
     public void Demo()
     {
-        mainscript.Instance.ballShooter.isLocked = true;
+        CoreManager.Instance.ballShooter.isLocked = true;
         setGameStatus(GameStatus.Demo);
     }
 
@@ -110,7 +110,7 @@ public class UIManager : MonoBehaviour
     public void Resume()
     {
         setGameStatus(lastGameStatus);
-        mainscript.Instance.ballShooter.isLocked = false;
+        CoreManager.Instance.ballShooter.isLocked = false;
         Time.timeScale = 1;
     }
 
@@ -141,14 +141,14 @@ public class UIManager : MonoBehaviour
     IEnumerator WinAction()
     {
         // 注意这步很关键，如果还保持Aim Mode，那么有的球会从左右边界外溜出去
-        mainscript.Instance.ballShooter.SetStageCollidersMode(BallShooter.StageCollidersMode.FireMode);
+        CoreManager.Instance.ballShooter.SetStageCollidersMode(BallShooter.StageCollidersMode.FireMode);
 
         winStarted = true;
         InitScript.Instance.AddLife(1);
         levelClearedGO.SetActive(true);
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.winSound);
         yield return new WaitForSeconds(1f);
-        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
+        if (CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
         {
             yield return new WaitForSeconds(1f);
         }
@@ -160,25 +160,25 @@ public class UIManager : MonoBehaviour
                                    
         }
         // StartCoroutine( PushRestBalls() );
-        Transform b = mainscript.Instance.gameItemsNode.transform;
-        Ball[] balls = mainscript.Instance.gameItemsNode.GetComponentsInChildren<Ball>();
+        Transform b = CoreManager.Instance.gameItemsNode.transform;
+        Ball[] balls = CoreManager.Instance.gameItemsNode.GetComponentsInChildren<Ball>();
         foreach (Ball item in balls)
         {
             if (item.GetComponent<Ball>().state == Ball.BallState.Fixed)
                 item.StartFall();
         }
 
-        while (mainscript.Instance.levelData.limitAmount >= 0)
+        while (CoreManager.Instance.levelData.limitAmount >= 0)
         {
-            if (mainscript.Instance.ballShooter.CatapultBall != null)
+            if (CoreManager.Instance.ballShooter.CatapultBall != null)
             {
-                Ball ball = mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>();
-                mainscript.Instance.ballShooter.CatapultBall = null;
-                ball.transform.parent = mainscript.Instance.gameItemsNode.transform;
+                Ball ball = CoreManager.Instance.ballShooter.CatapultBall.GetComponent<Ball>();
+                CoreManager.Instance.ballShooter.CatapultBall = null;
+                ball.transform.parent = CoreManager.Instance.gameItemsNode.transform;
                 ball.tag = "Ball";
                 ball.PushBallAFterWin();
             }
-            mainscript.Instance.levelData.limitAmount--;
+            CoreManager.Instance.levelData.limitAmount--;
             yield return new WaitForSeconds(0.33f);
             /*if (mainscript.Instance.ballShooter.boxCatapult.GetComponent<Grid>().AttachedGameItem != null)
             {
@@ -204,13 +204,13 @@ public class UIManager : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.aplauds);
-        if (PlayerPrefs.GetInt(string.Format("Level.{0:000}.StarsCount", mainscript.Instance.currentLevel), 0) < mainscript.Instance.stars)
-            PlayerPrefs.SetInt(string.Format("Level.{0:000}.StarsCount", mainscript.Instance.currentLevel), mainscript.Instance.stars);
+        if (PlayerPrefs.GetInt(string.Format("Level.{0:000}.StarsCount", CoreManager.Instance.currentLevel), 0) < CoreManager.Instance.stars)
+            PlayerPrefs.SetInt(string.Format("Level.{0:000}.StarsCount", CoreManager.Instance.currentLevel), CoreManager.Instance.stars);
 
 
-        if (PlayerPrefs.GetInt("HighScore" + mainscript.Instance.currentLevel) < ScoreManager.Instance.Score)
+        if (PlayerPrefs.GetInt("HighScore" + CoreManager.Instance.currentLevel) < ScoreManager.Instance.Score)
         {
-            PlayerPrefs.SetInt("HighScore" + mainscript.Instance.currentLevel, ScoreManager.Instance.Score);
+            PlayerPrefs.SetInt("HighScore" + CoreManager.Instance.currentLevel, ScoreManager.Instance.Score);
 
         }
         levelClearedGO.SetActive(false);
@@ -226,7 +226,7 @@ public class UIManager : MonoBehaviour
 
     IEnumerator LoseAction()
     {
-        mainscript.Instance.ballShooter.SetStageCollidersMode(BallShooter.StageCollidersMode.FireMode);
+        CoreManager.Instance.ballShooter.SetStageCollidersMode(BallShooter.StageCollidersMode.FireMode);
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.OutOfMoves);
         outOfMovesGO.SetActive(true);
         yield return new WaitForSeconds(1.5f);

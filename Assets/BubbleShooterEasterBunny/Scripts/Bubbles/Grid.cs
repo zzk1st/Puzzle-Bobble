@@ -100,8 +100,8 @@ public class Grid : MonoBehaviour
 		//      否则，继续递归调用
 		List<Grid> controlGrids = GridManager.Instance.controlGrids;
 
-		if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical) {
-			if (mainscript.Instance.levelData.missionType == MissionType.BossBattle) {
+		if (CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Vertical) {
+			if (CoreManager.Instance.levelData.missionType == MissionType.BossBattle) {
 				if (attachedGameItem) {
 					if (attachedGameItem.GetComponent<GameItem> ().itemType == GameItem.ItemType.BossPlace) {
 						AddFrom (grids, controlGrids);

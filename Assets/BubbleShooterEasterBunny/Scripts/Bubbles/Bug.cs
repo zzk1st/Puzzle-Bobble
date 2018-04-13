@@ -93,7 +93,7 @@ public class Bug : MonoBehaviour {
         if( col.collider.name.Contains( "ball" ) )
         {
             StartCoroutine( SoundsCounter() );
-            if( mainscript.Instance.bugSounds < 5)
+            if( CoreManager.Instance.bugSounds < 5)
             {
                 SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot( SoundBase.Instance.bug );
             }
@@ -115,9 +115,9 @@ public class Bug : MonoBehaviour {
 
     IEnumerator SoundsCounter()
     {
-        mainscript.Instance.bugSounds++;
+        CoreManager.Instance.bugSounds++;
         yield return new WaitForSeconds( 0.3f );
-        mainscript.Instance.bugSounds--;
+        CoreManager.Instance.bugSounds--;
     }
 
     IEnumerator StartAnim(Vector3 dir)

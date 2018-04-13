@@ -27,13 +27,13 @@ public class MissionManager : MonoBehaviour {
 
     public void Initialize()
     {
-        LevelData levelData = mainscript.Instance.levelData;
+        LevelData levelData = CoreManager.Instance.levelData;
         _stageMissionPoints = levelData.missionPoints;
     }
 
     public void GainAnimalPoint()
     {
-        if (mainscript.Instance.levelData.missionType == MissionType.SaveAnimals)
+        if (CoreManager.Instance.levelData.missionType == MissionType.SaveAnimals)
         {
             _currentMissionPoints++;
             UpdateMissionPointCounter();
@@ -44,7 +44,7 @@ public class MissionManager : MonoBehaviour {
 
     public void GainBossPoint()
     {
-        if (mainscript.Instance.levelData.missionType == MissionType.BossBattle)
+        if (CoreManager.Instance.levelData.missionType == MissionType.BossBattle)
         {
             _currentMissionPoints++;
             UpdateMissionPointCounter();
@@ -55,7 +55,7 @@ public class MissionManager : MonoBehaviour {
 
     public void GainTargetStar(Grid grid)
     {
-        if (mainscript.Instance.levelData.missionType == MissionType.EliminateBalls)
+        if (CoreManager.Instance.levelData.missionType == MissionType.EliminateBalls)
         {
             _currentMissionPoints++;
             if (grid.Row == 0)
@@ -71,7 +71,7 @@ public class MissionManager : MonoBehaviour {
 
     public void DecreaseTargetStar(Grid grid)
     {
-        if (mainscript.Instance.levelData.missionType == MissionType.EliminateBalls && _currentMissionPoints > 0)
+        if (CoreManager.Instance.levelData.missionType == MissionType.EliminateBalls && _currentMissionPoints > 0)
         {
             _currentMissionPoints--;
             UpdateMissionPointCounter();
@@ -80,7 +80,7 @@ public class MissionManager : MonoBehaviour {
 
     public void GainCenterItem()
     {
-        if (mainscript.Instance.levelData.missionType == MissionType.RescueGhost)
+        if (CoreManager.Instance.levelData.missionType == MissionType.RescueGhost)
         {
             _currentMissionPoints++;
             UpdateMissionPointCounter();

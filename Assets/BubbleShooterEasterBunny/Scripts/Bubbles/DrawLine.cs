@@ -50,17 +50,17 @@ public class DrawLine : MonoBehaviour
         if (pos.y <= bottomY)
             return;
 
-        if (mainscript.Instance.ballShooter.CatapultBall != null)
+        if (CoreManager.Instance.ballShooter.CatapultBall != null)
         {
             //col = mainscript.Instance.ballShooter.boxCatapult.GetComponent<Grid>().AttachedGameItem.GetComponent<SpriteRenderer>().sprite.texture.GetPixelBilinear(0.6f, 0.6f);
             //col.a = 1;
-            Ball ball = mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>();
+            Ball ball = CoreManager.Instance.ballShooter.CatapultBall.GetComponent<Ball>();
             if (ball)
             {
-                int idx = (int)mainscript.Instance.ballShooter.CatapultBall.GetComponent<Ball>().color-1;
-                lineColor = mainscript.Instance.BallRGB[idx];
+                int idx = (int)CoreManager.Instance.ballShooter.CatapultBall.GetComponent<Ball>().color-1;
+                lineColor = CoreManager.Instance.BallRGB[idx];
             }
-            else lineColor = mainscript.Instance.BallRGB[6];
+            else lineColor = CoreManager.Instance.BallRGB[6];
         }
 
         HidePoints();

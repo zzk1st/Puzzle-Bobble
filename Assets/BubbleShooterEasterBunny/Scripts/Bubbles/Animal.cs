@@ -34,23 +34,23 @@ public class Animal : MonoBehaviour
     {
         if (itemType == LevelItemType.AnimalSingle)
         {
-            int idx = Random.Range(0, mainscript.Instance.animalSingleSprites.Length);
-            animalShell.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.animalSingleShellSprite;
-            animalBody.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.animalSingleSprites[idx];
+            int idx = Random.Range(0, CoreManager.Instance.animalSingleSprites.Length);
+            animalShell.GetComponent<SpriteRenderer>().sprite = CoreManager.Instance.animalSingleShellSprite;
+            animalBody.GetComponent<SpriteRenderer>().sprite = CoreManager.Instance.animalSingleSprites[idx];
             return;
         }
         else if (itemType == LevelItemType.AnimalTriangle)
         {
-            int idx = Random.Range(0, mainscript.Instance.animalTriangleSprites.Length);
-            animalShell.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.animalTriangleShellSprite;
-            animalBody.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.animalTriangleSprites[idx];
+            int idx = Random.Range(0, CoreManager.Instance.animalTriangleSprites.Length);
+            animalShell.GetComponent<SpriteRenderer>().sprite = CoreManager.Instance.animalTriangleShellSprite;
+            animalBody.GetComponent<SpriteRenderer>().sprite = CoreManager.Instance.animalTriangleSprites[idx];
             return;
         }
         else if (itemType == LevelItemType.AnimalHexagon)
         {
-            int idx = Random.Range(0, mainscript.Instance.animalHexSprites.Length);
-            animalShell.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.animalHexShellSprite;
-            animalBody.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.animalHexSprites[idx];
+            int idx = Random.Range(0, CoreManager.Instance.animalHexSprites.Length);
+            animalShell.GetComponent<SpriteRenderer>().sprite = CoreManager.Instance.animalHexShellSprite;
+            animalBody.GetComponent<SpriteRenderer>().sprite = CoreManager.Instance.animalHexSprites[idx];
             return;
         }
     }
@@ -58,7 +58,7 @@ public class Animal : MonoBehaviour
     public void Fly()
     {
         targetImage = GameObject.Find("MissionTypeImage");
-        mainscript.Instance.BlackCover.SetActive(true);
+        CoreManager.Instance.BlackCover.SetActive(true);
 
         Destroy(animalShell);
         playEscapeAnim();
@@ -103,7 +103,7 @@ public class Animal : MonoBehaviour
 
     void onFlyingComplete()
     {
-        mainscript.Instance.BlackCover.SetActive(false);
+        CoreManager.Instance.BlackCover.SetActive(false);
         Destroy(gameObject);
     }
 

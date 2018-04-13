@@ -97,7 +97,7 @@ public class Ball : MonoBehaviour
 
     void SetupNewBall(LevelGameItem levelGameItem)
     {
-        GetComponent<CircleCollider2D>().radius = mainscript.Instance.BallColliderRadius;
+        GetComponent<CircleCollider2D>().radius = CoreManager.Instance.BallColliderRadius;
         GetComponent<CircleCollider2D>().isTrigger = false;
         GetComponent<Ball>().number = UnityEngine.Random.Range(1, 6);
 		GetComponent<Ball>().ballCoverType = BallCoverType.None;
@@ -116,7 +116,7 @@ public class Ball : MonoBehaviour
 
         // 设置collider属性
         CircleCollider2D coll = GetComponent<CircleCollider2D>();
-        coll.radius = mainscript.Instance.LineColliderRadius;
+        coll.radius = CoreManager.Instance.LineColliderRadius;
         coll.offset = Vector2.zero;
         coll.isTrigger = true;
         // 设置ball属性
@@ -177,7 +177,7 @@ public class Ball : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        isPaused = mainscript.Instance.isPaused;
+        isPaused = CoreManager.Instance.isPaused;
         destroyBoarderY = GameObject.Find("DestroyBorder").transform.position.y; //获取生死线的Y坐标
     }
 
@@ -185,8 +185,8 @@ public class Ball : MonoBehaviour
     {
         color = (BallColor)itemType;
         gameObject.tag = "" + color;
-        ballPicGO.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.ballColorSprites[(int) color];
-        ballHighlightGO.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.ballColorHightlightSprites[(int) color];
+        ballPicGO.GetComponent<SpriteRenderer>().sprite = CoreManager.Instance.ballColorSprites[(int) color];
+        ballHighlightGO.GetComponent<SpriteRenderer>().sprite = CoreManager.Instance.ballColorHightlightSprites[(int) color];
     }
 
     public void Fire()
@@ -215,7 +215,7 @@ public class Ball : MonoBehaviour
         }
         if (state == BallState.Flying && gameObject.transform.position.y < destroyBoarderY)
         {
-            mainscript.Instance.ballShooter.isLocked = false;
+            CoreManager.Instance.ballShooter.isLocked = false;
             Destroy(gameObject);
         }
     }
@@ -366,7 +366,7 @@ public class Ball : MonoBehaviour
         CircleCollider2D coll = gameObject.GetComponent<CircleCollider2D>();
         coll.sharedMaterial = fallingBallMaterial;
         coll.enabled = true;
-        coll.radius = mainscript.Instance.BallRealRadius; // 这里我们要将ball碰撞半径扩大，增加和蜘蛛碰撞效果
+        coll.radius = CoreManager.Instance.BallRealRadius; // 这里我们要将ball碰撞半径扩大，增加和蜘蛛碰撞效果
         coll.isTrigger = false;
 
         RemoveSmoke();
@@ -375,7 +375,7 @@ public class Ball : MonoBehaviour
 
     void PlayHitAnim()
     {
-        Hashtable animTable = mainscript.Instance.animTable;
+        Hashtable animTable = CoreManager.Instance.animTable;
         animTable.Clear();
         animTable.Add(gameObject, gameObject);
         // start hit animation
@@ -483,12 +483,12 @@ public class Ball : MonoBehaviour
             SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.hitBorder);
 
             // 圆形模式下topBorder依然起碰撞作用
-            if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+            if (CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
             {
                 return true;
             }
                 
-            if (other.gameObject != mainscript.Instance.topBorder)
+            if (other.gameObject != CoreManager.Instance.topBorder)
             {
                 return true;
             }
@@ -515,12 +515,12 @@ public class Ball : MonoBehaviour
     {
         ScoreManager.Instance.lastStopBallPos = gameObject.transform.position;
 
-        mainscript.Instance.ballShooter.isLocked = false;
+        CoreManager.Instance.ballShooter.isLocked = false;
         state = BallState.Fixed;
         this.enabled = false;
         _gameItem.ConnectToGrid();
 
-        mainscript.Instance.checkBall = gameObject;
+        CoreManager.Instance.checkBall = gameObject;
 
         Vector2 ballVelocity = GetComponent<Rigidbody2D>().velocity;
         // 删掉RigidBody2D，彻底让mesh接管运动
@@ -542,7 +542,7 @@ public class Ball : MonoBehaviour
         }
 
         // 转动圆形关卡
-        mainscript.Instance.platformController.Rotate(transform.position, ballVelocity);
+        CoreManager.Instance.platformController.Rotate(transform.position, ballVelocity);
 
         PlayHitAnim();
     }

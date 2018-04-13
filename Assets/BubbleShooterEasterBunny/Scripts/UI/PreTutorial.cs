@@ -9,7 +9,7 @@ public class PreTutorial : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        GetComponent<Image>().sprite = pictures[(int)mainscript.Instance.levelData.stageMoveMode];
+        GetComponent<Image>().sprite = pictures[(int)CoreManager.Instance.levelData.stageMoveMode];
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.swish[0]);
     }
 	

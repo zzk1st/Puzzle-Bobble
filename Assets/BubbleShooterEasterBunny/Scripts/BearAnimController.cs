@@ -15,14 +15,14 @@ public class BearAnimController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (mainscript.Instance.scored)
+        if (CoreManager.Instance.scored)
         {
             m_Anim.SetBool("Scored", true);
             timer += Time.deltaTime;
             if (timer > 3.0f)
             {
                 m_Anim.SetBool("Scored", false);
-                mainscript.Instance.scored = false;
+                CoreManager.Instance.scored = false;
                 timer = 0.0f;
             }
         }

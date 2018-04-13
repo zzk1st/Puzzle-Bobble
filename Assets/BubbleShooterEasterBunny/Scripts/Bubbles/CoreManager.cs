@@ -7,13 +7,13 @@ using System.Linq;
 using UnityEngine.Profiling;
 
 [RequireComponent(typeof(AudioSource))]
-public class mainscript : MonoBehaviour
+public class CoreManager : MonoBehaviour
 {
     public int currentLevel;
     public LevelData levelData = new LevelData();
     public int minConsecutiveNumberCount;
 
-    public static mainscript Instance;
+    public static CoreManager Instance;
     public int bounceCounter = 0;
     private GameObject _checkBall;
 
@@ -159,11 +159,11 @@ public class mainscript : MonoBehaviour
 
     void InitializeTopBorder()
     {
-        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
+        if (CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
         {
             float topBorderOffset = 0.35f;   // 这个值是grid高度一半，用来将topborder置于0排最上边
             // 这里我们要将topborder移动到grid下，这样border可以和grid一起移动
-            topBorder.transform.parent = mainscript.Instance.gridsNode.transform;
+            topBorder.transform.parent = CoreManager.Instance.gridsNode.transform;
             topBorder.transform.localPosition = new Vector3(0f, topBorderOffset, 0f);
         }
     }
@@ -216,7 +216,7 @@ public class mainscript : MonoBehaviour
             // TODO: 如果撞了topBorder，周围又没有球怎么情况？
             checkBall.GetComponent<Ball>().RemoveAdjacentBallsSmoke(); // 如果撞了什么也没发生，则单独除掉该球周围灰尘
             SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.hitBall);
-            mainscript.Instance.bounceCounter++;
+            CoreManager.Instance.bounceCounter++;
             ScoreManager.Instance.ComboCount = 0;
         }
     }
@@ -365,7 +365,7 @@ public class mainscript : MonoBehaviour
     // DropBalls, 注意和DestroyBalls并不相同，后者是让球爆炸，这个是让球落下
     public void DropGameItems(List<GameObject> gameItemsToDrop)
     {
-        mainscript.Instance.bounceCounter = 0;
+        CoreManager.Instance.bounceCounter = 0;
 
         // 这里的score累加似乎没用 先注释了
         /*int scoreCounter = 0;
@@ -459,7 +459,7 @@ public class mainscript : MonoBehaviour
 
     void ExplodeGameItems(List<GameObject> gameItems)
     {
-        mainscript.Instance.bounceCounter = 0;
+        CoreManager.Instance.bounceCounter = 0;
         //调用ScoreManager里爆炸球的分数更新函数
         int score = ScoreManager.Instance.UpdateComboScore(gameItems.Count);
 
@@ -483,7 +483,7 @@ public class mainscript : MonoBehaviour
             return BallColor.blue;
         }
 
-        return curStageColors[Random.Range(0, mainscript.Instance.curStageColors.Count)];
+        return curStageColors[Random.Range(0, CoreManager.Instance.curStageColors.Count)];
     }
 
     public void OnBallShooterUnlocked()

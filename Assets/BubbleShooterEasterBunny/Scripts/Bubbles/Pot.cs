@@ -60,8 +60,8 @@ public class Pot : MonoBehaviour {
 
     IEnumerator SoundsCounter()
     {
-        mainscript.Instance.potSounds++;
+        CoreManager.Instance.potSounds++;
         yield return new WaitForSeconds( 0.2f );
-        mainscript.Instance.potSounds--;
+        CoreManager.Instance.potSounds--;
     }
 }

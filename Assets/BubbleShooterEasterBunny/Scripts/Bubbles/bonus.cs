@@ -50,8 +50,8 @@ public class bonus : MonoBehaviour {
 			//SoundBase.Instance.audio.PlayOneShot(SoundBase.Instance.Pickup);
 			if(name.Contains("bonus_liana")){
 		//		SoundBase.Instance.audio.PlayOneShot(SoundBase.Instance.electric);
-				if(!mainscript.ElectricBoost)
-					mainscript.Instance.SwitchLianaBoost();
+				if(!CoreManager.ElectricBoost)
+					CoreManager.Instance.SwitchLianaBoost();
 			}
 			else if(name.Contains("bonus_score")){
 		//		Score.Instance.addMultiplyer();

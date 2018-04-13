@@ -11,33 +11,33 @@ public class StageLoader
     // Use this for initialization
     public static void Load()
     {
-        mainscript.Instance.levelData.LoadLevel(mainscript.Instance.currentLevel);
+        CoreManager.Instance.levelData.LoadLevel(CoreManager.Instance.currentLevel);
 
-        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
+        if (CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
         {
-            GridManager.Instance.CreateGrids(LevelData.VerticalModeMaxRows, LevelData.VerticalModeMaxCols, mainscript.Instance.levelData.stageMoveMode);
+            GridManager.Instance.CreateGrids(LevelData.VerticalModeMaxRows, LevelData.VerticalModeMaxCols, CoreManager.Instance.levelData.stageMoveMode);
         }
         else
         {
-            GridManager.Instance.CreateGrids(LevelData.RoundedModeMaxRows, LevelData.RoundedModeMaxCols, mainscript.Instance.levelData.stageMoveMode);
+            GridManager.Instance.CreateGrids(LevelData.RoundedModeMaxRows, LevelData.RoundedModeMaxCols, CoreManager.Instance.levelData.stageMoveMode);
         }
 
-        mainscript.Instance.currentLevel = PlayerPrefs.GetInt("OpenLevel");// TargetHolder.level;
-        if (mainscript.Instance.currentLevel == 0)
-            mainscript.Instance.currentLevel = 1;
+        CoreManager.Instance.currentLevel = PlayerPrefs.GetInt("OpenLevel");// TargetHolder.level;
+        if (CoreManager.Instance.currentLevel == 0)
+            CoreManager.Instance.currentLevel = 1;
         Profiler.BeginSample("Stage Load");
         LoadSceneFromLevelData();
         Profiler.EndSample();
 
         MissionManager.Instance.Initialize();
         UIManager.Instance.StageMovingUp();
-        mainscript.Instance.platformController.StartGameMove();
+        CoreManager.Instance.platformController.StartGameMove();
         // TODO: 写一个iniitalizeBorders(), 负责border的初始化创建，注意要创建bottom border
     }
 
     static void LoadSceneFromLevelData()
     {
-        LevelData levelData = mainscript.Instance.levelData;
+        LevelData levelData = CoreManager.Instance.levelData;
         List<GameObject> bossPlaces = new List<GameObject>();
 
         for( int row = 0; row < levelData.rowCount; row++ )
@@ -61,7 +61,7 @@ public class StageLoader
         }
 
         // 在第一个bossplace开始生成防御颜色之前，更新当前关卡颜色
-        mainscript.Instance.UpdateColorsInGame();
+        CoreManager.Instance.UpdateColorsInGame();
 
         if (levelData.missionType == MissionType.BossBattle)
         {

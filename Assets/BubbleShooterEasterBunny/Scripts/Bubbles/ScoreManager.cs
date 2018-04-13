@@ -54,7 +54,7 @@ public class ScoreManager : MonoBehaviour {
                 {
                     SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.combo[5]);
                     //FireEffect.SetActive(true);
-                    mainscript.Instance.FireEffect.SetActive(true);
+                    CoreManager.Instance.FireEffect.SetActive(true);
                     doubleScore = 2;
                 }
             }
@@ -63,7 +63,7 @@ public class ScoreManager : MonoBehaviour {
                 //FireEffect.SetActive(false);
                 doubleScore = 1;
                 BugManager.Instance.DestroyBugs();
-                mainscript.Instance.FireEffect.SetActive(false);
+                CoreManager.Instance.FireEffect.SetActive(false);
             }
         }
     }

@@ -22,7 +22,7 @@ public class PlatformController : MonoBehaviour
     // 因为垂直关卡的球都是从(0, 0)开始向下，所以关卡顶部坐标可以这么计算
     private float curPlatformTopPos
     {
-        get { return transform.position.y + mainscript.Instance.BallRealRadius; }
+        get { return transform.position.y + CoreManager.Instance.BallRealRadius; }
     }
 
     private float curPlatformBottomPos
@@ -31,7 +31,7 @@ public class PlatformController : MonoBehaviour
         {
             float platformMinYWorldSpace = transform.position.y
                                   + _curFixedBallLocalMinY
-                                  - mainscript.Instance.BallRealRadius;
+                                  - CoreManager.Instance.BallRealRadius;
             return platformMinYWorldSpace;
         }
     }
@@ -56,7 +56,7 @@ public class PlatformController : MonoBehaviour
     void Update()
     {
         // 圆形模式下不进行更新
-        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+        if (CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
         {
             if (transform.rotation != targetRotation)
                 transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime);
@@ -136,14 +136,14 @@ public class PlatformController : MonoBehaviour
     public void UpdateLocalMinYFromAllFixedBalls()
     {
         // 圆形模式下不进行更新
-        if (mainscript.Instance.levelData.stageMoveMode != StageMoveMode.Vertical)
+        if (CoreManager.Instance.levelData.stageMoveMode != StageMoveMode.Vertical)
         {
             return;
         }
 
         _curFixedBallLocalMinY = 9999f;
 
-        foreach (Transform item in mainscript.Instance.gameItemsNode.transform)
+        foreach (Transform item in CoreManager.Instance.gameItemsNode.transform)
         {
             GameObject go = item.gameObject;
             if (go.GetComponent<GameItem>() != null)
@@ -164,7 +164,7 @@ public class PlatformController : MonoBehaviour
     public void Rotate(Vector3 ballPos, Vector3 ballDir)
     {
         // 圆形模式下不进行更新
-        if (mainscript.Instance.levelData.stageMoveMode != StageMoveMode.Rounded)
+        if (CoreManager.Instance.levelData.stageMoveMode != StageMoveMode.Rounded)
         {
             return;
         }
@@ -177,7 +177,7 @@ public class PlatformController : MonoBehaviour
 
     public void StartGameMove()
     {
-        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+        if (CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
         {
             transform.position = new Vector3(0f, 1.6f, 0f);
             if (UIManager.Instance.gameStatus == GameStatus.StageMovingUp)

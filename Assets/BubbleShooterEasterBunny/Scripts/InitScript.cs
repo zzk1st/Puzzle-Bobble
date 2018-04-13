@@ -206,7 +206,7 @@ namespace InitScriptName
         public void SpendBoost(BoostType boostType)
         {
             if (boostType != BoostType.FiveBallsBoost && boostType != BoostType.MagicBallBoost)
-                mainscript.Instance.ballShooter.SetBoost(boostType);
+                CoreManager.Instance.ballShooter.SetBoost(boostType);
             if (boostType == BoostType.MagicBallBoost)
                 GameItemFactory.Instance.CreateBoost(boostType, transform.position);
             PlayerPrefs.SetInt("" + boostType, PlayerPrefs.GetInt("" + boostType) - 1);

@@ -11,7 +11,7 @@ public class RainbowBallBoost : MonoBehaviour
     {
         _gameItem = gameObject.GetComponent<GameItem>();
         _gameItem.fireFunc = Fire;
-        GetComponent<CircleCollider2D>().radius = mainscript.Instance.BallColliderRadius;
+        GetComponent<CircleCollider2D>().radius = CoreManager.Instance.BallColliderRadius;
     }
 
     public void Fire()
@@ -42,12 +42,12 @@ public class RainbowBallBoost : MonoBehaviour
             SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.hitBorder);
 
             // 圆形模式下topBorder依然起碰撞作用
-            if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+            if (CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
             {
                 return true;
             }
                 
-            if (other.gameObject != mainscript.Instance.topBorder)
+            if (other.gameObject != CoreManager.Instance.topBorder)
             {
                 return true;
             }
@@ -71,8 +71,8 @@ public class RainbowBallBoost : MonoBehaviour
     {
         // 转动圆形关卡
         Vector2 ballVelocity = GetComponent<Rigidbody2D>().velocity;
-        mainscript.Instance.platformController.Rotate(transform.position, ballVelocity);
-        mainscript.Instance.ballShooter.isLocked = false;
+        CoreManager.Instance.platformController.Rotate(transform.position, ballVelocity);
+        CoreManager.Instance.ballShooter.isLocked = false;
 
         // 连接grid
         _gameItem.ConnectToGrid();
@@ -104,7 +104,7 @@ public class RainbowBallBoost : MonoBehaviour
     void CollectAndDestroyNearbyBalls()
     {
         List<GameObject> ballsToDelete = CollectNearbyBalls();
-        mainscript.Instance.DestroyGameItems(ballsToDelete);
+        CoreManager.Instance.DestroyGameItems(ballsToDelete);
     }
 
     void Explode()

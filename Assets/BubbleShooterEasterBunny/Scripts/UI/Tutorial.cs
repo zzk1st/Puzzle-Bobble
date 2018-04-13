@@ -11,7 +11,7 @@ public class Tutorial : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        int level = mainscript.Instance.currentLevel;
+        int level = CoreManager.Instance.currentLevel;
         if( level <= 8 )
         {
             label.text = labels[level - 1];

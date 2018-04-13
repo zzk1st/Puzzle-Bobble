@@ -11,11 +11,11 @@ public class bouncer : MonoBehaviour
 
     void OnBounceToCatapultComplete()
     {
-        mainscript.Instance.ballShooter.OnBounceToCatapultComplete();
+        CoreManager.Instance.ballShooter.OnBounceToCatapultComplete();
     }
 
     void OnSwapBallsComplete()
     {
-        mainscript.Instance.ballShooter.OnSwapBallsComplete();
+        CoreManager.Instance.ballShooter.OnSwapBallsComplete();
     }
 }

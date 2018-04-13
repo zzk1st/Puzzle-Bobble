@@ -33,13 +33,13 @@ public class BossPlace : MonoBehaviour {
         // 初始状态，要给bossplace设置成空的
         SetEmptyPlace();
 
-        mainscript.Instance.onBallShooterUnlocked += OnBallShooterUnlocked;
+        CoreManager.Instance.onBallShooterUnlocked += OnBallShooterUnlocked;
     }
 
     void OnDestroy()
     {
         // 我们在OnDestroy里需要unscribe from event handler, 否则随后event handler会调用已经被Destroy了的gameObject
-        mainscript.Instance.onBallShooterUnlocked -= OnBallShooterUnlocked;
+        CoreManager.Instance.onBallShooterUnlocked -= OnBallShooterUnlocked;
     }
 
     void OnBallShooterUnlocked()
@@ -80,7 +80,7 @@ public class BossPlace : MonoBehaviour {
         {
             curShootCount = 0;
             changeColorShootCount = Random.Range(5,8);
-            hitBallColor = mainscript.Instance.GetRandomCurStageColor();
+            hitBallColor = CoreManager.Instance.GetRandomCurStageColor();
             SetBossPlaceColor(hitBallColor);
             // TODO: 更新boss颜色的动画
         }
@@ -88,7 +88,7 @@ public class BossPlace : MonoBehaviour {
 
     void SetBossPlaceColor(BallColor newColor)
     {
-        hitBall.GetComponent<SpriteRenderer>().sprite = mainscript.Instance.ballColorSprites[(int) newColor];
+        hitBall.GetComponent<SpriteRenderer>().sprite = CoreManager.Instance.ballColorSprites[(int) newColor];
         vortex.GetComponent<SpriteRenderer>().color = ColorManager.Instance.ballColors[(int) newColor];
         background.GetComponent<SpriteRenderer>().color = ColorManager.Instance.ballBackgroundColors[(int) newColor];
     }
@@ -135,7 +135,7 @@ public class BossPlace : MonoBehaviour {
 
     public void UpdateHitColor()
     {
-        if (!mainscript.Instance.curStageColors.Contains(hitBallColor))
+        if (!CoreManager.Instance.curStageColors.Contains(hitBallColor))
         {
             ResetHitBallColor();
         }

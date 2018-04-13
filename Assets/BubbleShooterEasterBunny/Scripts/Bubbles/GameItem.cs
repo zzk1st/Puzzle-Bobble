@@ -53,10 +53,10 @@ public class GameItem : MonoBehaviour
 
     public void ConnectToGrid()
     {
-        gameObject.transform.parent = mainscript.Instance.gameItemsNode.transform;
+        gameObject.transform.parent = CoreManager.Instance.gameItemsNode.transform;
         gameObject.layer = LayerMask.NameToLayer("FixedBall");
         GridManager.Instance.ConnectGameItemToGrid(gameObject);
-        mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
+        CoreManager.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
     }
 
     public bool isConnectedToGrid()
@@ -69,7 +69,7 @@ public class GameItem : MonoBehaviour
         gameObject.transform.parent = transform.root;
         gameObject.layer = LayerMask.NameToLayer("Default");
         GridManager.Instance.DisconnectGameItemToGrid(gameObject);
-        mainscript.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
+        CoreManager.Instance.platformController.UpdateLocalMinYFromAllFixedBalls();
     }
 
     public void StartFall()

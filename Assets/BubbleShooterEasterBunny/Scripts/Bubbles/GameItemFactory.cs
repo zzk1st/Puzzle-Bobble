@@ -126,11 +126,11 @@ public class GameItemFactory : MonoBehaviour
         if (UIManager.Instance.gameStatus == GameStatus.Win ||
             UIManager.Instance.gameMode == GameMode.Opening)
         {
-            levelGameItem.type = mainscript.Instance.levelData.ballColors[Random.Range(0, mainscript.Instance.levelData.ballColors.Count)];
+            levelGameItem.type = CoreManager.Instance.levelData.ballColors[Random.Range(0, CoreManager.Instance.levelData.ballColors.Count)];
         }
         else
         {
-            levelGameItem.type = (LevelItemType)mainscript.Instance.GetRandomCurStageColor();
+            levelGameItem.type = (LevelItemType)CoreManager.Instance.GetRandomCurStageColor();
         }
 
         ball = Instantiate(ballPrefab, transform.position, transform.rotation) as GameObject;
@@ -148,7 +148,7 @@ public class GameItemFactory : MonoBehaviour
     public GameObject CreateFixedBall(Vector3 vec, LevelGameItem levelGameItem)
     {
         if (levelGameItem.type == LevelItemType.Random)
-            levelGameItem.type = (LevelItemType)mainscript.Instance.levelData.ballColors[UnityEngine.Random.Range(0, mainscript.Instance.levelData.ballColors.Count)];
+            levelGameItem.type = (LevelItemType)CoreManager.Instance.levelData.ballColors[UnityEngine.Random.Range(0, CoreManager.Instance.levelData.ballColors.Count)];
 
         GameObject ballGO = Instantiate(ballPrefab, transform.position, transform.rotation) as GameObject;
         ballGO.transform.position = new Vector3(vec.x, vec.y, ballGO.transform.position.z);

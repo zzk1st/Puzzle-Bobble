@@ -8,6 +8,6 @@ public class ButtonX : MonoBehaviour {
 
     void OnMouseDown()
     {
-        mainscript.Instance.ballShooter.SwapBalls();
+        CoreManager.Instance.ballShooter.SwapBalls();
     }
 }

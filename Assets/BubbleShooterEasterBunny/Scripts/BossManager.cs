@@ -31,7 +31,7 @@ public class BossManager : MonoBehaviour
     public void RemoveLastBossPlace()
     {
         bossPlaces.Remove(bossPlaces.Last());
-        mainscript.Instance.FindAndDestroyDetachedGameItems();
+        CoreManager.Instance.FindAndDestroyDetachedGameItems();
     }
 
     public void BossMoveToLastPlace()

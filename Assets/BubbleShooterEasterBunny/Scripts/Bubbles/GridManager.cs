@@ -79,7 +79,7 @@ public class GridManager : MonoBehaviour
         Grid resultGrid = null;
 
         int gridLayer = LayerMask.NameToLayer("Grid");
-        Collider2D[] colls = Physics2D.OverlapCircleAll(gameItem.transform.position, mainscript.Instance.BallRealRadius, 1 << gridLayer);
+        Collider2D[] colls = Physics2D.OverlapCircleAll(gameItem.transform.position, CoreManager.Instance.BallRealRadius, 1 << gridLayer);
 
         foreach (Collider2D coll in colls)
         {

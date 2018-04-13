@@ -10,7 +10,7 @@ public class FireBallBoost : MonoBehaviour {
     {
         _gameItem = gameObject.GetComponent<GameItem>();
         _gameItem.fireFunc = Fire;
-        GetComponent<CircleCollider2D>().radius = mainscript.Instance.BallColliderRadius;
+        GetComponent<CircleCollider2D>().radius = CoreManager.Instance.BallColliderRadius;
         accumulatedCollisionTimes = 0;
     }
 
@@ -31,17 +31,17 @@ public class FireBallBoost : MonoBehaviour {
             accumulatedCollisionTimes++;
         }
 
-        if (accumulatedCollisionTimes == 2 || other.gameObject == mainscript.Instance.topBorder)
+        if (accumulatedCollisionTimes == 2 || other.gameObject == CoreManager.Instance.topBorder)
         {
             //达到碰撞上限，毁掉，同时发射器可以发射啦～
-            mainscript.Instance.ballShooter.isLocked = false;
+            CoreManager.Instance.ballShooter.isLocked = false;
             Explode();
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("FixedBall"))
         {
             List<GameObject> ballsToDelete = new List<GameObject>();
             ballsToDelete.Add(other.gameObject);
-            mainscript.Instance.DestroyGameItems(ballsToDelete);
+            CoreManager.Instance.DestroyGameItems(ballsToDelete);
         }
 
         return;

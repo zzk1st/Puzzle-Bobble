@@ -81,13 +81,13 @@ public class AnimationManager : MonoBehaviour
         }
         if (name == "MenuPlay")
         {
-            InitScript.Instance.currentTarget = mainscript.Instance.levelData.GetTarget(PlayerPrefs.GetInt("OpenLevel"));
+            InitScript.Instance.currentTarget = CoreManager.Instance.levelData.GetTarget(PlayerPrefs.GetInt("OpenLevel"));
         }
     }
 
     IEnumerator MenuComplete()
     {
-        for (int i = 1; i <= mainscript.Instance.stars; i++)
+        for (int i = 1; i <= CoreManager.Instance.stars; i++)
         {
             //  SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.scoringStar );
             transform.Find("Image").Find("Star" + i).gameObject.SetActive(true);

@@ -42,7 +42,7 @@ public class BallShooter : MonoBehaviour
             else
             {
                 SetStageCollidersMode(StageCollidersMode.AimMode);
-                mainscript.Instance.OnBallShooterUnlocked();
+                CoreManager.Instance.OnBallShooterUnlocked();
             }
         }
     }
@@ -132,7 +132,7 @@ public class BallShooter : MonoBehaviour
         if (Time.time > openingModeNextShootingTime)
         {
             if (UIManager.Instance.gameStatus == GameStatus.Playing &&
-                !mainscript.Instance.gameOver &&
+                !CoreManager.Instance.gameOver &&
                 !isLocked &&
                 catapultBall != null)
             {
@@ -144,7 +144,7 @@ public class BallShooter : MonoBehaviour
 
                 if (openingModeFireBallCount > 12)
                 {
-                    mainscript.Instance.DropAllBalls();
+                    CoreManager.Instance.DropAllBalls();
                     openingModeFireBallCount = 0;
                 }
             }
@@ -155,7 +155,7 @@ public class BallShooter : MonoBehaviour
 
     void PlayingModeCheckAndFire()
     {
-        if (UIManager.Instance.gameStatus == GameStatus.Playing && !mainscript.Instance.gameOver && !isLocked)
+        if (UIManager.Instance.gameStatus == GameStatus.Playing && !CoreManager.Instance.gameOver && !isLocked)
         {
             Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // currentES.IsPointerOverGameObject()用来检测是否鼠标点击的是GUI
@@ -175,7 +175,7 @@ public class BallShooter : MonoBehaviour
         // 如果是opening模式，不减球数量
         if (UIManager.Instance.gameMode != GameMode.Opening)
         {
-            mainscript.Instance.levelData.limitAmount--;
+            CoreManager.Instance.levelData.limitAmount--;
         }
 
         // 在这里给发射的ball赋予一个force，产生初速度
@@ -196,13 +196,13 @@ public class BallShooter : MonoBehaviour
 
     public void UpdateBallColors()
     {
-        if (catapultBall != null && !mainscript.Instance.curStageColors.Contains(catapultBall.GetComponent<Ball>().color))
+        if (catapultBall != null && !CoreManager.Instance.curStageColors.Contains(catapultBall.GetComponent<Ball>().color))
         {
             Destroy(catapultBall);
             CreateCatapultBall(false);
         }
 
-        if (cartridgeBall != null && !mainscript.Instance.curStageColors.Contains(cartridgeBall.GetComponent<Ball>().color))
+        if (cartridgeBall != null && !CoreManager.Instance.curStageColors.Contains(cartridgeBall.GetComponent<Ball>().color))
         {
             Destroy(cartridgeBall);
             CreateCartridgeBall(false);
@@ -211,13 +211,13 @@ public class BallShooter : MonoBehaviour
 
     void SetBordersOnAimMode()
     {
-        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+        if (CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
         {
-            float leftBorderX = Camera.main.transform.position.x - camOrthographicSizeX + mainscript.Instance.BallRealRadius;
+            float leftBorderX = Camera.main.transform.position.x - camOrthographicSizeX + CoreManager.Instance.BallRealRadius;
             leftBorder.transform.position = new Vector3(leftBorderX, 0f, 0f);
-            float rightBorderX = Camera.main.transform.position.x + camOrthographicSizeX - mainscript.Instance.BallRealRadius;
+            float rightBorderX = Camera.main.transform.position.x + camOrthographicSizeX - CoreManager.Instance.BallRealRadius;
             rightBorder.transform.position = new Vector3(rightBorderX, 0f, 0f);
-            float topBorderY = Camera.main.transform.position.y + camOrthographicSizeY - mainscript.Instance.BallRealRadius;
+            float topBorderY = Camera.main.transform.position.y + camOrthographicSizeY - CoreManager.Instance.BallRealRadius;
             topBorder.transform.position = new Vector3(0f, topBorderY, 0f);
         }
         else
@@ -231,18 +231,18 @@ public class BallShooter : MonoBehaviour
 
     void SetBordersOnFireMode()
     {
-        if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
+        if (CoreManager.Instance.levelData.stageMoveMode == StageMoveMode.Rounded)
         {
-            float leftBorderX = Camera.main.transform.position.x - camOrthographicSizeX + (mainscript.Instance.BallRealRadius - mainscript.Instance.BallColliderRadius);
+            float leftBorderX = Camera.main.transform.position.x - camOrthographicSizeX + (CoreManager.Instance.BallRealRadius - CoreManager.Instance.BallColliderRadius);
             leftBorder.transform.position = new Vector3(leftBorderX, 0f, 0f);
-            float rightBorderX = Camera.main.transform.position.x + camOrthographicSizeX - (mainscript.Instance.BallRealRadius - mainscript.Instance.BallColliderRadius);
+            float rightBorderX = Camera.main.transform.position.x + camOrthographicSizeX - (CoreManager.Instance.BallRealRadius - CoreManager.Instance.BallColliderRadius);
             rightBorder.transform.position = new Vector3(rightBorderX, 0f, 0f);
-            float topBorderY = Camera.main.transform.position.y + camOrthographicSizeY - (mainscript.Instance.BallRealRadius - mainscript.Instance.BallColliderRadius);
+            float topBorderY = Camera.main.transform.position.y + camOrthographicSizeY - (CoreManager.Instance.BallRealRadius - CoreManager.Instance.BallColliderRadius);
             topBorder.transform.position = new Vector3(0f, topBorderY, 0f);
         }
         else
         {
-            float borderOffset = mainscript.Instance.BallColliderRadius;
+            float borderOffset = CoreManager.Instance.BallColliderRadius;
             GameObject topRowLeftGrid = GridManager.Instance.Grid(0, 0);
             leftBorder.transform.position = new Vector3(topRowLeftGrid.transform.position.x - borderOffset, 0f, 0f);
             GameObject topRowRightGrid = GridManager.Instance.Grid(0, GridManager.Instance.colCount - 1);
@@ -254,12 +254,12 @@ public class BallShooter : MonoBehaviour
     {
         if (mode == StageCollidersMode.AimMode)
         {
-            ChangeRadius(mainscript.Instance.LineColliderRadius);
+            ChangeRadius(CoreManager.Instance.LineColliderRadius);
             SetBordersOnAimMode();
         }
         else
         {
-            ChangeRadius(mainscript.Instance.BallColliderRadius);
+            ChangeRadius(CoreManager.Instance.BallColliderRadius);
             SetBordersOnFireMode();
         }
     }
@@ -305,7 +305,7 @@ public class BallShooter : MonoBehaviour
                 "easetype", iTween.EaseType.linear));
 
         CreateBoost(boostType);
-        mainscript.Instance.levelData.limitAmount++;
+        CoreManager.Instance.levelData.limitAmount++;
     }
 
     /// <summary>
@@ -329,7 +329,7 @@ public class BallShooter : MonoBehaviour
                 cartridgeBall.SetActive(true);
                 tempBall = null;
             }
-            else if (mainscript.Instance.levelData.limitAmount > 0)
+            else if (CoreManager.Instance.levelData.limitAmount > 0)
             {
                 CreateCartridgeBall();
             }
