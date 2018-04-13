@@ -34,7 +34,7 @@ public class LevelEditor : EditorWindow
     void OnFocus()
     {
         LoadDataFromLocal(levelNumber);
-        LevelEditorBase lm = GameObject.Find("LevelEditorBase").GetComponent<LevelEditorBase>();
+        LevelEditorBase lm = GameObject.Find("Level Editor Base").GetComponent<LevelEditorBase>();
         ballTex = new Texture[lm.sprites.Length];
         for (int i = 0; i < lm.sprites.Length; i++)
         {
