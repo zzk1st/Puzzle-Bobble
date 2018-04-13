@@ -38,11 +38,17 @@ public class GameManager : MonoBehaviour
     bool winStarted;
 
     private GameStatus _gameStatus;
-
     public GameStatus gameStatus
     {
         get { return _gameStatus; }
     }
+
+    // popups
+    public GameObject levelClearedGO;
+    public GameObject menuCompleteGO;
+    public GameObject preTutorialGO;
+    public GameObject outOfMovesGO;
+    public GameObject menuGameOverGO;
 
     // Use this for initialization
     void Awake()
@@ -139,21 +145,12 @@ public class GameManager : MonoBehaviour
 
         winStarted = true;
         InitScript.Instance.AddLife(1);
-        GameObject.Find("Canvas").transform.Find("LevelCleared").gameObject.SetActive(true);
-        //       yield return new WaitForSeconds( 1f );
-        //if( GameObject.Find( "Music" ) != null)
-        //    GameObject.Find( "Music" ).SetActive( false );
-        //    GameObject.Find( "CanvasPots" ).transform.Find( "Black" ).gameObject.SetActive( true );
+        levelClearedGO.SetActive(true);
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.winSound);
         yield return new WaitForSeconds(1f);
         if (mainscript.Instance.levelData.stageMoveMode == StageMoveMode.Vertical)
         {
-            //  SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.swish[0] );
-            //  GameObject.Find( "Canvas" ).transform.Find( "PreComplete" ).gameObject.SetActive( true );
             yield return new WaitForSeconds(1f);
-            //     SoundBase.Instance.audio.PlayOneShot( SoundBase.Instance.swish[0] );
-            //  yield return new WaitForSeconds( 1.5f );
-            yield return new WaitForSeconds(0.5f);
         }
 
         foreach (GameObject item in GameObject.FindGameObjectsWithTag("Ball"))
@@ -216,14 +213,14 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetInt("HighScore" + mainscript.Instance.currentLevel, ScoreManager.Instance.Score);
 
         }
-        GameObject.Find("Canvas").transform.Find("LevelCleared").gameObject.SetActive(false);
-        GameObject.Find("Canvas").transform.Find("MenuComplete").gameObject.SetActive(true);
+        levelClearedGO.SetActive(false);
+        menuCompleteGO.SetActive(true);
 
     }
 
     void ShowPreTutorial()
     {
-        GameObject.Find("Canvas").transform.Find("PreTutorial").gameObject.SetActive(true);
+        preTutorialGO.SetActive(true);
 
     }
 
@@ -231,11 +228,11 @@ public class GameManager : MonoBehaviour
     {
         mainscript.Instance.ballShooter.SetStageCollidersMode(BallShooter.StageCollidersMode.FireMode);
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.OutOfMoves);
-        GameObject.Find("Canvas").transform.Find("OutOfMoves").gameObject.SetActive(true);
+        outOfMovesGO.SetActive(true);
         yield return new WaitForSeconds(1.5f);
-        GameObject.Find("Canvas").transform.Find("OutOfMoves").gameObject.SetActive(false);
+        outOfMovesGO.SetActive(false);
         yield return new WaitForSeconds(0.1f);
-        GameObject.Find("Canvas").transform.Find("MenuGameOver").gameObject.SetActive(true);
+        menuGameOverGO.SetActive(true);
     }
 
     //----------------------------------------------------------------------
