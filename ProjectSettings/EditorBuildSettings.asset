@@ -5,11 +5,21 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/BubbleShooterEasterBunny/Scenes/menu.unity
+    guid: 00000000000000000000000000000000
   - enabled: 0
     path: Assets/BubbleShooterEasterBunny/Scenes/map.unity
-  - enabled: 1
+    guid: 00000000000000000000000000000000
+  - enabled: 0
     path: Assets/BubbleShooterEasterBunny/Scenes/game.unity
-  - enabled: 1
+    guid: 00000000000000000000000000000000
+  - enabled: 0
     path: Assets/BubbleShooterEasterBunny/Scenes/map2.unity
+    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/BubbleShooterEasterBunny/_scenes/game.unity
+    guid: 00a82a29244fb469fb78b4a9750164c0
+  - enabled: 1
+    path: Assets/BubbleShooterEasterBunny/_scenes/map2.unity
+    guid: c27307640be044ff0a9824395ce933b5

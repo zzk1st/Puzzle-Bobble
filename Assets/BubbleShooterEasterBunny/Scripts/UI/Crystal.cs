@@ -19,4 +19,11 @@ public class Crystal : MonoBehaviour {
         Vector2 curSize = new Vector2 (size.x, size.y * percent);
         GUI.DrawTextureWithTexCoords(new Rect (curPos, curSize), crystal, new Rect(0.0f, 0.0f, 1.0f, percent));
     }
+
+    void Update () {
+        percent = Mathf.Max (ScoreManager.Instance.Score / CoreManager.Instance.levelData.freeBoostScore, 1.0f);
+        if (percent == 1.0f) {
+            // do nothing here
+        }
+    }
 }
