@@ -8,6 +8,7 @@ public class ScrollViewController : MonoBehaviour
 {
 	public ScrollRect sr;
 	public Button btnL, btnR;
+	public Toggle[] toggles;
 	private int indicatorIndex = 0;
 	private int indicatorLength = 2;
 	private float gesturePosX;
@@ -59,15 +60,13 @@ public class ScrollViewController : MonoBehaviour
 	//滑动翻页Left
 	private void ScrollLeft ()
 	{
-		if (indicatorIndex < 2) {
-			print ("left 1");
+		if (indicatorIndex < indicatorLength) {
 //			sr.content.localPosition = new Vector2 (Vector2.zero.x - sr.content.rect.width / 3 * indicatorIndex, 0f);
 //			DOTween.To (() => sr.normalizedPosition, x => sr.normalizedPosition = x, new Vector2 (Vector2.zero.x - sr.content.rect.width / 3 * indicatorIndex, 0f), 3);
-			DOTween.To (() => sr.content.anchoredPosition, x => sr.content.anchoredPosition = x, new Vector2 (Vector2.zero.x - sr.content.rect.width / 3 * (indicatorIndex + 1), 0f), 0.6f).OnComplete (() => {
+			DOTween.To (() => sr.content.anchoredPosition, x => sr.content.anchoredPosition = x, new Vector2 (Vector2.zero.x - sr.content.rect.width / (indicatorLength + 1) * (indicatorIndex + 1), 0f), 0.6f).OnComplete (() => {
 				indicatorIndex++;
+				toggles [indicatorIndex].isOn = true;
 			});
-		} else {
-			print ("left 2");
 		}
 	}
 	//滑动翻页Right
@@ -76,11 +75,10 @@ public class ScrollViewController : MonoBehaviour
 		if (indicatorIndex > 0) {
 			print ("right 1");
 //			sr.content.localPosition = new Vector2 (Vector2.zero.x - sr.content.rect.width / 3 * indicatorIndex, 0f);
-			DOTween.To (() => sr.content.anchoredPosition, x => sr.content.anchoredPosition = x, new Vector2 (Vector2.zero.x - sr.content.rect.width / 3 * (indicatorIndex - 1), 0f), 0.6f).OnComplete (() => {
+			DOTween.To (() => sr.content.anchoredPosition, x => sr.content.anchoredPosition = x, new Vector2 (Vector2.zero.x - sr.content.rect.width / (indicatorLength + 1) * (indicatorIndex - 1), 0f), 0.6f).OnComplete (() => {
 				indicatorIndex--;
+				toggles [indicatorIndex].isOn = true;
 			});
-		} else {
-			print ("right 2");
 		}
 	}
 
@@ -88,7 +86,7 @@ public class ScrollViewController : MonoBehaviour
 	private void ScrollStay ()
 	{
 //		sr.content.localPosition = new Vector2 (Vector2.zero.x - sr.content.rect.width / 3 * indicatorIndex, 0f);
-		DOTween.To (() => sr.content.anchoredPosition, x => sr.content.anchoredPosition = x, new Vector2 (Vector2.zero.x - sr.content.rect.width / 3 * indicatorIndex, 0f), 0.2f).OnComplete (() => {
+		DOTween.To (() => sr.content.anchoredPosition, x => sr.content.anchoredPosition = x, new Vector2 (Vector2.zero.x - sr.content.rect.width / (indicatorLength + 1) * indicatorIndex, 0f), 0.2f).OnComplete (() => {
 		});
 	}
 }
