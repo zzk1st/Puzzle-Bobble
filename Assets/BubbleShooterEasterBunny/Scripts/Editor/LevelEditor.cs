@@ -232,12 +232,14 @@ public class LevelEditor : EditorWindow
 
     void GUIFreeBoostScore()
     {
+        int s = 0;
+
         GUILayout.BeginHorizontal();
         GUILayout.Space(60);
 
         GUILayout.Label("Free boost score:", EditorStyles.label, new GUILayoutOption[] { GUILayout.Width(100) });
 
-        levelData.freeBoostScore = EditorGUILayout.IntField("", levelData.starScores[1], new GUILayoutOption[] { GUILayout.Width(100) });
+        levelData.freeBoostScore = EditorGUILayout.IntField("", levelData.freeBoostScore, new GUILayoutOption[] { GUILayout.Width(100) });
 
         GUILayout.EndHorizontal();
     }

@@ -274,7 +274,7 @@ public class LevelData
 
 		if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.WindowsEditor) {
 			//Write to file
-			string activeDir = Application.dataPath + @"/BubbleShooterEasterBunny/Resources/Levels/";
+			string activeDir = Application.dataPath + @"/Resources/Levels/";
 			string newPath = System.IO.Path.Combine (activeDir, currentLevel + ".txt");
 			StreamWriter sw = new StreamWriter (newPath);
 			sw.Write (saveString);

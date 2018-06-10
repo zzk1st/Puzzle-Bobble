@@ -2,17 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boosts : MonoBehaviour {
+public class BoostManager : MonoBehaviour {
+
+    public static BoostManager Instance;
+
+    public GameObject freeBoostCrystal;
+    public GameObject boostBarOnlyMask;
+
+    private bool freeBoostRewarded;
+    private bool selectingFreeBoost;
+
+    void Awake () {
+        Instance = this;
+    }
 
     public void MagicBallBoost()
     {
         if (UIManager.Instance.gameStatus != GameStatus.Playing)
             return;
+
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
-        if (PlayerPrefsManager.Instance.MagicBallBoost > 0)
+        if (selectingFreeBoost) 
         {
-            if (UIManager.Instance.gameStatus == GameStatus.Playing)
-                PlayerPrefsManager.Instance.SpendBoost(BoostType.MagicBallBoost);
+            selectFreeBoostComplete ();
+            PlayerPrefsManager.Instance.SpendBoost(BoostType.MagicBallBoost);
+        }
+        else if (PlayerPrefsManager.Instance.MagicBallBoost > 0)
+        {
+            PlayerPrefsManager.Instance.SpendBoost(BoostType.MagicBallBoost);
         }
         else
         {
@@ -25,7 +42,12 @@ public class Boosts : MonoBehaviour {
         if (UIManager.Instance.gameStatus != GameStatus.Playing)
             return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
-        if (PlayerPrefsManager.Instance.ColorBallBoost > 0)
+        if (selectingFreeBoost) 
+        {
+            selectFreeBoostComplete ();
+            PlayerPrefsManager.Instance.SpendBoost(BoostType.RainbowBallBoost);
+        }
+        else if (PlayerPrefsManager.Instance.ColorBallBoost > 0)
         {
             if (UIManager.Instance.gameStatus == GameStatus.Playing)
                 PlayerPrefsManager.Instance.SpendBoost(BoostType.RainbowBallBoost);
@@ -42,7 +64,13 @@ public class Boosts : MonoBehaviour {
         if (UIManager.Instance.gameStatus != GameStatus.Playing)
             return;
         SoundBase.Instance.GetComponent<AudioSource>().PlayOneShot(SoundBase.Instance.click);
-        if (PlayerPrefsManager.Instance.FireBallBoost > 0)
+
+        if (selectingFreeBoost) 
+        {
+            selectFreeBoostComplete ();
+            PlayerPrefsManager.Instance.SpendBoost(BoostType.FireBallBoost);
+        }
+        else if (PlayerPrefsManager.Instance.FireBallBoost > 0)
         {
             if (UIManager.Instance.gameStatus == GameStatus.Playing)
                 PlayerPrefsManager.Instance.SpendBoost(BoostType.FireBallBoost);
@@ -76,4 +104,30 @@ public class Boosts : MonoBehaviour {
         }
     }
     */
+
+    public void SetFreeBoostCrystal (int score) {
+        if (score == 0) {
+            // reset the score
+            freeBoostRewarded = false;
+        } 
+
+        float freeBoostScore = CoreManager.Instance.levelData.freeBoostScore;
+        float curScore = Mathf.Min (score, freeBoostScore);
+        float ratio = curScore / freeBoostScore * 100.0f;
+        freeBoostCrystal.GetComponent<CustomProgress> ().mValue = ratio;
+        if (ratio >= 100.0f && freeBoostRewarded == false) {
+            freeBoostRewarded = true;
+            StartBoostSelectMode ();
+        }
+    }
+
+    void StartBoostSelectMode () {
+        boostBarOnlyMask.SetActive (true);
+        selectingFreeBoost = true;
+    }
+
+    void selectFreeBoostComplete () {
+        selectingFreeBoost = false;
+        boostBarOnlyMask.SetActive (false);
+    }
 }

@@ -29,6 +29,7 @@ public class StageLoader
         LoadSceneFromLevelData();
         Profiler.EndSample();
 
+        ScoreManager.Instance.Score = 0;
         MissionManager.Instance.Initialize();
         UIManager.Instance.StageMovingUp();
         CoreManager.Instance.platformController.StartGameMove();

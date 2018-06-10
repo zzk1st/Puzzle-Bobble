@@ -147,8 +147,7 @@ public class CoreManager : MonoBehaviour
 
         _ballShooter = GameObject.Find("BallShooter").GetComponent<BallShooter>();
         _platformController = gridsNode.GetComponent<PlatformController>();
-        //RandomizeWaitTime();
-        ScoreManager.Instance.Score = 0;
+
         if (PlayerPrefs.GetInt("noSound") == 1)
             noSound = true;
 

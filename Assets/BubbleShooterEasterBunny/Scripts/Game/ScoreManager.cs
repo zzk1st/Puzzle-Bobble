@@ -31,6 +31,7 @@ public class ScoreManager : MonoBehaviour {
         {
             currentScore = value;
             scoreText.GetComponent<TotalScoreCounter>().updateScore(currentScore);
+            BoostManager.Instance.SetFreeBoostCrystal (currentScore);
         }
     }
 
@@ -139,4 +140,5 @@ public class ScoreManager : MonoBehaviour {
     void Update () {
 	    // 可以当分数或者某些条件满足的时候放一些特效在此处
 	}
+
 }
